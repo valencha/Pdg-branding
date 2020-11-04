@@ -228,11 +228,9 @@ function IntroQuestionStep1(){
           tutorial:{
               cursor:'pointer',
           },
-          title:{
-              fontFamily:'Poppins',
-              fontWeight:400,
-              fontSize:'38px'
-          },
+
+          
+          
           num:{
             fontFamily:'Open Sans',
             fontWeight:700,

@@ -3,6 +3,7 @@ import Home from '../Home/Home';
 import DataContext from '../../context/DataContext/DataContext';
 import Login from '../Login/Login';
 import Dashboard from '../Dashboard/Dashboard';
+import Map_step from '../Map_step/Map_step';
 import Step0 from '../Step0/Step0';
 import Step1 from '../Step1/Step1';
 import Step1_2 from '../Step1_2/Step1_2';
@@ -67,7 +68,8 @@ const [answers1_6, setAnswers1_6 ] = React.useState([]);
       <Route path="/" exact component ={Home}/>
       <Route path="/login" component ={Login}/>
       <Route exact path="/dashboard" component ={Dashboard}/>
-      <Route exact path="/dashboard/:project" component ={Step0}/>
+      <Route exact path="/dashboard/:project/main" component ={Map_step}/>
+      <Route exact path="/dashboard/:project/videos" component ={Step0}/>
       <Route exact path="/dashboard/:project/intro" component ={IntroQuestionStep1}/>
       <Route exact path="/dashboard/:project/step1" component ={Step1}/>
       <Route exact path="/dashboard/:project/step1_2" component ={Step1_2}/>

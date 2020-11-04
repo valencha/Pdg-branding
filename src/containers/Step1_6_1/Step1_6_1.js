@@ -11,6 +11,10 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import uuid from "uuid/v4";
 
+//Todos los imports se coloca   n arriba de este 
+
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
 
 function Step1_6_1(){
 
@@ -24,9 +28,13 @@ function Step1_6_1(){
     const [disabled, setDisabled] = React.useState(true);
     const [showTitle, setShowTitle] = React.useState(true);
     var temp = JSON.parse(localStorage.getItem("arreglo"));
-
+    const [urlNext, setUrlNext] = React.useState('');
 
     var listNotesTemp= Object.assign([],temp);
+    const [relevanciaAlta, setRelevanciaAlta]= React.useState([]);
+    const [relevanciaMedia, setRelevanciaMedia]= React.useState([]);
+    const [relevanciaBaja, setRelevanciaBaja]= React.useState([]);
+
     const columnsFromBackend ={
         [uuid()]: {
             name: 'Todo',
@@ -62,8 +70,28 @@ function Step1_6_1(){
   
 
     function handleNextPage(event){
-       history.push(`/dashboard/${project}/step1_7`);
+        history.push(urlNext);
       
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 6').set({
+               relevanciaAlta: relevanciaAlta,
+               relevanciaMedia: relevanciaMedia,
+               relevanciaBaja: relevanciaBaja,
+              
+            })
+            .then(function() {
+                console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+            
+            
+          
+              
+                  
+        })
 
       }
 
@@ -89,7 +117,7 @@ function Step1_6_1(){
             const sourceItems=[...sourceColumn.items];
             const destItems=[...destColumn.items];
             const [removed]= sourceItems.splice(source.index,1);
-          
+           
             setDisabled(false);
             destItems.splice(destination.index,0,removed);
 
@@ -125,15 +153,84 @@ function Step1_6_1(){
     };
   
     React.useEffect(() => {
+        let isCancelled = false;
+        Object.entries(columns).map(([id,column])=>{
+         
+                if(column.name === 'Relevancia Alta'){
 
-      
+                    setRelevanciaAlta(column.items);
+                }
+                if(column.name === 'Relevancia Media'){
+
+                    setRelevanciaMedia(column.items);
+                }
+
+                if(column.name === 'Relevancia Baja'){
+                    
+                    setRelevanciaBaja(column.items);
+                }
+                
+                return column;
+            
+        });
+     
       if(disabled===true){
          setValue(28.5714285714+(14.2857142857*3)); 
          
       }else{
          setValue(28.5714285714+(14.2857142857*4)); 
       }
- 
+      if (!isCancelled) {
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+        var docRef = db.collection(`${user.email}`).doc(project);
+    
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_7',
+            step:'esenciaMarca_paso7'
+        })
+        .then(function(db) {
+     
+            console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().url);
+                setUrlNext(doc.data().url);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+          
+              
+    })
+
+        }
+
+
+
+
+        return () => {
+            isCancelled = true;
+        };
+
+  
+
+
+
+
+
+
+
+
+
      }, [project,data,disabled,columns]);
 
     return (
@@ -168,7 +265,7 @@ function Step1_6_1(){
                             {Object.entries(columns).map(([id,column])=>{
                                 return(
                                     
-                                    <div>
+                                    <div key={id}>
                            
                                     <Droppable droppableId={id} key={id} >
                                         {(provided,snapshot)=>{
@@ -193,6 +290,7 @@ function Step1_6_1(){
                                                                         <div ref={provided.innerRef} 
                                                                         {...provided.draggableProps} 
                                                                         {...provided.dragHandleProps}
+                                                                        key={item.id}
                                                                         style={{
                                                                             userSelect:'none',
                                                                             display:'flex',

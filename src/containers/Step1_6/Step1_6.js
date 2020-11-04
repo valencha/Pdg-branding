@@ -13,6 +13,9 @@ import DialogTutorial from '../../components/DialogTutorial/DialogTutorial';
 import uuid from "uuid/v4";
 
 
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
+
 function Step1_6(){
 
     let {project}= useParams();
@@ -23,9 +26,8 @@ function Step1_6(){
     const [openDialog, setOpenDialog] = React.useState(true);
     const [value, setValue] = React.useState(28.5714285714+14.2857142857);
     const [disabled, setDisabled] = React.useState(true);
+    const [urlNext, setUrlNext] = React.useState('');
   
-  
-    
   
     const [listNotes, setListNotes] = React.useState([]);
     const [textNote, setTextNote] = React.useState('');
@@ -35,7 +37,7 @@ function Step1_6(){
 
 
     function handleNextPage(event){
-        history.push(`/dashboard/${project}/step1_6_1`);
+        history.push(urlNext);
         data.setAnswers1_6(listNotes);
 
         localStorage.setItem("arreglo", JSON.stringify(listNotesTemp));
@@ -64,7 +66,7 @@ function Step1_6(){
        
       
         
-        listNotesTemp.push({text: textNote, category: "general",id: uuid()});  
+        listNotesTemp.push({text: textNote,id: uuid()});  
        
         setListNotes(listNotesTemp);
             
@@ -74,17 +76,9 @@ function Step1_6(){
    
     }
 
- 
-        
 
-       
-          
-   
-
-
-   
     React.useEffect(() => {
-     
+        let isCancelled = false;
     console.log(data.answers1_6);
      if(disabled===true){
         setValue(28.5714285714+(14.2857142857*3)); 
@@ -92,7 +86,46 @@ function Step1_6(){
      }else{
         setValue(28.5714285714+(14.2857142857*3)); 
      }
+     if (!isCancelled) {
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+        var docRef = db.collection(`${user.email}`).doc(project);
     
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_6_1',
+            step:'esenciaMarca_paso6'
+        })
+        .then(function(db) {
+     
+            console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().url);
+                setUrlNext(doc.data().url);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+          
+              
+    })
+
+        }
+
+
+
+
+        return () => {
+            isCancelled = true;
+        };
       
         
     }, [project,data,disabled]);

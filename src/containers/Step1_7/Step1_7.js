@@ -22,20 +22,27 @@ function Step1_7(){
     
     
     const [value, setValue] = React.useState(28.5714285714*4);
+    const [slider1, setSlider1]=React.useState(0); 
     const [disabled, setDisabled] = React.useState(true);
+    const [answers,setAnswers] = React.useState([])
+    const [selector1_1, setSelector1_1] = React.useState('');
   
     let options1=[
+        {
+            item: 'Seleciona uno',
+            value: ''
+        },
      {
         item: 'Tradicional',
-        value: 10
+        value: 'tradicional'
      },
      {
         item: 'Adulta',
-        value: 10
+        value: 'adulta'
      },
      {
         item: 'Clásica',
-        value: 10
+        value: 'clásica'
      },
 
 
@@ -43,16 +50,20 @@ function Step1_7(){
 
     let options2=[
         {
+            item: 'Seleciona uno',
+            value: ''
+        },
+        {
            item: 'Innovadora',
-           value: 10
+           value: 'innovadora'
         },
         {
            item: 'Joven',
-           value: 10
+           value: 'joven'
         },
         {
            item: 'Creativa',
-           value: 10
+           value: 'creativa'
         },
    
    
@@ -66,6 +77,47 @@ function Step1_7(){
 
       }
 
+      
+      function handleChange(event,value){
+        
+       answers.slider=value;
+
+        console.log(value);
+        
+        
+      }
+
+
+      function handleOnChange1(event){
+
+        answers.categoria1=event.target.value;
+ 
+      }
+
+      function handleOnChange2(event){
+        
+        answers.categoria1_1=event.target.value;
+        
+      }
+      function handleOnChange3(event){
+        console.log(event.target.value);
+      }
+
+      function handleOnChange4(event){
+  
+        console.log(event.target.value);
+      }
+
+      function handleOnChange5(event){
+       
+
+        console.log(event.target.value);
+      }
+
+      function handleOnChange6(event){
+        console.log(event.target.value);
+      }
+
 
       function handleBackPage(event){
         history.push(`/dashboard/${project}/step1_2`);
@@ -74,6 +126,7 @@ function Step1_7(){
 
     React.useEffect(() => {
 
+        console.log(answers);
      if(disabled===true){
         setValue(28.5714285714+(14.2857142857*4)); 
         
@@ -83,7 +136,7 @@ function Step1_7(){
     
       
         
-    }, [project,data,disabled]);
+    }, [project,disabled,answers]);
 
 
 
@@ -117,27 +170,33 @@ function Step1_7(){
                             <div className={classes.selectors}>
                                 <Selector classes={classes.select1}
                                     options={options1}
+                                    onChange={handleOnChange1}
                                 />
                             
-                                <Slider/>
+                                <Slider onChange={handleChange} value={slider1}/>
                                 <Selector classes={classes.select2}
-                                 options={options2}/>
+                                 options={options2}
+                                 onChange={handleOnChange2}/>
                             </div>
                             <div className={classes.selectors2}>
                                 <Selector classes={classes.select1}
-                                 options={options1}/>
+                                 options={options1}
+                                 onChange={handleOnChange3}/>
                             
                                 <Slider/>
                                 <Selector classes={classes.select2}
-                                 options={options2}/>
+                                 options={options2}
+                                 onChange={handleOnChange4}/>
                             </div>
                             <div className={classes.selectors3}>
                                 <Selector classes={classes.select1}
-                                 options={options1}/>
+                                 options={options1}
+                                 onChange={handleOnChange5}/>
                             
                                 <Slider/>
                                 <Selector classes={classes.select2}
-                                 options={options2}/>
+                                 options={options2}
+                                 onChange={handleOnChange6}/>
                             </div>
                         
                         </div>     

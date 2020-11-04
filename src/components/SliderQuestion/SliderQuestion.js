@@ -9,10 +9,8 @@ import Slider from '@material-ui/core/Slider';
 function SliderQuestion(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
-    const [value, setValue] = React.useState(0);
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-      };
+   
+  
     
 
     return <div className={props.classes}>
@@ -21,10 +19,9 @@ function SliderQuestion(props){
     <Slider
         min={0}
         step={1}
-        max={6}
-        value={value}
+        max={6}  
         classes={{root:classes.sliderQ, track:classes.track, rail:classes.rail, thumb:classes.thumb}}
-        onChange={handleChange}
+        onChange = { (event,value) => { props.onChange(event,value) } }
         valueLabelDisplay="auto"
         aria-labelledby="non-linear-slider"
       />

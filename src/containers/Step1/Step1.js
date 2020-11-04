@@ -106,6 +106,7 @@ function Step1(){
 
     function handleNextPage(event){
         history.push(urlNext);
+        
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 1').set({
@@ -147,10 +148,11 @@ function Step1(){
 
 
     React.useEffect(() => {
+        let isCancelled = false;
         setTextName(textName);
         setTextSlogan(textSlogan);
         console.log(textName);
-
+        if (!isCancelled) {
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
@@ -182,10 +184,14 @@ function Step1(){
               
     })
 
+        }
 
 
 
 
+        return () => {
+            isCancelled = true;
+        };
 
     }, [project,textName,textSlogan,urlNext]);
 

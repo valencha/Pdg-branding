@@ -16,7 +16,12 @@ function DialogTutorial(props){
                 </div>
                 <div className={classes.contentText}>
                 <img className={classes.light} width='24px' src={('/images/tutoriaLight.svg')} alt="light" />
-                <p className={classes.text}>{props.text}{"\n"}Ejemplos: Honestidad, integridad, sostenible, asequible, lujo, orientados a los datos, servicio, sencillez, confianza, accesible para todos, etc.</p> 
+                <div className={classes.containText}>
+                <p className={classes.text}>{props.text}</p>
+                {"\n"}
+                <p className={classes.text}><b>Ejemplos:</b> Honestidad, integridad, sostenible, asequible, lujo, orientados a los datos, servicio, sencillez, confianza, accesible para todos, etc.</p>
+                </div>
+              
                 </div>
                 <button onClick={props.handleOpen} className={classes.btn}>Entendido  <img className ={classes.icon} alt='arrow'  src={('/images/check.svg')} /> </button>
                
@@ -111,6 +116,12 @@ const useStyles = makeStyles(theme => ({
     text:{
         fontFamily:'Poppins',
         fontWeight:300,
+        fontSize:'12px',
+        lineHeight:'24px'
+    },
+    containText:{
+        display:'flex',
+        flexDirection:'column',
     }
 
 

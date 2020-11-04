@@ -11,7 +11,10 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import CardCheckBox from '../../components/CardCheckBox/CardCheckBox';
 import AddCategory from '../../components/AddCategory/AddCategory';
 
+//Todos los imports se coloca   n arriba de este 
 
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
 
 
 function Step1_2(){
@@ -24,11 +27,32 @@ function Step1_2(){
     const [value, setValue] = React.useState(14.2857142857);
     const [disabled, setDisabled] = React.useState(true);
     const [openDialog, setOpenDialog] = React.useState(false);
-
+    const [urlNext, setUrlNext] = React.useState('');
+    const [answers, setAnswers] = React.useState([]);
 
 
     function handleNextPage(event){
-        history.push(`/dashboard/${project}/step1_3`);
+        history.push(urlNext);
+
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 2').set({
+              respuestas:answers
+              
+            })
+            .then(function() {
+                console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+            
+            
+          
+              
+                  
+        })
+
 
       }
       
@@ -49,14 +73,51 @@ function Step1_2(){
 
    
     React.useEffect(() => {
+    let isCancelled = false;
      if(disabled===false){
         setValue(28.5714285714); 
         
      }
+     let db = fb.firestore();
+     fb.auth().onAuthStateChanged(user => {
+
+     var docRef = db.collection(`${user.email}`).doc(project);
+   
+     // Set the "capital" field of the city 'DC'
+     docRef.update({
+         url: '/dashboard/'+project+'/step1_3',
+         step:'esenciaMarca_paso3'
+     })
+     .then(function(db) {
+  
+         console.log('done');
+     })
+     .catch(function(error) {
+         // The document probably doesn't exist.
+         console.error("Error updating document: ", error);
+     });
+
+     docRef.get().then(function(doc) {
+        if (!isCancelled) {
+         if (doc.exists) {
+             console.log(doc.data().url);
+             setUrlNext(doc.data().url);
+         }} else {
+             console.log("No such document!");
+         }
+     }).catch(function(error) {
+         console.log("Error getting document:", error);
+     });
+       
+           
+    })
+
+
+    return () => {
+    isCancelled = true;
+    };
     
-      
-        
-    }, [project,data,disabled]);
+    }, [project,data,disabled, urlNext]);
 
 
 
@@ -92,6 +153,8 @@ function Step1_2(){
                         {...item}
                         {...item.setDisabled = setDisabled}
                         {...item.setValue= setValue}
+                        {...item.setAnswers= setAnswers}
+                        {...item.answers= answers}
                         />
 
                         )}

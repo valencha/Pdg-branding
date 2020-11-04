@@ -18,6 +18,7 @@ function CardCheckBox(props){
 
 
     function handleClick(event){
+        console.log(props.label);
         setIsHandleClick(prev => !prev);
         setIsChecked(prev => !prev);
         data.setIsChecked(true);
@@ -28,10 +29,13 @@ function CardCheckBox(props){
         if(isHandleClick === false){    
             setCardClass(classes.cardYellow);   
             setIsChecked(true);  
+            props.answers.push(props.label);
             props.setDisabled(false);
         }else{
             setCardClass(classes.card); 
             setIsChecked(false);
+            var filtered = props.answers.filter(function(value, index, arr){ return value === `${props.label}`});
+            props.setAnswers(filtered);
             props.setValue(14.2857142857);
            
         }

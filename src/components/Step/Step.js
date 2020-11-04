@@ -9,28 +9,35 @@ import Box from '@material-ui/core/Box';
 
 
 
-function CardProject(props){
 
-    const classes = useStyles({ urlBanner: 'images/imgDefaultProject.svg', urlBack:'images/Ellipse.svg'});
+function Step(props){
+
+    const classes = useStyles({ urlBack:'/images/Ellipse.svg'});
+
     let history = useHistory();
 
     const ColorCircularProgress = withStyles({
         root: {
-          color: '#5975FF',
+            width:400,
+            color: '#5975FF',
 
           '& > bottom': {
             color:'#7A76FF',
-            fontSize:25
+            fontSize:25,
+            width:400,
         },
  
         },
         circleStatic: {
             color: '#5975FF',
-          },
+            width:400,
+        },
 
 
           circle: {
             strokeLinecap: 'round',
+            width:400,
+           
           },
         
       })(CircularProgress);
@@ -38,35 +45,23 @@ function CardProject(props){
  
 
       function handleClickProject(){
-          console.log(props.id);
-          console.log(props.url);
-          history.push('/dashboard/'+props.titleProject+'/main');
-        
-          
-
+            history.push(props.urlNext);
+            console.log(props.urlNext);
       }
 
 
     return <div className={classes.body}  onClick={handleClickProject}>
     
 
-        <Card className={classes.card}>
-        <div className={classes.contentTop}> 
-
-        <img src={'images/defaultImageProject.svg'} alt="watch" width='136px' />
-        <img className={classes.divisor}src={'images/lineCard.svg'} alt="watch" width='224px' />
-
-        </div>
+        <Card className={ `${props.active ? classes.card : classes.cardInactive}`} >
+     
+            <h1 className={ `${props.active ? classes.titleProject : classes.titleInactive}`}>{props.title}</h1>
+            <img src={props.urlImage} alt="img" width='114px' className={classes.imgStep}/>
+ 
         <div className={classes.contentBottom}>
-            
-            <div>    
-                <h1 className={classes.titleProject}>{props.titleProject}</h1>
-                <p className={classes.dateProject}>{props.dateProject}</p>
-            </div>
-
-             
+ 
             <Box position="relative" display="inline-flex">
-            <ColorCircularProgress variant="static" value={50} className={classes.bottom}/>
+            <ColorCircularProgress variant="static" value={props.percent} className={classes.bottom}/>
             <Box
             top={0}
             left={0}
@@ -78,11 +73,10 @@ function CardProject(props){
             justifyContent="center"
             >
             <Typography variant="caption" className={classes.text}component="div">{`${Math.round(
-            50,
+            props.percent,
             )}%`}</Typography>
             </Box>
             </Box>
-        
         
         </div>
         </Card>
@@ -92,68 +86,69 @@ function CardProject(props){
 
 const useStyles = makeStyles(theme => ({
     body:{
-        marginTop:'52px',
+        marginTop:'5px',
+        display:'flex',
     },
-    progress:{
-        width:55,
-        height:55,
-    },
+
     card:{
-        width:'224px',
-        height:'233px',
+        width:'190px',
+        height:'300px',
         cursor:'pointer',
         background:'#ffff',
-        border:'1px solid #DDE2E5',
+        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
+        borderRadius: '20px',
+        display:'flex',
+        paddingBottom:'20px',
+        flexDirection:'column',
+        alignContent:'center',
+        alignItems:'center',
+        marginRight:'20px',
+        justifyContent:'space-between',
+
+    },
+
+    cardInactive:{
+        width:'190px',
+        height:'300px',
+        cursor:'pointer',
+        background:'#F5F5F5',
         boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
         borderRadius: '20px',
         display:'flex',
         flexDirection:'column',
         alignContent:'center',
-        marginRight:'30px',
-        justifyContent:'center',
-
-    },
-
-    contentTop:{
-        display:'flex',
-        backgroundImage: (props) => `url(${props.urlBanner})`,
-        backgroundSize:'contain',
-        width:'224px',
-        flexDirection:'column',
-        alignSelf:'center',
         alignItems:'center',
-        alignContent:'center',
-        justifyContent:'center',
-      
-    },
-    contentBottom:{
-        
-        padding:'14px',
-        display:'flex',
-        flexDirection:'row',
+        paddingBottom:'20px',
+        marginRight:'20px',
         justifyContent:'space-between',
-        
 
-    },
-    divisor:{
-        marginTop:'10px'
+
     },
 
     titleProject:{
         fontFamily:'Poppins',
         color:'#212429',
         fontSize:'16px',
+        fontWeight:500,
+        marginTop:20,
+        width:150,
+        textAlign:'center'
 
     },
 
-    dateProject:{
+
+    titleInactive:{
         fontFamily:'Poppins',
         color:'#CCCCCC',
-        fontSize:'12px',
-        fontWeight:400,
-        marginTop:'9px',
-        
+        fontSize:'16px',
+        fontWeight:500,
+        width:150,
+        marginTop:20,
+        textAlign:'center'
+
     },
+
+
 
     root: {
         display: 'flex',    
@@ -172,10 +167,18 @@ const useStyles = makeStyles(theme => ({
         backgroundImage: (props) => `url(${props.urlBack})`,
         backgroundSize:'contain',
         
-    }
+    },
 
+    imgStep:{
+        padding:'10px'
+    },
+
+    contentBottom:{
+        height:'auto',
+    }
+  
 
 }));
 
 
-export default CardProject;
+export default Step;

@@ -52,30 +52,29 @@ function Selector(props){
 
     }))(InputBase);
 
+  
+
     return <div>
     
-        
-    <FormControl className={classes.formControl} variant="outlined">
+     
+    <FormControl className={classes.formControl}  variant="outlined">
         <Select
+        onChange = { (event) => { props.onChange(event) } }
         input={<BootstrapInput />}
         className={classes.select}
         IconComponent = {ExpandMoreRoundedIcon}
           native
-          inputProps={{
-            name: 'age',
-            id: 'age-native-simple',
-          }}
+
         >
-          <option value='0'>Selecciona uno</option>
-          {props.options.map((item, i) =>
-      
+       
+      {props.options.map((item, i) =>  
           <option key={i} value={item.value}>{item.item}</option>
+      )}
 
-
-          )}
+       
         </Select>
       </FormControl>
-    
+   
     </div>;
 }
 

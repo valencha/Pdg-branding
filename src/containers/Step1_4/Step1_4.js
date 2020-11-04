@@ -12,6 +12,11 @@ import ToolBoxText from '../../components/ToolBoxText/ToolBoxText';
 import TextArea from '../../components/TextArea/TextArea';
 import Draggable from 'react-draggable';
 
+//Todos los imports se coloca   n arriba de este 
+
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
+
 
 
 function Step1_4(){
@@ -23,22 +28,39 @@ function Step1_4(){
     
     const [value, setValue] = React.useState(28.5714285714+14.2857142857);
     const [disabled, setDisabled] = React.useState(true);
-    
-
-    
-  
-
     const [listNotes, setListNotes] = React.useState([]);
-  
+    var listNotesTemp= Object.assign([],listNotes);
+    const [noteValue, setNoteValue]= React.useState('');
+    const [answers, setAnswers] = React.useState([]);
+    const [urlNext, setUrlNext] = React.useState('');
 
-    const [newNote, setNewNote] = React.useState(false);
 
 
 
     function handleNextPage(event){
-        history.push(`/dashboard/${project}/step1_5`);
+        history.push(urlNext);
 
-      }
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 4').set({
+               respuesta: answers
+ 
+              
+            })
+            .then(function() {
+                console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+            
+            
+          
+              
+                  
+        })
+
+    }
       
 
       function handleBackPage(event){
@@ -46,42 +68,78 @@ function Step1_4(){
       } 
 
       function handleCreateNotes(event){
-        setNewNote(true);
-         
-        const newItem= { text:'Escribe aqui...'};
-        var listNotesTemp= Object.assign([],listNotes);
-
-        listNotesTemp.push(newItem);
-              
+        listNotesTemp.push({ text: noteValue});
+        answers.push({ nota: noteValue}); 
         setListNotes(listNotesTemp);
-            
-        console.log(listNotes);
-   
     }
-
-    function changeTextNote(){
-        console.log('Hey');
+    function changeTextNote(event){
         setDisabled(false);
+      setNoteValue(event.target.value);
+      setAnswers(answers);
+      answers[0].nota=event.target.value;
+      listNotesTemp[0].text=event.target.value;
+      
     }
-        
-
-       
           
    
 
 
    
     React.useEffect(() => {
+        let isCancelled = false;
+      console.log(answers)
+        setAnswers(answers);
+        setListNotes(listNotes);
+        setNoteValue(noteValue);
      if(disabled===true){
         setValue(28.5714285714+14.2857142857); 
         
      }else{
         setValue(28.5714285714+(14.2857142857*2)); 
      }
-    
+     if (!isCancelled) {
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+        var docRef = db.collection(`${user.email}`).doc(project);
+        // Set the "capital" field of the city 'DC'
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_5',
+            step:'esenciaMarca_paso5'
+        })
+        .then(function(db) {
+     
+            console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().url);
+                setUrlNext(doc.data().url);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+          
+              
+    })
+
+        }
+
+
+
+
+        return () => {
+            isCancelled = true;
+        };
       
         
-    }, [project,data,disabled]);
+    }, [project,data,disabled,listNotes,noteValue,listNotesTemp,answers]);
 
 
 
@@ -116,23 +174,22 @@ function Step1_4(){
                             handleCreateNotes={handleCreateNotes}
                             />
                          
-                            {newNote?
+                       
                         
                           
                             <div className={classes.notes}>
                             {listNotes.map((item, i) =>
                                 <Draggable key={i} defaultPosition={{x: 0, y: 0}}>
                                 <div>
-                                    <TextArea key={i}
+                                <TextArea key={i} {...item.onChange=changeTextNote}
                                  {...item}
-                                 {...item.changeTextNote={changeTextNote}}
-                            />
+                                />
                                 </div>
                             </Draggable>
                                 
 
-                            )} </div>:null
-                            }
+                            )} </div>
+                            
                          
                        
                        

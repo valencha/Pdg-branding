@@ -159,6 +159,7 @@ function handleOption4(){
       dateProject: dateProject,
       step: step,
       url:url,
+      percent:0,
 
     }
     
