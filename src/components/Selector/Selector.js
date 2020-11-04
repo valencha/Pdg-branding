@@ -61,6 +61,7 @@ function Selector(props){
         <Select
         onChange = { (event) => { props.onChange(event) } }
         input={<BootstrapInput />}
+        value={props.value}
         className={classes.select}
         IconComponent = {ExpandMoreRoundedIcon}
           native

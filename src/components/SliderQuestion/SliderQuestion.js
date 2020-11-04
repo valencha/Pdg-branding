@@ -19,7 +19,9 @@ function SliderQuestion(props){
     <Slider
         min={0}
         step={1}
-        max={6}  
+        max={6}
+        defaultValue={0}  
+        value={props.value}
         classes={{root:classes.sliderQ, track:classes.track, rail:classes.rail, thumb:classes.thumb}}
         onChange = { (event,value) => { props.onChange(event,value) } }
         valueLabelDisplay="auto"

@@ -1,5 +1,4 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import{useParams} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import TopBar from '../../components/TopBar/TopBar';
@@ -12,20 +11,58 @@ import Selector from '../../components/Selector/Selector';
 import Slider from '../../components/SliderQuestion/SliderQuestion';
 
 
+//Todos los imports se coloca   n arriba de este 
+
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
 
 function Step1_7(){
 
     let {project}= useParams();
-    const data = React.useContext(DataContext);
     const classes = useStyles();
     let history = useHistory();
     
-    
+    var list= [];
     const [value, setValue] = React.useState(28.5714285714*4);
-    const [slider1, setSlider1]=React.useState(0); 
     const [disabled, setDisabled] = React.useState(true);
-    const [answers,setAnswers] = React.useState([])
-    const [selector1_1, setSelector1_1] = React.useState('');
+  
+    const  [slider1, setSlider1] = React.useState(false);
+    const  [select1, setSelect1] = React.useState(false);
+    const  [select1_1, setSelect1_1] = React.useState(false);
+
+    const  [slider2, setSlider2] = React.useState(false);
+    const  [select2, setSelect2] = React.useState(false);
+    const  [select2_2, setSelect2_2] = React.useState(false);
+
+    const  [slider3, setSlider3] = React.useState(false);
+    const  [select3, setSelect3] = React.useState(false);
+    const  [select3_3, setSelect3_3] = React.useState(false);
+
+
+
+    const [answers,setAnswers] = React.useState({}); 
+    const [answers2,setAnswers2] = React.useState({}); 
+    const [answers3,setAnswers3] = React.useState({}); 
+
+    const [selectValue1,setSelectValue1] = React.useState(''); 
+    const [selectValue1_1,setSelectValue1_1] = React.useState(''); 
+    const [sliderValue,setSliderValue] = React.useState(0);
+
+
+    const [selectValue2,setSelectValue2] = React.useState(''); 
+    const [selectValue2_2,setSelectValue2_2] = React.useState(''); 
+    const [sliderValue2,setSliderValue2] = React.useState(0);
+
+
+    const [selectValue3,setSelectValue3] = React.useState(''); 
+    const [selectValue3_3,setSelectValue3_3] = React.useState(''); 
+    const [sliderValue3,setSliderValue3] = React.useState(0);
+
+
+    const [urlNext, setUrlNext] = React.useState('');
+    const[imgChange, setImgChange]= React.useState('/images/loading.svg');
+  
+
   
     let options1=[
         {
@@ -71,51 +108,119 @@ function Step1_7(){
 
 
     function handleNextPage(event){
-        setDisabled(false);
+        history.push(urlNext);
+
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 7').set({
+             respuestas: list,
+              
+            })
+            .then(function() {
+                console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+            
+            
+          
+              
+                  
+        })
+
         
-
-
-      }
+    }
 
       
-      function handleChange(event,value){
+      const handleSlider1=(event,value)=>{
+        setSliderValue(value);
+        if(value=== 4){
+            setSlider1(true);
+        }
         
-       answers.slider=value;
+        answers.slider=value;
 
-        console.log(value);
-        
-        
       }
 
 
-      function handleOnChange1(event){
-
+      const handleOnChange1=(event)=>{
+        setSelectValue1(event.target.value);
+        
         answers.categoria1=event.target.value;
+
+        if(event.target.value=== 'tradicional'){
+            setSelect1(true);
+        }
  
       }
 
-      function handleOnChange2(event){
-        
+      const handleOnChange2=(event)=>{
+        setSelectValue1_1(event.target.value);
         answers.categoria1_1=event.target.value;
-        
+
+        if(event.target.value=== 'innovadora'){
+            setSelect1_1(true);
+        }
+
       }
+
       function handleOnChange3(event){
-        console.log(event.target.value);
+        setSelectValue2(event.target.value);
+        answers2.categoria1=event.target.value;
+
+        if(event.target.value=== 'adulta'){
+            setSelect2(true);
+        }
+
+      }
+      const handleSlider2=(event,value)=>{
+        setSliderValue2(value);
+        answers2.slider=value;
+
+        if(value=== 3){
+            setSlider2(true);
+        }
+
       }
 
       function handleOnChange4(event){
+        setSelectValue2_2(event.target.value);
   
-        console.log(event.target.value);
+        answers2.categoria1_1=event.target.value;
+
+
+        if(event.target.value=== 'joven'){
+            setSelect2_2(true);
+        }
       }
 
       function handleOnChange5(event){
+        setSelectValue3(event.target.value);
        
+        answers3.categoria1=event.target.value;
+        if(event.target.value=== 'clásica'){
+            setSelect3(true);
+        }
+      }
 
-        console.log(event.target.value);
+      const handleSlider3=(event,value)=>{
+        setSliderValue3(value);
+        answers3.slider=value;
+        if(value=== 6){
+            setSlider3(true);
+        }
+
       }
 
       function handleOnChange6(event){
-        console.log(event.target.value);
+        setSelectValue3_3(event.target.value);
+        answers3.categoria1_1=event.target.value;
+
+        if(event.target.value=== 'creativa'){
+            setSelect3_3(true);
+        }
+
       }
 
 
@@ -125,8 +230,33 @@ function Step1_7(){
 
 
     React.useEffect(() => {
+        let isCancelled = false;
+        setAnswers(answers);
+        setAnswers2(answers2);
+        setAnswers3(answers3);
 
-        console.log(answers);
+
+      
+        list.push(answers)
+        list.push(answers2)
+        list.push(answers3)
+
+        console.log(list);
+
+
+        if(select1 === true && select1_1 === true && slider1 === true){
+            setImgChange('/images/ilus1.svg')
+        }
+        if(select2 === true && select2_2 === true && slider2 === true){
+            setImgChange('/images/ilus2.svg')
+        }
+        if(select3 === true && select3_3 === true && slider3 === true){
+            setImgChange('/images/ilus3.svg');
+            setDisabled(false); 
+        }
+
+       
+
      if(disabled===true){
         setValue(28.5714285714+(14.2857142857*4)); 
         
@@ -134,9 +264,53 @@ function Step1_7(){
         setValue(100); 
      }
     
+     if (!isCancelled) {
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+        var docRef = db.collection(`${user.email}`).doc(project);
+    
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_8',
+            step:'esenciaMarca_paso8'
+        })
+        .then(function(db) {
+     
+            console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().url);
+                setUrlNext(doc.data().url);
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+          
+              
+    })
+
+        }
+
+
+
+
+        return () => {
+            isCancelled = true;
+        };
+
+  
+
+
       
         
-    }, [project,disabled,answers]);
+    }, [project,list,disabled,answers,slider1,answers2,answers3,select1,select1_1,select2,select2_2,select3, select3_3,slider2,slider3]);
 
 
 
@@ -170,38 +344,48 @@ function Step1_7(){
                             <div className={classes.selectors}>
                                 <Selector classes={classes.select1}
                                     options={options1}
+                                    value={selectValue1}
                                     onChange={handleOnChange1}
                                 />
                             
-                                <Slider onChange={handleChange} value={slider1}/>
+                                <Slider onChange={handleSlider1} value={sliderValue}/>
                                 <Selector classes={classes.select2}
                                  options={options2}
+                                 value={selectValue1_1}
                                  onChange={handleOnChange2}/>
                             </div>
                             <div className={classes.selectors2}>
                                 <Selector classes={classes.select1}
                                  options={options1}
+                                 value={selectValue2}
                                  onChange={handleOnChange3}/>
                             
-                                <Slider/>
+                                <Slider onChange={handleSlider2}  value={sliderValue2}/>
                                 <Selector classes={classes.select2}
                                  options={options2}
+                                 value={selectValue2_2}
                                  onChange={handleOnChange4}/>
                             </div>
                             <div className={classes.selectors3}>
                                 <Selector classes={classes.select1}
                                  options={options1}
+                                 value={selectValue3}
                                  onChange={handleOnChange5}/>
                             
-                                <Slider/>
+                                <Slider onChange={handleSlider3} value={sliderValue3}/>
                                 <Selector classes={classes.select2}
                                  options={options2}
+                                 value={selectValue3_3}
                                  onChange={handleOnChange6}/>
                             </div>
                         
                         </div>     
                         <div className={classes.imageBtn}>
-                        <img alt='imagePerson'  src={('/images/loadingImage.jpg')} width='223px' />
+                        <div className={classes.img}>
+                        <img className={classes.imgCircle} src='/images/help-circle2.svg'alt="watch" width='20px' />
+                        <img className={classes.imgPerson} src={imgChange} alt="watch" width='83px' />
+
+                        </div>
                         <button className={classes.btnChangeImg}>Cambiar a Femenino</button>
                         </div> 
                         
@@ -422,7 +606,34 @@ function Step1_7(){
         color:'#7A76FF',
         fontWeight:600,
         fontFamily:'Poppins'
+    },
+
+    img:{
+
+        width:'200px',
+        height:'240px',
+        borderRadius:'15px',
+        backgroundColor:'white',
+        display:'flex',
+        flexDirection:'column',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
+        padding:'10px'
+
+    },
+    imgCircle:{
+        alignSelf:'flex-end',
+        justifyContent:'flex-start'
+        
+    },
+
+    imgPerson:{
+        height:'90%',
+        alignSelf:'center'
+
     }
+    
    
     
     
