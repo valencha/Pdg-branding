@@ -26,14 +26,22 @@ function Step1_8(){
     
     const [value, setValue] = React.useState(28.5714285714+14.2857142857);
     const [disabled, setDisabled] = React.useState(true);
-    const [showTitle, setShowTitle] = React.useState(true);
-    var temp = JSON.parse(localStorage.getItem("arreglo"));
+
+   
     const [urlNext, setUrlNext] = React.useState('');
 
-    var listNotesTemp= Object.assign([],temp);
-    const [relevanciaAlta, setRelevanciaAlta]= React.useState([]);
-    const [relevanciaMedia, setRelevanciaMedia]= React.useState([]);
-    const [relevanciaBaja, setRelevanciaBaja]= React.useState([]);
+
+    var listNotesTemp= [{text: "Empleados",id: uuid()},
+    {text: "Colaboradores",id: uuid()},
+    {text: "Clientes",id: uuid()},
+    {text: "Accionistas",id: uuid()},
+    {text: "Proveedores",id: uuid()},
+    {text: "Consumidores",id: uuid()},
+    {text: "Líderes de opinión",id: uuid()},
+    {text: "Redes sociales",id: uuid()},
+    ];
+    const [audienciaInterna, setAudienciaInterna]= React.useState([]);
+    const [audienciaExterna, setAudienciaExterna]= React.useState([]);
 
     const columnsFromBackend ={
         [uuid()]: {
@@ -41,28 +49,23 @@ function Step1_8(){
             className:classes.contentNotes,
             items: listNotesTemp,
             showTitle:false,
+            
           },
           [uuid()]: {
-            name: 'Relevancia Alta',
+            name: 'Audiencia Interna',
             className:classes.board1,
             items: [],
-            showTitle:showTitle,
-            setShowTitle:setShowTitle,
+            classNameTitle:classes.titleBoard,
+            showTitle:true,
           },
           [uuid()]: {
-            name: 'Relevancia Media',
+            name: 'Audiencia Externa',
             className:classes.board2,
+            classNameTitle:classes.titleBoard,
             items: [],
-            showTitle:showTitle,
-            setShowTitle:setShowTitle,
+            showTitle:true,
           },
-          [uuid()]: {
-            name: 'Relevancia Baja',
-            className:classes.board3,
-            items: [],
-            showTitle:showTitle,
-            setShowTitle:setShowTitle,
-          },
+
     }
 
     const[columns,setColumns]=React.useState(columnsFromBackend);
@@ -74,10 +77,9 @@ function Step1_8(){
       
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 6').set({
-               relevanciaAlta: relevanciaAlta,
-               relevanciaMedia: relevanciaMedia,
-               relevanciaBaja: relevanciaBaja,
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 8').set({
+               audienciaExterna: audienciaExterna,
+               audienciaInterna: audienciaInterna,
               
             })
             .then(function() {
@@ -155,24 +157,30 @@ function Step1_8(){
     React.useEffect(() => {
         let isCancelled = false;
         Object.entries(columns).map(([id,column])=>{
-         
-                if(column.name === 'Relevancia Alta'){
+            
+                if(column.name === 'Audiencia Interna'){
 
-                    setRelevanciaAlta(column.items);
-                }
-                if(column.name === 'Relevancia Media'){
+                    setAudienciaInterna(column.items);
 
-                    setRelevanciaMedia(column.items);
+                    if(column.items.length> 0){
+                        column.className = classes.board1_1;
+                        column.classNameTitle = classes.titleBoard2;
+                    }
+                }
+                if(column.name === 'Audiencia Externa'){
+
+                    setAudienciaExterna(column.items);
+                    if(column.items.length> 0){
+                        column.className = classes.board2_2;
+                        column.classNameTitle = classes.titleBoard2;
+                    }
                 }
 
-                if(column.name === 'Relevancia Baja'){
-                    
-                    setRelevanciaBaja(column.items);
-                }
                 
                 return column;
             
         });
+
      
       if(disabled===true){
          setValue(28.5714285714+(14.2857142857*3)); 
@@ -180,14 +188,15 @@ function Step1_8(){
       }else{
          setValue(28.5714285714+(14.2857142857*4)); 
       }
+
       if (!isCancelled) {
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
     
         docRef.update({
-            url: '/dashboard/'+project+'/step1_7',
-            step:'esenciaMarca_paso7'
+            url: '/dashboard/'+project+'/step1_9',
+            step:'esenciaMarca_paso9'
         })
         .then(function(db) {
      
@@ -224,14 +233,7 @@ function Step1_8(){
   
 
 
-
-
-
-
-
-
-
-     }, [project,data,disabled,columns]);
+     }, [project,data,disabled,columns,classes.titleBoard2,classes.board1_1,classes.board2_2]);
 
     return (
         <div className={classes.body}>
@@ -245,15 +247,15 @@ function Step1_8(){
                         <ProgressTool
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
-                            numStep='6'
-                            numTotalStep='7'
+                            numStep='8'
+                            numTotalStep='9'
                             value={value}
                    
 
                         />
                     </div>
                     <div className={classes.contentText}>
-                       <h1 className={classes.question}> <span className={classes.num}>6. </span>¡Es tiempo de conocer tus valores de marca! Escribe mediante palabras claves los valores de tu empresa/proyecto/emprendimiento.</h1>
+                       <h1 className={classes.question}> <span className={classes.num}>9. </span>¡Ya falta poco! Es hora de categorizar los tipos de audiencia de tu marca. Por favor arrastra las opciones del lado izquierda a la sección del lado derecho que creas más pertinente.</h1>
                     </div>
                     <div className={classes.contentBottom}>
 
@@ -278,10 +280,10 @@ function Step1_8(){
                                                 className={column.className}
                                                 >
                                                     {column.showTitle?
-                                                        <h2 className={classes.titleBoard}key={id}>{column.name}</h2>:null
+                                                        <h2 className={column.classNameTitle}key={id}>{column.name}</h2>:null
                                                     }
                                                      
-                                               
+                                                    <div className={classes.notes}>
                                                     {column.items.map((item, index)=>{
                                                         return(
                                                             <Draggable key={item.id} draggableId={item.id} index={index} >
@@ -299,17 +301,18 @@ function Step1_8(){
                                                                             alignItems:'center',
                                                                             alignContent:'center',
                                                                             backgroundColor:'white',
-                                                                            width:'100px',
+                                                                            width:'auto',
+                                                                            paddingRight:'5px',
+                                                                            paddingLeft:'5px',
                                                                             height:'60px',
                                                                             border: '1px solid #DDE2E5',
-                                                                            boxSizing: 'border-box',
                                                                             boxShadow:' 2px 8px 16px rgba(61, 62, 66, 0.1)',
                                                                             borderRadius: '15px',    
                                                                             outline:'none',
                                                                             fontFamily:'Open Sans',
-                                                                            fontSize:'16px',
+                                                                            fontSize:'14px',
                                                                             color:'#212429', 
-                                                                            marginRight:'14px',
+                                                                            marginRight:'10px',
                                                                             ...provided.draggableProps.style
                                                                         }}
                                                                         >
@@ -326,6 +329,7 @@ function Step1_8(){
                                                             </Draggable>
                                                         )
                                                     })}
+                                                    </div>
                                                     {!column.showTitle?
                                                     <div className={classes.plus}>
                                                     <img alt='tutorial' className={classes.iconsAction}   src={('/images/plus.svg')}/>
@@ -520,8 +524,8 @@ function Step1_8(){
     },
     contentNotes:{
         display:'flex',
-        flexDirection:'column',
-        flexWrap:'no-wrap',
+        flexDirection:'row',
+        flexWrap:'wrap',
         justifyContent:'center',
         width:'453px',
         height:'325px',
@@ -552,46 +556,61 @@ function Step1_8(){
         alignContent:'center',
         alignItems:'center',
         position:'absolute',
-        border: '2px dashed #24EA8B',
+        border: '2px dashed #CCCCCC',
         boxSizing: 'border-box',
         borderRadius: '15px',
         left: '734px',
         top: '294px',
         width: '477px',
-        height: '100px',
+        height: '150px',
 
     },
+    board1_1:{
+        display:'flex',
+        justifyContent:'flex-start',
+        alignContent:'center',
+        alignItems:'flex-start',
+        position:'absolute',
+        backgroundColor:'rgba(202, 233, 255, 0.15)',
+        border: '2px dashed #CAE9FF',
+        boxSizing: 'border-box',
+        borderRadius: '15px',
+        left: '734px',
+        top: '294px',
+        width: '477px',
+        height: '150px',
 
+    },
     board2:{
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
         alignItems:'center',
-        border: '2px dashed #FCC010',
+        position:'absolute',
+        border: '2px dashed #CCCCCC',
         boxSizing: 'border-box',
         borderRadius: '15px',
-        width: '477px',
-        position:'absolute',
-        height: '100px',
         left: '734px',
-        top: '404px',
+        top: '460px',
+        width: '477px',
+        height: '150px',
 
     },
 
-    board3:{
+    board2_2:{
         display:'flex',
-        position:'absolute',
-        justifyContent:'center',
+        justifyContent:'flex-start',
         alignContent:'center',
-        alignItems:'center',
-        border: '2px dashed #FF6B6C',
+        alignItems:'flex-start',
+        position:'absolute',
+        backgroundColor:'rgba(202, 233, 255, 0.15)',
+        border: '2px dashed #CAE9FF',
         boxSizing: 'border-box',
         borderRadius: '15px',
-        width: '477px',
-        height: '100px',
         left: '734px',
-        top: '516px',
-
+        top: '460px',
+        width: '477px',
+        height: '150px',
     },
 
     titleBoard:{
@@ -601,6 +620,25 @@ function Step1_8(){
         color:'#CCCCCC'
     },
 
+    titleBoard2:{
+        fontFamily:'Poppins',
+        fontWeight:600,
+        fontSize:'12px',
+        color:'#CCCCCC',
+        alignSelf:'flex-start',
+        alignItems:'flex-start',
+        justifyItems:'flex-start',
+        position:'absolute',
+        padding:'5px',
+    },
+
+    notes:{
+        marginTop:'16px',
+        display:'flex',
+        flexDirection:'row',
+        flexWrap:'wrap',
+        height:'68%',
+    }
     
     
     }));

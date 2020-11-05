@@ -14,6 +14,7 @@ import Step1_6 from '../Step1_6/Step1_6';
 import Step1_6_1 from '../Step1_6_1/Step1_6_1';
 import Step1_7 from '../Step1_7/Step1_7';
 import Step1_8 from '../Step1_8/Step1_8';
+import Step1_9 from '../Step1_9/Step1_9';
 import IntroQuestionStep1 from '../IntroQuestionStep1/IntroQuestionStep1';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
@@ -81,6 +82,7 @@ const [answers1_6, setAnswers1_6 ] = React.useState([]);
       <Route exact path="/dashboard/:project/step1_6_1" component ={Step1_6_1}/>
       <Route exact path="/dashboard/:project/step1_7" component ={Step1_7}/>
       <Route exact path="/dashboard/:project/step1_8" component ={Step1_8}/>
+      <Route exact path="/dashboard/:project/step1_9" component ={Step1_9}/>
       </DataContext.Provider>
   </Router>
   </div>
