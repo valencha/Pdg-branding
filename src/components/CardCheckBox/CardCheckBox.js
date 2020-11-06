@@ -1,135 +1,72 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, Checkbox } from '@material-ui/core';
+import { Checkbox} from '@material-ui/core';
 import clsx from "clsx";
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import 'react-circular-progressbar/dist/styles.css';
 
 
 
+
 function CardCheckBox(props){
-
-    const classes = useStyles({ urlIcon: '/images/checked.svg'});
-    const [cardClass, setCardClass] = React.useState(classes.card);
-    const [isHandleClick, setIsHandleClick] = React.useState(false);
-    const [isChecked, setIsChecked] = React.useState(false);
-    const data = React.useContext(DataContext);
-
-
-    function handleClick(event){
-        console.log(props.label);
-        setIsHandleClick(prev => !prev);
-        setIsChecked(prev => !prev);
-        data.setIsChecked(true);
-        if(data.isChecked===true){
-            props.setDisabled(true);
-        }
-             
-        if(isHandleClick === false){    
-            setCardClass(classes.cardYellow);   
-            setIsChecked(true);  
-            props.answers.push(props.label);
-            props.setDisabled(false);
-        }else{
-            setCardClass(classes.card); 
-            setIsChecked(false);
-            var filtered = props.answers.filter(function(value, index, arr){ return value === `${props.label}`});
-            props.setAnswers(filtered);
-            props.setValue(14.2857142857);
-           
-        }
-
-
-
-
-    }
-
   
+    const classes = useStyles({ urlIcon: '/images/checked.svg', urlImage: `${props.urlImage}`});
 
-    return <div className={classes.body} >
-    
+   
+     
 
-        <Card className={cardClass} onClick={handleClick} >
-        <div className={classes.contentTop}> 
-
-        <img src={props.urlImage} alt="watch" width='167px' />
-
-        </div>
-        <div className={classes.contentBottom}>
-
-            <FormControlLabel 
+    return <FormControlLabel 
             classes={{
-                root: classes.containCheckBox,
+              
+                root: `${props.select ? classes.cardYellow : classes.containCheckBox}`,
                 label: classes.labelCheck,
 
-            }}
+            }}  
+            
             control={
             <Checkbox
-            checked={isChecked}
+            onChange = { props.onChange }
+            checked={props.select}
             checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
             icon={<span className={classes.icon} />}
             color='primary'
+
+            
             classes={{
                 root: classes.checkBox,
                 
                
             }}
+       
             name="checkedF"
             />
             }
             label={props.label}
-            />
-
-
-        
-        </div>
-        </Card>
-     
-    </div>;
+            />;
 }
 
 const useStyles = makeStyles(theme => ({
-    body:{
-        display:'flex',
-        flexDirection:'column',
-      
-    },
-    progress:{
-        width:55,
-        height:55,
-    },
-    card:{
-        width:'223px',
-        height:'283px',
-        cursor:'pointer',
-        background:'#ffff',
-        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
-        borderRadius: '15px',
-        display:'flex',
-        flexDirection:'column',
-        alignContent:'center',
-        marginRight:'30px',
-        justifyContent:'center',
-        '&:hover': {
-            backgroundColor: '#FFD984',
-        },
-
-    },
-
 
     cardYellow:{
         width:'223px',
         height:'283px',
         cursor:'pointer',
         background:'#FFD984',
+        backgroundImage: (props) => `url(${props.urlImage})`,
+        backgroundPosition: 'right 28px bottom 80px',
+        backgroundSize: '167px',
+        backgroundRepeat:'no-repeat',
+        backgroundColor:'#FFD984',
         boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
         borderRadius: '15px',
-        display:'flex',
-        flexDirection:'column',
-        alignContent:'center',
-        marginRight:'30px',
-        justifyContent:'center',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        alignContent: 'flex-end',
+        alignItems: 'center',
+        marginLeft:'7px',
         border: '1px solid #FFB600',
         '&:hover': {
             backgroundColor: '#FFD984',
@@ -138,50 +75,32 @@ const useStyles = makeStyles(theme => ({
     },
 
 
-    contentTop:{
-        display:'flex',
-        backgroundSize:'cover',
-        width:'224px',
-        flexDirection:'column',
-        alignSelf:'center',
-        alignItems:'center',
-        alignContent:'center',
-        justifyContent:'center',
-      
-    },
-    contentBottom:{
-        marginTop:'32px',
-        width:'224px',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'center',
-        
-
-    },
-    divisor:{
-        marginTop:'10px'
-    },
-
-    titleProject:{
-        fontFamily:'Poppins',
-        color:'#212429',
-        fontSize:'16px',
-
-    },
 
     containCheckBox:{
-        width:'167px',     
-        color: '#212429',
-        fontFamily:'Open Sans',
+        width:'223px',
+        height:'283px',
+        cursor:'pointer',
+        backgroundImage: (props) => `url(${props.urlImage})`,
+        backgroundPosition: 'right 28px bottom 80px',
+        backgroundSize: '167px',
+        backgroundRepeat:'no-repeat',
+        backgroundColor:'#ffff',
+        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
+        borderRadius: '15px',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        alignContent: 'flex-end',
+        alignItems: 'center',
+        marginLeft:'7px',
+      
+
+        '&:hover': {
+            backgroundColor: '#FFD984',
+        },
 
     },  
-    labelCheck:{
-        color: '#212429',
-        fontFamily:'Open Sans',
-        fontWeight:400,
-        fontSize:'16px',
-
-    },
 
     checkBox:{
         color:'#DDE2E5',
@@ -189,6 +108,8 @@ const useStyles = makeStyles(theme => ({
         fontFamily:'Open Sans',
         width: 28,
         height: 28,
+        marginLeft:'18px',
+        marginBottom:'18px',
         '&:hover': {
             backgroundColor: 'transparent',
           },
@@ -222,6 +143,15 @@ const useStyles = makeStyles(theme => ({
           },
 
 
+    },
+
+    labelCheck:{
+
+        color: '#212429',
+        fontFamily:'Open Sans',
+        fontWeight:400,
+        fontSize:'16px',
+        marginBottom:'18px',
     }
   
 

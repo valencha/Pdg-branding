@@ -27,25 +27,25 @@ function App() {
     {
         label:'Alimentos',
         urlImage:'/images/food.png',
-        checked:false
+        isChecked:false
           
     },
     {
         label:'Viajes',
         urlImage:'/images/trip.png',
-        checked:false
+        isChecked:false
     },
     {
         label:'Moda',
         urlImage:'/images/fashion.png',
-        checked:false
+        isChecked:false
 
     },
 
     {
         label:'Hogar',
         urlImage:'/images/house.png',
-        checked:false
+        isChecked:false
     },
 
 ]

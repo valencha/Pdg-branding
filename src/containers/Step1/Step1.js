@@ -105,9 +105,11 @@ function Step1(){
     }
 
     function handleNextPage(event){
-        history.push(urlNext);
+
+        
         
         let db = fb.firestore();
+        
         fb.auth().onAuthStateChanged(user => {
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 1').set({
                respuesta: optionSelected,
@@ -122,13 +124,13 @@ function Step1(){
                 console.error("Error writing document: ", error);
             });
             
-            
+   
           
               
                   
         })
 
-
+        history.push(urlNext);
     }
       
 
@@ -149,26 +151,42 @@ function Step1(){
 
     React.useEffect(() => {
         let isCancelled = false;
-        setTextName(textName);
-        setTextSlogan(textSlogan);
-        console.log(textName);
+       
         if (!isCancelled) {
+            setTextName(textName);
+            setTextSlogan(textSlogan);
+            console.log(textName);
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
         // Set the "capital" field of the city 'DC'
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_2',
-            step:'esenciaMarca_paso2'
-        })
-        .then(function(db) {
-     
-            console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
+        if(disabled === false){
+            docRef.update({
+                url: '/dashboard/'+project+'/step1_2',
+                step:'esenciaMarca_paso2'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+             
+                console.error("Error updating document: ", error);
+            });
+        }else{
+            docRef.update({
+                url: '/dashboard/'+project+'/step1',
+                step:'esenciaMarca_paso1'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+                console.error("Error updating document: ", error);
+            });
+        }
+   
 
         docRef.get().then(function(doc) {
             if (doc.exists) {
@@ -180,7 +198,35 @@ function Step1(){
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });
+
+        docRef.collection('Esencia de marca').doc('paso 1').get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().respuesta);
+
+                if(doc.data().respuesta==='Sí'){
+                    setChangeClass(classes.btnClick);
+                    setShowPlaceHolder(true);
+                    setTextName(doc.data().nombreMarca);
+                    setTextSlogan(doc.data().tagline);
+                    setDisabled(false);
+                }
+                if(doc.data().respuesta==='No'){
+                    setChangeClass2(classes.btnClick);
+                    setDisabled(false);
+                }
+                if(doc.data().respuesta==='Omitir'){
+                    setChangeClass3(classes.btnClick);
+                    setDisabled(false);
+                }
+               
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
           
+        
               
     })
 
@@ -193,7 +239,7 @@ function Step1(){
             isCancelled = true;
         };
 
-    }, [project,textName,textSlogan,urlNext]);
+    }, [project,textName,textSlogan,urlNext,disabled,classes.btnClick]);
 
 
 

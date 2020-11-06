@@ -25,12 +25,14 @@ function Step1_9(){
     const [changeClass2, setChangeClass2] = React.useState(classes.btn);
     const [changeClass3, setChangeClass3] = React.useState(classes.btn);
     
-    const [showPlaceHolder, setShowPlaceHolder] = React.useState(true);
+    const [showPlaceHolder, setShowPlaceHolder] = React.useState(false);
     const [isClick, setIsClick] = React.useState(false);
     const [isClick2, setIsClick2] = React.useState(false);
     const [isClick3, setIsClick3] = React.useState(false);
-    const [valueGenre, setValueGenre] = React.useState([]);
-    const [valueAge, setValueAge] = React.useState([]);
+    const [valueGenre, setValueGenre] = React.useState(['Selecciona varios']);
+    const [valueAge, setValueAge] = React.useState(['Selecciona varios']);
+    const [valuePoints, setValuePoints] = React.useState(['Selecciona varios']);
+    const [valueInterests, setValueInterests] = React.useState(['Selecciona varios']);
     const [optionSelected, setOptionSelected] = React.useState('');
   
 
@@ -41,6 +43,8 @@ function Step1_9(){
     const options1=['Hombre', 'Mujer','Otro'];
 
     const options2=['0-10 años', '10-20 años','20-30 años','30-40 años','40-50 años','50-60 años','60-90 años'];
+    const options3=['Puntos de venta', 'Packaging','Redes sociales','Tv','Radio', 'Prensa','Presentaciones','Exterior'];
+    const options4=['Deportes','Diseño','Arte','Viajes', 'Literatura', 'Cine','Cocina','Finanzas' ];
 
     let history = useHistory();
 
@@ -112,10 +116,13 @@ function Step1_9(){
         
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 1').set({
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 9').set({
                respuesta: optionSelected,
-
-              
+               genero: valueGenre,
+               edad:valueAge,
+               puntosContacto: valuePoints,
+               intereses:valueInterests,
+ 
             })
             .then(function() {
                 console.log("Document successfully written!");
@@ -139,8 +146,11 @@ function Step1_9(){
       } 
 
     function onChangeGenre(event){
+       
         setValueGenre(event.target.value);
         console.log(event.target.value);
+
+  
         
     }
 
@@ -151,15 +161,57 @@ function Step1_9(){
         
     }
 
+    function onChangePoints(event){
+        setValuePoints(event.target.value);
+        console.log(event.target.value);
+        
+    }
+
+    function onChangeInterests(event){
+        setValueInterests(event.target.value);
+        console.log(event.target.value);
+        
+    }
+
+
 
 
 
     React.useEffect(() => {
+
+
+      
         let isCancelled = false;
         if (!isCancelled) {
-        setValueGenre(valueGenre);
-     
-       
+    
+        if(valueGenre[0]==="Selecciona varios" && valueGenre.length>1){
+                valueGenre.splice(0,1);
+        }
+       else if(valueGenre.length===0){
+        valueGenre[0]="Selecciona varios" 
+       }
+   
+        if(valueAge[0]==="Selecciona varios" && valueAge.length>1){
+           valueAge.splice(0,1);
+         }
+         else if(valueAge.length===0){
+            valueAge[0]="Selecciona varios" 
+           }
+   
+         if(valuePoints[0]==="Selecciona varios" && valuePoints.length>1){
+           valuePoints.splice(0,1);
+         }
+         else if(valuePoints.length===0){
+            valuePoints[0]="Selecciona varios" 
+           }
+   
+        if(valueInterests[0]==="Selecciona varios" && valueInterests.length>1){
+           valueInterests.splice(0,1);
+         }
+         else if(valueInterests.length===0){
+            valueInterests[0]="Selecciona varios" 
+           }
+   
 
        
 
@@ -169,7 +221,7 @@ function Step1_9(){
             isCancelled = true;
         };
 
-    }, [project,valueGenre]);
+    }, [project,valueGenre,valueAge,valueInterests,valuePoints]);
 
 
 
@@ -219,16 +271,16 @@ function Step1_9(){
                                  value={valueAge}
                                  onChange={onChangeAge}/>
                                 <SelectorLabel
-                                 options={options2}
+                                 options={options3}
                                  label='Puntos de contacto'
-                                 value={valueAge}
-                                 onChange={onChangeAge}/>
+                                 value={valuePoints}
+                                 onChange={onChangePoints}/>
                                
                                 <SelectorLabel
-                                 options={options2}
+                                 options={options4}
                                  label='Intereses'
-                                 value={valueAge}
-                                 onChange={onChangeAge}/>
+                                 value={valueInterests}
+                                 onChange={onChangeInterests}/>
                                 </div>
 
 

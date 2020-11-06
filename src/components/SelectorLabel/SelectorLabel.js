@@ -109,9 +109,8 @@ function SelectorLabel(props){
         labelId="demo-mutiple-checkbox-label"
         id="demo-mutiple-checkbox"
         onChange = { (event) => { props.onChange(event) } }
-        input={<BootstrapInput />}
-        value={props.value}
-        defaultValue='Selecciona varios'
+        input={<BootstrapInput />}  
+        defaultValue={props.value}
         renderValue={(selected) => selected.join(', ')}
         classes={{
             root: classes.select,
@@ -121,7 +120,7 @@ function SelectorLabel(props){
         IconComponent = {ExpandMoreRoundedIcon}
         MenuProps={MenuProps}
         >
-       
+   
       {props.options.map((item, i) =>  
            <MenuItem key={i} classes={{root: classes.selectOption, selected: classes.selected}} value={item}  >
            <CustomCheckBox classes={{root: classes.check}}checked={props.value.indexOf(item) > -1} />

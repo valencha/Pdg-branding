@@ -1,5 +1,4 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import{useParams} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import TopBar from '../../components/TopBar/TopBar';
@@ -11,6 +10,7 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import CardCheckBox from '../../components/CardCheckBox/CardCheckBox';
 import AddCategory from '../../components/AddCategory/AddCategory';
 
+
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
@@ -20,7 +20,6 @@ require('firebase/auth');
 function Step1_2(){
 
     let {project}= useParams();
-    const data = React.useContext(DataContext);
     const classes = useStyles();
     let history = useHistory();
     
@@ -28,8 +27,14 @@ function Step1_2(){
     const [disabled, setDisabled] = React.useState(true);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [urlNext, setUrlNext] = React.useState('');
-    const [answers, setAnswers] = React.useState([]);
 
+    
+
+    const [answersFirebase,setAnswersFirebase]= React.useState([])
+
+   
+    const [answers, setAnswers] = React.useState([]);
+    const [answersTemp, setAnswersTemp] = React.useState([]);
 
     function handleNextPage(event){
         history.push(urlNext);
@@ -55,7 +60,9 @@ function Step1_2(){
 
 
       }
-      
+
+        
+ 
 
       function handleBackPage(event){
         history.push(`/dashboard/${project}/step1`);
@@ -70,10 +77,14 @@ function Step1_2(){
         setOpenDialog(false);
       };
 
-
-   
     React.useEffect(() => {
     let isCancelled = false;
+    setAnswersTemp(answersTemp);
+    if (!isCancelled) {
+        
+       
+  
+
      if(disabled===false){
         setValue(28.5714285714); 
         
@@ -83,43 +94,106 @@ function Step1_2(){
 
      var docRef = db.collection(`${user.email}`).doc(project);
    
-     // Set the "capital" field of the city 'DC'
+     if(disabled ===false){
      docRef.update({
          url: '/dashboard/'+project+'/step1_3',
          step:'esenciaMarca_paso3'
      })
      .then(function(db) {
   
-         console.log('done');
+         //console.log('done');
      })
      .catch(function(error) {
          // The document probably doesn't exist.
          console.error("Error updating document: ", error);
      });
+    }else{
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_2',
+            step:'esenciaMarca_paso2'
+        })
+        .then(function(db) {
+     
+            //console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
 
+    }
      docRef.get().then(function(doc) {
-        if (!isCancelled) {
+   
          if (doc.exists) {
-             console.log(doc.data().url);
              setUrlNext(doc.data().url);
-         }} else {
-             console.log("No such document!");
+         } else {
+             //console.log("No such document!");
          }
      }).catch(function(error) {
-         console.log("Error getting document:", error);
+        // console.log("Error getting document:", error);
      });
+
+
+
+
+
+      
+    
        
            
     })
 
+   }
+
+   
 
     return () => {
     isCancelled = true;
     };
     
-    }, [project,data,disabled, urlNext]);
+    }, [project,disabled,answersTemp]);
 
+    React.useEffect(() => {
+ 
 
+        let listCategory =[
+            {
+                id:1,
+               label:'Alimentos',
+               urlImage:'/images/food.png',
+    
+           },
+             {
+                id:2,
+               label:'Viajes',
+               urlImage:'/images/trip.png',
+           
+           },
+            {
+                id:3,
+               label:'Moda',
+               urlImage:'/images/fashion.png',
+       
+           },
+       
+            {
+                id:4,
+               label:'Hogar',
+               urlImage:'/images/house.png',
+   
+           },
+       
+       ]
+        setAnswers( listCategory.map(d=>{
+            return{
+                select:false,
+                id:d.id,
+                label:d.label,
+                urlImage:d.urlImage,
+            }
+        }))
+        
+      }, []);
 
 
     return (
@@ -147,16 +221,43 @@ function Step1_2(){
                     <div className={classes.contentBottom}>
                         <div className={classes.options}>
                         <div className={classes.answers}>
-                        {data.optionsAnswer1_2.map((item, i) =>
-      
-                        <CardCheckBox key={i}
-                        {...item}
-                        {...item.setDisabled = setDisabled}
-                        {...item.setValue= setValue}
-                        {...item.setAnswers= setAnswers}
-                        {...item.answers= answers}
-                        />
+                        {answers.map((item, i) =>
+                        <div key={i}>
+                            <CardCheckBox {...item} onChange={(event)=>{
+                                let checked=event.target.checked;
+                                setAnswers(answers.map((data)=>{
+                                    if(item.id===data.id){
+                                        console.log(data);
+                                        data.select=checked;
+                                     
+                                        if(data.select===true){
+                                           answersTemp.push(data.label);
+                                      
+                                           console.log(answersTemp)
+                                        }else{
+                                           var index= answersTemp.indexOf(data.label)
+                                           if (index > -1) {
+                                           answersTemp.splice(index, 1);
+                                          }
+                                        
+                                        }
+                                        if(answersTemp.length>0){
+                                            setDisabled(false);   
+                                        }else{
+                                            setDisabled(true);  
+                                        }
 
+                                    }return data;
+
+                                }));
+                                
+                            }}
+       
+                            
+                            />
+
+                        </div>
+                     
                         )}
                     </div>
                     
@@ -346,7 +447,43 @@ function Step1_2(){
       },
   
   
-  
+      card:{
+        width:'223px',
+        height:'283px',
+        cursor:'pointer',
+        background:'#ffff',
+        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
+        borderRadius: '15px',
+        display:'flex',
+        flexDirection:'column',
+        alignContent:'center',
+        marginRight:'30px',
+        justifyContent:'center',
+        '&:hover': {
+            backgroundColor: '#FFD984',
+        },
+
+    },
+
+    cardYellow:{
+        width:'223px',
+        height:'283px',
+        cursor:'pointer',
+        background:'#FFD984',
+        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
+        borderRadius: '15px',
+        display:'flex',
+        flexDirection:'column',
+        alignContent:'center',
+        marginRight:'30px',
+        justifyContent:'center',
+        border: '1px solid #FFB600',
+        '&:hover': {
+            backgroundColor: '#FFD984',
+        },
+
+    },
+
       btnClick: {
           width: '149px',
           height: '48px',
