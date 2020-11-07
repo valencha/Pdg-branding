@@ -30,7 +30,6 @@ function Step1_6(){
   
   
     const [listNotes, setListNotes] = React.useState([]);
-    const [textNote, setTextNote] = React.useState('');
 
     var listNotesTemp= Object.assign([],listNotes);
 
@@ -38,48 +37,53 @@ function Step1_6(){
 
     function handleNextPage(event){
         history.push(urlNext);
-        data.setAnswers1_6(listNotes);
 
-        localStorage.setItem("arreglo", JSON.stringify(listNotesTemp));
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 6').set({
+                respuestas: listNotesTemp 
+ 
+              
+            })
+            .then(function() {
+                console.log("Document successfully written!");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+            
+            
+          
+              
+                  
+        })
 
 
-      }
+    }
 
       function handleOpen(event){
         setOpenDialog(prev => !prev);
       }   
 
       function handleBackPage(event){
-        history.push(`/${project}/step1_2`);
+        history.push(`/dashboard/${project}/step1_5`);
       } 
 
-      function changeTextNote(event){
+  
 
-        setDisabled(false);
-        setTextNote(event.target.value);
-   
-        listNotesTemp[0].text=event.target.value;
-        
-    }
+    function handleCreateNotes(event){
 
-      function handleCreateNotes(event){
-       
-      
-        
-        listNotesTemp.push({text: textNote,id: uuid()});  
-       
-        setListNotes(listNotesTemp);
-            
-        
+        listNotesTemp.push({ text: '',id: uuid()});
      
-        
+        setListNotes(listNotesTemp);
+        console.log(listNotes);
    
     }
 
 
     React.useEffect(() => {
-        let isCancelled = false;
-    console.log(data.answers1_6);
+    let isCancelled = false;
+
      if(disabled===true){
         setValue(28.5714285714+(14.2857142857*3)); 
         
@@ -90,19 +94,36 @@ function Step1_6(){
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
+        if(disabled===false){
+
+            docRef.update({
+                url: '/dashboard/'+project+'/step1_6_1',
+                step:'esenciaMarca_paso6_1'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+        }   else{
     
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_6_1',
-            step:'esenciaMarca_paso6'
-        })
-        .then(function(db) {
-     
-            console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
+            docRef.update({
+                url: '/dashboard/'+project+'/step1_6',
+                step:'esenciaMarca_paso6'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+    
+        }
 
         docRef.get().then(function(doc) {
             if (doc.exists) {
@@ -128,8 +149,47 @@ function Step1_6(){
         };
       
         
-    }, [project,data,disabled]);
+    }, [project,data,disabled,listNotes,listNotesTemp]);
 
+    React.useEffect(()=>{
+        let db = fb.firestore();
+        
+        fb.auth().onAuthStateChanged((user) => {
+            var respuestasTemp =[];
+        var docRef = db.collection(`${user.email}`).doc(project);
+        docRef.collection('Esencia de marca').doc('paso 6').get().then(function(doc) {
+    
+            if (doc.exists) {
+              // console.log(Object.values(doc.data().respuestas));
+                console.log(doc.data().respuestas);
+                var respuestas =doc.data().respuestas;
+               
+                    respuestas.map((d)=>{
+                        console.log(d);
+                        respuestasTemp.push({ text: d.text, id: uuid()});
+           
+                        return d;
+                    
+                    })
+            setListNotes(respuestasTemp);
+     
+     
+            } else {
+                //console.log("No such document!");
+            }
+        }).catch(function(error) {
+           // console.log("Error getting document:", error);
+        });})
+        },[project])
+
+    React.useEffect(()=>{
+            if(listNotesTemp.length>0){
+                setDisabled(false);   
+            }else{
+                setDisabled(true);  
+            }
+    },[listNotesTemp])
+    
 
 
 
@@ -169,9 +229,14 @@ function Step1_6(){
                           
                             <div className={classes.notes}>
                             
-                            {listNotes.map((item, i) =>
+                            {listNotesTemp.map((item, i) =>
                        
-                            <input type="text" key={i}className={classes.note}placeholder='Escribe' onChange={changeTextNote} />
+                            <input type="text" key={i} className={classes.note}placeholder='Escribe' defaultValue={item.text}onChange={(event)=>{
+                                let value=event.target.value;
+                                item.text=value;
+                                setDisabled(false);
+                     
+                                }} />
                          
                                 
 

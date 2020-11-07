@@ -188,20 +188,20 @@ function Step1_2(){
 
         if (doc.exists) {
           // console.log(Object.values(doc.data().respuestas));
-            console.log(doc.data());;
-            var respuestas =doc.data().respuestas;
-            listCategory.forEach(item=> {
+          console.log(doc.data());;
+          var respuestas =doc.data().respuestas;
+          listCategory.forEach(item=> {
 
-                respuestas.map((d)=>{
-                    if(item.label=== d){
-                        item.select=true;
-                        respuestasTemp.push(item.label);
+              respuestas.map((d)=>{
+                  if(item.label=== d){
+                      item.select=true;
+                      respuestasTemp.push(item.label);
 
-                    }
-                    return d;
-                
-                })
-            });
+                  }
+                  return d;
+              
+              })
+          });
         setAnswers(listCategory);
         setAnswersTemp(respuestasTemp);
         if(respuestasTemp.length>0){
@@ -225,13 +225,7 @@ function Step1_2(){
  
       }, [project]);
 
-    React.useEffect(()=>{
-        if(answersTemp.length>0){
-            setDisabled(false);   
-        }else{
-            setDisabled(true);  
-        }
-    },[answersTemp])
+ 
     return (
         <div className={classes.body}>
             <div>

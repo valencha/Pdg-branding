@@ -26,13 +26,12 @@ function Step1_4(){
     const classes = useStyles();
     let history = useHistory();
     
-    const [value, setValue] = React.useState(28.5714285714+14.2857142857);
+    const [value, setValue] = React.useState(28.5714285714);
     const [disabled, setDisabled] = React.useState(true);
+
+    const [urlNext, setUrlNext] = React.useState('');
     const [listNotes, setListNotes] = React.useState([]);
     var listNotesTemp= Object.assign([],listNotes);
-    const [noteValue, setNoteValue]= React.useState('');
-    const [answers, setAnswers] = React.useState([]);
-    const [urlNext, setUrlNext] = React.useState('');
 
 
 
@@ -43,9 +42,7 @@ function Step1_4(){
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 4').set({
-               respuesta: answers
- 
-              
+               respuestas: listNotesTemp   
             })
             .then(function() {
                 console.log("Document successfully written!");
@@ -68,18 +65,14 @@ function Step1_4(){
       } 
 
       function handleCreateNotes(event){
-        listNotesTemp.push({ text: noteValue});
-        answers.push({ nota: noteValue}); 
+
+        listNotesTemp.push({ text: ''});
+     
         setListNotes(listNotesTemp);
+        console.log(listNotes);
+   
     }
-    function changeTextNote(event){
-        setDisabled(false);
-      setNoteValue(event.target.value);
-      setAnswers(answers);
-      answers[0].nota=event.target.value;
-      listNotesTemp[0].text=event.target.value;
-      
-    }
+ 
           
    
 
@@ -87,21 +80,12 @@ function Step1_4(){
    
     React.useEffect(() => {
         let isCancelled = false;
-      console.log(answers)
-        setAnswers(answers);
-        setListNotes(listNotes);
-        setNoteValue(noteValue);
-     if(disabled===true){
-        setValue(28.5714285714+14.2857142857); 
-        
-     }else{
-        setValue(28.5714285714+(14.2857142857*2)); 
-     }
      if (!isCancelled) {
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
-        // Set the "capital" field of the city 'DC'
+        if(disabled===false){
+
         docRef.update({
             url: '/dashboard/'+project+'/step1_5',
             step:'esenciaMarca_paso5'
@@ -114,6 +98,22 @@ function Step1_4(){
             // The document probably doesn't exist.
             console.error("Error updating document: ", error);
         });
+    }   else{
+
+        docRef.update({
+            url: '/dashboard/'+project+'/step1_4',
+            step:'esenciaMarca_paso4'
+        })
+        .then(function(db) {
+     
+            console.log('done');
+        })
+        .catch(function(error) {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+        });
+
+    }
 
         docRef.get().then(function(doc) {
             if (doc.exists) {
@@ -131,16 +131,49 @@ function Step1_4(){
 
         }
 
-
-
-
         return () => {
             isCancelled = true;
         };
-      
+    }, [project,data,disabled,listNotes,listNotesTemp]);
+    React.useEffect(()=>{
+        let db = fb.firestore();
         
-    }, [project,data,disabled,listNotes,noteValue,listNotesTemp,answers]);
+        fb.auth().onAuthStateChanged((user) => {
+            var respuestasTemp =[];
+        var docRef = db.collection(`${user.email}`).doc(project);
+        docRef.collection('Esencia de marca').doc('paso 4').get().then(function(doc) {
+    
+            if (doc.exists) {
+              // console.log(Object.values(doc.data().respuestas));
+                console.log(doc.data().respuestas);
+                var respuestas =doc.data().respuestas;
+               
+                    respuestas.map((d)=>{
+                        console.log(d);
+                        respuestasTemp.push({ text: d.text});
+           
+                        return d;
+                    
+                    })
+            setListNotes(respuestasTemp);
+     
+     
+            } else {
+                //console.log("No such document!");
+            }
+        }).catch(function(error) {
+           // console.log("Error getting document:", error);
+        });})
+        },[project])
 
+    React.useEffect(()=>{
+            if(listNotesTemp.length>0){
+                setDisabled(false);   
+            }else{
+                setDisabled(true);  
+            }
+    },[listNotesTemp])
+    
 
 
 
@@ -176,20 +209,23 @@ function Step1_4(){
                          
                        
                         
-                          
-                            <div className={classes.notes}>
-                            {listNotes.map((item, i) =>
-                                <Draggable key={i} defaultPosition={{x: 0, y: 0}}>
-                                <div>
-                                <TextArea key={i} {...item.onChange=changeTextNote}
-                                 {...item}
+                        <div className="box" style={{display:'flex', flexDirection:'row', flexWrap:'wrap',height: '386px', width: '1000px', position: 'relative', overflow: 'auto'}}>
+        
+                            {listNotesTemp.map((item, i) =>
+                               	<Draggable bounds="body" key={i}>
+                               <div key={i} className="box" style={{paddingRight: '190px'}}>
+                                <TextArea  {...item} onChange={(event)=>{
+                                let value=event.target.value;
+                                item.text=value;
+                                setDisabled(false);
+                             
+                                }}
                                 />
-                                </div>
+                            </div>
                             </Draggable>
-                                
 
-                            )} </div>
-                            
+                            )}
+                        </div>
                          
                        
                        
