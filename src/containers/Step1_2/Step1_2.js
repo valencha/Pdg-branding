@@ -27,14 +27,11 @@ function Step1_2(){
     const [disabled, setDisabled] = React.useState(true);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [urlNext, setUrlNext] = React.useState('');
-
-    
-
-    const [answersFirebase,setAnswersFirebase]= React.useState([])
-
    
     const [answers, setAnswers] = React.useState([]);
+
     const [answersTemp, setAnswersTemp] = React.useState([]);
+
 
     function handleNextPage(event){
         history.push(urlNext);
@@ -42,7 +39,7 @@ function Step1_2(){
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 2').set({
-              respuestas:answers
+              respuestas:answersTemp
               
             })
             .then(function() {
@@ -77,9 +74,10 @@ function Step1_2(){
         setOpenDialog(false);
       };
 
+
     React.useEffect(() => {
     let isCancelled = false;
-    setAnswersTemp(answersTemp);
+
     if (!isCancelled) {
         
        
@@ -125,6 +123,7 @@ function Step1_2(){
      docRef.get().then(function(doc) {
    
          if (doc.exists) {
+         
              setUrlNext(doc.data().url);
          } else {
              //console.log("No such document!");
@@ -132,70 +131,107 @@ function Step1_2(){
      }).catch(function(error) {
         // console.log("Error getting document:", error);
      });
+  
 
-
-
-
-
-      
-    
-       
-           
+     
     })
+ 
 
    }
-
-   
 
     return () => {
     isCancelled = true;
     };
     
-    }, [project,disabled,answersTemp]);
+    }, [project,disabled,answersTemp,urlNext,answers]);
 
     React.useEffect(() => {
- 
-
+        
         let listCategory =[
             {
                 id:1,
                label:'Alimentos',
                urlImage:'/images/food.png',
-    
+               select:false
+
            },
              {
                 id:2,
                label:'Viajes',
                urlImage:'/images/trip.png',
-           
+               select:false
            },
             {
                 id:3,
                label:'Moda',
                urlImage:'/images/fashion.png',
-       
+               select:false
            },
        
             {
                 id:4,
                label:'Hogar',
                urlImage:'/images/house.png',
-   
+               select:false
            },
        
        ]
-        setAnswers( listCategory.map(d=>{
-            return{
-                select:false,
-                id:d.id,
-                label:d.label,
-                urlImage:d.urlImage,
-            }
-        }))
+   
+ 
+    let db = fb.firestore();
+    fb.auth().onAuthStateChanged((user) => {
+
+    var respuestasTemp =[];
+
+    var docRef = db.collection(`${user.email}`).doc(project);
+    docRef.collection('Esencia de marca').doc('paso 2').get().then(function(doc) {
+
+        if (doc.exists) {
+          // console.log(Object.values(doc.data().respuestas));
+            console.log(doc.data());;
+            var respuestas =doc.data().respuestas;
+            listCategory.forEach(item=> {
+
+                respuestas.map((d)=>{
+                    if(item.label=== d){
+                        item.select=true;
+                        respuestasTemp.push(item.label);
+
+                    }
+                    return d;
+                
+                })
+            });
+        setAnswers(listCategory);
+        setAnswersTemp(respuestasTemp);
+        if(respuestasTemp.length>0){
+            setDisabled(false)
+        }else{   
+            setDisabled(true);
+        }
         
-      }, []);
+        } else {
+            setAnswersTemp([])
+            //console.log("No such document!");
+        }
+    }).catch(function(error) {
+       // console.log("Error getting document:", error);
+    });
+})
 
 
+   
+
+ 
+      }, [project]);
+
+    React.useEffect(()=>{
+        if(answersTemp.length>0){
+            setDisabled(false);   
+        }else{
+            setDisabled(true);  
+        }
+    },[answersTemp])
     return (
         <div className={classes.body}>
             <div>
@@ -225,34 +261,35 @@ function Step1_2(){
                         <div key={i}>
                             <CardCheckBox {...item} onChange={(event)=>{
                                 let checked=event.target.checked;
-                                setAnswers(answers.map((data)=>{
-                                    if(item.id===data.id){
-                                        console.log(data);
-                                        data.select=checked;
-                                     
-                                        if(data.select===true){
-                                           answersTemp.push(data.label);
-                                      
-                                           console.log(answersTemp)
-                                        }else{
-                                           var index= answersTemp.indexOf(data.label)
-                                           if (index > -1) {
-                                           answersTemp.splice(index, 1);
-                                          }
-                                        
+                                item.select=checked;
+                                var aTemp= answersTemp;
+                                    var j = -1;
+                                    
+                                    aTemp.forEach((answer,k) => {
+                                        if(item.label===answer){
+                                           j=k;
                                         }
-                                        if(answersTemp.length>0){
-                                            setDisabled(false);   
+                                    });
+                                    //ENCONTRO
+                                    if(j!== -1){
+                                        if(checked===true){
+                                        aTemp[j].select=true;
                                         }else{
-                                            setDisabled(true);  
+                                            aTemp.splice(j,1);
                                         }
 
-                                    }return data;
-
-                                }));
-                                
+                                    }else{//NO ENCONTRO
+                                        aTemp.push(item.label)
+                                    }
+                                    setAnswersTemp(aTemp);
+                                    if(aTemp.length>0){
+                                        setDisabled(false)
+                                    }else{   
+                                        setDisabled(true);
+                                    }
+ 
                             }}
-       
+                            
                             
                             />
 

@@ -12,22 +12,27 @@ import 'react-circular-progressbar/dist/styles.css';
 function CardCheckBox(props){
   
     const classes = useStyles({ urlIcon: '/images/checked.svg', urlImage: `${props.urlImage}`});
+    const [select, setSelect]= React.useState(props.select);
 
    
-     
+     const onChange=(e)=>{
+        props.onChange(e)
+        let checked=e.target.checked;
+        setSelect(checked);
+     }
 
     return <FormControlLabel 
             classes={{
               
-                root: `${props.select ? classes.cardYellow : classes.containCheckBox}`,
+                root: `${select ? classes.cardYellow : classes.containCheckBox}`,
                 label: classes.labelCheck,
 
             }}  
             
             control={
             <Checkbox
-            onChange = { props.onChange }
-            checked={props.select}
+            onChange = {onChange }
+            defaultChecked={props.select}
             checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
             icon={<span className={classes.icon} />}
             color='primary'

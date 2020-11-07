@@ -1,15 +1,19 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 
 function TextArea(props){
     const classes = useStyles({ urlBorder: 'images/borderImage.svg'});
- 
+    const [value, setValue]= React.useState(props.text);
     const [btnTools, setBtnTools] = React.useState(false);
   
-
+    const onChange=(e)=>{
+        props.onChange(e)
+        let value=e.target.value;
+        setValue(value);
+     }
     const handleClickAway = () => {
         setBtnTools(false);
       };
@@ -27,11 +31,11 @@ function TextArea(props){
   
         <ClickAwayListener onClickAway={handleClickAway}>
            <div className ={classes.body}>
-            <input
+            <TextareaAutosize 
             className={classes.contentText}
-            onChange={props.onChange}
+            onChange = {onChange}
             placeholder='Escribe aqui...'
-            value={props.noteValue}
+            value={value}
             onFocus={changeState}
             />
             { btnTools ?
@@ -66,6 +70,7 @@ function TextArea(props){
             alignContent:'center',
             justifyContent:'center',
             alignItems:'center',
+            paddingLeft:'10px',
 
         },
 
