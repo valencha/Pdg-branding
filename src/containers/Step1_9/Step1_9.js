@@ -29,10 +29,10 @@ function Step1_9(){
     const [isClick, setIsClick] = React.useState(false);
     const [isClick2, setIsClick2] = React.useState(false);
     const [isClick3, setIsClick3] = React.useState(false);
-    const [valueGenre, setValueGenre] = React.useState(['Selecciona varios']);
-    const [valueAge, setValueAge] = React.useState(['Selecciona varios']);
-    const [valuePoints, setValuePoints] = React.useState(['Selecciona varios']);
-    const [valueInterests, setValueInterests] = React.useState(['Selecciona varios']);
+    const [valueGenre, setValueGenre] = React.useState([]);
+    const [valueAge, setValueAge] = React.useState([]);
+    const [valuePoints, setValuePoints] = React.useState([]);
+    const [valueInterests, setValueInterests] = React.useState([]);
     const [optionSelected, setOptionSelected] = React.useState('');
   
 
@@ -183,37 +183,44 @@ function Step1_9(){
       
         let isCancelled = false;
         if (!isCancelled) {
-    
-        if(valueGenre[0]==="Selecciona varios" && valueGenre.length>1){
-                valueGenre.splice(0,1);
-        }
-       else if(valueGenre.length===0){
-        valueGenre[0]="Selecciona varios" 
-       }
-   
-        if(valueAge[0]==="Selecciona varios" && valueAge.length>1){
-           valueAge.splice(0,1);
-         }
-         else if(valueAge.length===0){
-            valueAge[0]="Selecciona varios" 
-           }
-   
-         if(valuePoints[0]==="Selecciona varios" && valuePoints.length>1){
-           valuePoints.splice(0,1);
-         }
-         else if(valuePoints.length===0){
-            valuePoints[0]="Selecciona varios" 
-           }
-   
-        if(valueInterests[0]==="Selecciona varios" && valueInterests.length>1){
-           valueInterests.splice(0,1);
-         }
-         else if(valueInterests.length===0){
-            valueInterests[0]="Selecciona varios" 
-           }
-   
 
-       
+   
+        let db = fb.firestore();
+        fb.auth().onAuthStateChanged(user => {
+        var docRef = db.collection(`${user.email}`).doc(project);
+   
+           docRef.collection('Esencia de marca').doc('paso 9').get().then(function(doc) {
+            if (doc.exists) {
+                console.log(doc.data().respuesta);
+
+                if(doc.data().respuesta==='Sí'){
+                    setChangeClass(classes.btnClick);
+                    setShowPlaceHolder(true);
+                    setValueGenre(doc.data().genero)
+                    setValueAge(doc.data().edad)
+                    setValueInterests(doc.data().intereses)
+                    setValuePoints(doc.data().puntosContacto)
+               
+                    setDisabled(false);
+                }
+                if(doc.data().respuesta==='No'){
+                    setChangeClass2(classes.btnClick);
+                    setDisabled(false);
+                }
+                if(doc.data().respuesta==='Omitir'){
+                    setChangeClass3(classes.btnClick);
+                    setDisabled(false);
+                }
+               
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+          
+
+        })
 
         }
 
@@ -221,7 +228,8 @@ function Step1_9(){
             isCancelled = true;
         };
 
-    }, [project,valueGenre,valueAge,valueInterests,valuePoints]);
+    }, [project,classes.btnClick]);
+
 
 
 

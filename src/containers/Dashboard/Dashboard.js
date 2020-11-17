@@ -51,7 +51,8 @@ function Dashboard(props){
   const [marginBell, setMarginBell] = React.useState('40px');
   const [project, setProject] = React.useState([]);
   const [step, setStep]=React.useState(titleProject);
-  const [url, setUrl] = React.useState('/dashboard/'+step);
+  const [url, setUrl] = React.useState('/dashboard/'+step+'/main');
+
 
   let history = useHistory();
 
@@ -182,7 +183,7 @@ function handleOption4(){
   React.useEffect(() => {
     let isCancelled = false;
     setStep(titleProject);
-    setUrl('/dashboard/'+step); 
+    setUrl('/dashboard/'+step+'/intro'); 
     
     let db = fb.firestore();
 

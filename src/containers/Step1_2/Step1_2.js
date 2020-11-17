@@ -38,6 +38,8 @@ function Step1_2(){
 
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
+    
+    
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 2').set({
               respuestas:answersTemp
               
@@ -56,7 +58,7 @@ function Step1_2(){
         })
 
 
-      }
+    }
 
         
  
@@ -103,22 +105,8 @@ function Step1_2(){
      })
      .catch(function(error) {
          // The document probably doesn't exist.
-         console.error("Error updating document: ", error);
+         //console.error("Error updating document: ", error);
      });
-    }else{
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_2',
-            step:'esenciaMarca_paso2'
-        })
-        .then(function(db) {
-     
-            //console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
-
     }
      docRef.get().then(function(doc) {
    
@@ -184,6 +172,12 @@ function Step1_2(){
     var respuestasTemp =[];
 
     var docRef = db.collection(`${user.email}`).doc(project);
+
+ 
+   
+
+
+
     docRef.collection('Esencia de marca').doc('paso 2').get().then(function(doc) {
 
         if (doc.exists) {
@@ -208,10 +202,12 @@ function Step1_2(){
             setDisabled(false)
         }else{   
             setDisabled(true);
+            setAnswers(listCategory);
         }
         
         } else {
-            setAnswersTemp([])
+            setAnswers(listCategory);
+            setAnswersTemp([])  
             //console.log("No such document!");
         }
     }).catch(function(error) {
@@ -224,6 +220,17 @@ function Step1_2(){
 
  
       }, [project]);
+
+
+      React.useEffect(()=>{
+        if(answersTemp.length>0){
+            setDisabled(false);   
+        }else{
+            setDisabled(true);  
+        }
+   
+
+    },[answersTemp,project])
 
  
     return (

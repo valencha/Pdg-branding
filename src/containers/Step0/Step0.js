@@ -10,14 +10,10 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import BtnTakeNotes from '../../components/BtnTakeNotes/BtnTakeNotes';
 
 
-//Todos los imports se coloca   n arriba de este 
-
-import { fb } from '../../utils/firebase'
-require('firebase/auth');
 
 function Step0(){
 
-    let {project,step,url}= useParams();
+    let {project}= useParams();
     const classes = useStyles();
     let history = useHistory();
     const [numStep, setNumStep] = React.useState('1');
@@ -25,45 +21,14 @@ function Step0(){
 
     const [option1, setOption1] = React.useState(classes.btnOptionYellow);
     const [option2, setOption2] = React.useState(classes.btnOption);
-    const [urlNext, setUrlNext] = React.useState('');
     const [option3, setOption3] = React.useState(classes.btnOption);
    
 
     React.useEffect(() => {
 
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-        // Set the "capital" field of the city 'DC'
-        docRef.update({
-            url: '/dashboard/'+project+'/intro',
-            step:'intro'
-        })
-        .then(function(db) {
-     
-            console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
 
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-            } else {
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-          
-              
-    })
-   
-          
-    }, [project,step,url]);
+  
+    }, [project]);
 
     function handleOption(){
         setValue(33.33333); 
@@ -93,7 +58,7 @@ function Step0(){
       function handleNextPage(event){
         console.log(project.step);
        
-       history.push(urlNext);
+       history.push('main');
       }
      
 

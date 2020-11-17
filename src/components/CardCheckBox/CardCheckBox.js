@@ -31,8 +31,8 @@ function CardCheckBox(props){
             
             control={
             <Checkbox
-            onChange = {onChange }
-            defaultChecked={props.select}
+            onChange = {onChange}
+            checked={select ? select : false}
             checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
             icon={<span className={classes.icon} />}
             color='primary'

@@ -91,7 +91,7 @@ const useStyles = makeStyles(theme => ({
     },
 
     card:{
-        width:'190px',
+        width:'163px',
         height:'300px',
         cursor:'pointer',
         background:'#ffff',
@@ -102,13 +102,13 @@ const useStyles = makeStyles(theme => ({
         flexDirection:'column',
         alignContent:'center',
         alignItems:'center',
-        marginRight:'20px',
+        marginRight:'28px',
         justifyContent:'space-between',
 
     },
 
     cardInactive:{
-        width:'190px',
+        width:'163px',
         height:'300px',
         cursor:'pointer',
         background:'#F5F5F5',
@@ -119,7 +119,7 @@ const useStyles = makeStyles(theme => ({
         alignContent:'center',
         alignItems:'center',
         paddingBottom:'20px',
-        marginRight:'20px',
+        marginRight:'28px',
         justifyContent:'space-between',
 
 

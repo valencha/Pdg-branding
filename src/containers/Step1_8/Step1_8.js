@@ -30,45 +30,13 @@ function Step1_8(){
    
     const [urlNext, setUrlNext] = React.useState('');
 
-
-    var listNotesTemp= [{text: "Empleados",id: uuid()},
-    {text: "Colaboradores",id: uuid()},
-    {text: "Clientes",id: uuid()},
-    {text: "Accionistas",id: uuid()},
-    {text: "Proveedores",id: uuid()},
-    {text: "Consumidores",id: uuid()},
-    {text: "Líderes de opinión",id: uuid()},
-    {text: "Redes sociales",id: uuid()},
-    ];
+    const [todo, setTodo]= React.useState([]);
     const [audienciaInterna, setAudienciaInterna]= React.useState([]);
     const [audienciaExterna, setAudienciaExterna]= React.useState([]);
 
-    const columnsFromBackend ={
-        [uuid()]: {
-            name: 'Todo',
-            className:classes.contentNotes,
-            items: listNotesTemp,
-            showTitle:false,
-            
-          },
-          [uuid()]: {
-            name: 'Audiencia Interna',
-            className:classes.board1,
-            items: [],
-            classNameTitle:classes.titleBoard,
-            showTitle:true,
-          },
-          [uuid()]: {
-            name: 'Audiencia Externa',
-            className:classes.board2,
-            classNameTitle:classes.titleBoard,
-            items: [],
-            showTitle:true,
-          },
 
-    }
 
-    const[columns,setColumns]=React.useState(columnsFromBackend);
+    const[columns,setColumns]=React.useState({});
 
   
 
@@ -78,6 +46,7 @@ function Step1_8(){
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
             db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 8').set({
+               todo: todo,
                audienciaExterna: audienciaExterna,
                audienciaInterna: audienciaInterna,
               
@@ -99,7 +68,7 @@ function Step1_8(){
 
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_6`);
+        history.push(`/dashboard/${project}/step1_7`);
       } 
 
   
@@ -175,6 +144,13 @@ function Step1_8(){
                         column.classNameTitle = classes.titleBoard2;
                     }
                 }
+                if(column.name === 'Todo'){
+
+                    setTodo(column.items);
+                    if(column.items.length> 0){
+                       setDisabled(true);
+                    }
+                }
 
                 
                 return column;
@@ -194,18 +170,36 @@ function Step1_8(){
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
     
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_9',
-            step:'esenciaMarca_paso9'
-        })
-        .then(function(db) {
-     
-            console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
+        if(disabled===false){
+
+            docRef.update({
+                url: '/dashboard/'+project+'/step1_9',
+                step:'esenciaMarca_paso9'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+        }   else{
+    
+            docRef.update({
+                url: '/dashboard/'+project+'/step1_8',
+                step:'esenciaMarca_paso8'
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+    
+        }
 
         docRef.get().then(function(doc) {
             if (doc.exists) {
@@ -234,6 +228,89 @@ function Step1_8(){
 
 
      }, [project,data,disabled,columns,classes.titleBoard2,classes.board1_1,classes.board2_2]);
+
+     React.useEffect(()=>{
+        let db = fb.firestore();
+        const columnsFromBackend ={
+            [uuid()]: {
+                name: 'Todo',
+                className:classes.contentNotes,
+                items: [{text: "Empleados",id: uuid()},
+                {text: "Colaboradores",id: uuid()},
+                {text: "Clientes",id: uuid()},
+                {text: "Accionistas",id: uuid()},
+                {text: "Proveedores",id: uuid()},
+                {text: "Consumidores",id: uuid()},
+                {text: "Líderes de opinión",id: uuid()},
+                {text: "Redes sociales",id: uuid()},
+                ],
+                showTitle:false,
+                
+              },
+              [uuid()]: {
+                name: 'Audiencia Interna',
+                className:classes.board1,
+                items: [],
+                classNameTitle:classes.titleBoard,
+                showTitle:true,
+              },
+              [uuid()]: {
+                name: 'Audiencia Externa',
+                className:classes.board2,
+                classNameTitle:classes.titleBoard,
+                items: [],
+                showTitle:true,
+              },
+    
+        }
+        
+        fb.auth().onAuthStateChanged((user) => {
+          
+
+        var docRef = db.collection(`${user.email}`).doc(project);
+    
+        docRef.collection('Esencia de marca').doc('paso 8').get().then(function(doc) {
+
+            if (doc.exists) {
+         
+                var respuestasExterna =doc.data().audienciaExterna;
+                var respuestasInterna =doc.data().audienciaInterna;
+                var respuestasTodo =doc.data().todo;
+
+                Object.values(columnsFromBackend).map(column=> {
+        
+                    if(column.name=== 'Todo'){
+                       column.items=respuestasTodo;
+            
+                       
+                    }
+                    if(column.name=== 'Audiencia Interna'){
+                        column.items=respuestasInterna;
+                        
+                     }
+                     if(column.name=== 'Audiencia Externa'){
+                        column.items=respuestasExterna;
+                        
+                     }
+
+                    return column;
+
+                });
+                setColumns(columnsFromBackend);
+                setDisabled(false);
+         
+            } else {
+                setColumns(columnsFromBackend);
+            }
+        }).catch(function(error) {
+           // console.log("Error getting document:", error);
+        });  
+
+       // setColumns(columnsFromBackend);
+    })
+        },[project,classes.board1,classes.board2,classes.board3,classes.contentNotes,classes.titleBoard])
+
+
 
     return (
         <div className={classes.body}>

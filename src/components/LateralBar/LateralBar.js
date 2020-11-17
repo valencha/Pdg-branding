@@ -8,6 +8,7 @@ function LateralBar(props){
         <div className={classes.body}>
             <Button className={classes.btnToolPrincipal}> <div className={classes.contentBtn}><img src='/images/Home.svg'alt="home" width='20px' /><span className={classes.btnSpan}>Inicio</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/flag.svg'alt="progress" width='20px' /><span className={classes.btnSpan}>Progreso</span> </div> </Button>
+            <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/file-text.svg'alt="progress" width='20px' /><span className={classes.btnSpan}>Notas</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/help-circle.svg'alt="help" width='20px' /><span className={classes.btnSpan}>Ayuda</span> </div> </Button>
 
             <div className={classes.toolBottom}>  <Button className={classes.btnToolBottom}> <div className={classes.contentBtn}><img src='/images/log-out.svg'alt="log-out" width='20px' /></div> </Button></div>
@@ -32,7 +33,7 @@ function LateralBar(props){
         },
 
         btnTool:{
-        marginTop:'20px',
+        marginTop:'15px',
         display:'flex',
         width:'76px',
         height:'76px',
@@ -78,7 +79,7 @@ function LateralBar(props){
   
         },
         toolBottom:{
-        marginTop:'68px',
+        marginTop:'17px',
         }
         
     }));

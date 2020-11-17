@@ -18,7 +18,7 @@ function PlaceHolder(props){
         }
            
         </div>  
-    <input onKeyDown={props.handleKeyDown} placeholder={props.placeHolder} width ={props.width} height={props.height} className= {classes.placeHolder} type ={props.type} onChange={props.onChange}/>
+    <input onKeyDown={props.handleKeyDown} value={props.value} placeholder={props.placeHolder} width ={props.width} height={props.height} className= {classes.placeHolder} type ={props.type} onChange={props.onChange}/>
     <div className={classes.alternativeLabels}><span className={classes.alternativeLabel}>{props.alternativeLabel}</span></div>
     
     </div>

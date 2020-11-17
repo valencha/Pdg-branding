@@ -15,6 +15,16 @@ import './style.css';
 function SelectorLabel(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
+    const [select, setSelect]= React.useState(props.select);
+
+    const onChange=(e)=>{
+      props.onChange(e)
+      let checked=e.target.value;
+      setSelect(checked);
+
+   }
+
+
 
     const BootstrapInput = withStyles((theme) => ({
         root:{
@@ -104,11 +114,12 @@ function SelectorLabel(props){
             }}>
           {props.label}
         </InputLabel>
+
         <Select
         multiple
         labelId="demo-mutiple-checkbox-label"
         id="demo-mutiple-checkbox"
-        onChange = { (event) => { props.onChange(event) } }
+        onChange = {onChange}
         input={<BootstrapInput />}  
         defaultValue={props.value}
         renderValue={(selected) => selected.join(', ')}
@@ -120,6 +131,9 @@ function SelectorLabel(props){
         IconComponent = {ExpandMoreRoundedIcon}
         MenuProps={MenuProps}
         >
+            <MenuItem value="Selecciona varios"  >
+              <em>Selecciona varios</em>
+         </MenuItem>
    
       {props.options.map((item, i) =>  
            <MenuItem key={i} classes={{root: classes.selectOption, selected: classes.selected}} value={item}  >
@@ -151,6 +165,14 @@ const useStyles = makeStyles(theme => ({
       fontSize:'16px',
      
   },
+
+  label2:{
+    color:'#495057',
+    padding:100,
+    fontFamily:'Poppins',
+    fontSize:'16px',
+   
+},
 
   labelFocus:{
     color:'#495057',

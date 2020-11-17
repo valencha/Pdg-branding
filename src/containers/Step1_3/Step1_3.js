@@ -77,7 +77,7 @@ function Step1_3(){
     React.useEffect(() => {
         let isCancelled = false;
 
-        
+   
 
 
      if (!isCancelled) {
@@ -173,6 +173,9 @@ function Step1_3(){
         }else{
             setDisabled(true);  
         }
+
+    
+
     },[listNotesTemp])
 
     return (

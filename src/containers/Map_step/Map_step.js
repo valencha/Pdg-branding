@@ -21,7 +21,7 @@ function Map_step(){
     const classes = useStyles();
     const [textName, setTextName] = React.useState('');
     const [textSlogan, setTextSlogan] = React.useState('');
-    const [urlNext, setUrlNext] = React.useState('');
+    const [urlNext, setUrlNext] = React.useState('/dashboard/'+project+'/step1');
 
 
 
@@ -51,7 +51,6 @@ function Map_step(){
         docRef.get().then(function(doc) {
          
             if (doc.exists) {
-                console.log(doc.data().url);
                 setUrlNext(doc.data().url);
             } else {
                 console.log("No such document!");
@@ -74,6 +73,14 @@ function Map_step(){
 
     let steps=[
         {
+            title:'Aprendiendo sobre Branding',
+            percent:0,
+            active:true,
+            urlImage:'/images/video.svg',
+            urlNext:'/dashboard/'+project+'/videos',
+    
+        },
+        {
             title:'Conociendo tu marca',
             percent:0,
             active:true,
@@ -85,8 +92,9 @@ function Map_step(){
         {
             title:'Selección de los recursos',
             percent:0,
-            active:false,
-            urlImage:'/images/step2.svg'
+            active:true,
+            urlImage:'/images/step2.svg',
+            urlNext:'/dashboard/'+project+'/step2',
     
         },
     

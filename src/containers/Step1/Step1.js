@@ -171,7 +171,7 @@ function Step1(){
             })
             .catch(function(error) {
              
-                console.error("Error updating document: ", error);
+               // console.error("Error updating document: ", error);
             });
         }else{
             docRef.update({
@@ -183,7 +183,7 @@ function Step1(){
                 console.log('done');
             })
             .catch(function(error) {
-                console.error("Error updating document: ", error);
+              //   console.error("Error updating document: ", error);
             });
         }
    
@@ -201,7 +201,7 @@ function Step1(){
 
         docRef.collection('Esencia de marca').doc('paso 1').get().then(function(doc) {
             if (doc.exists) {
-                console.log(doc.data().respuesta);
+                console.log(doc.data().nombreMarca);
 
                 if(doc.data().respuesta==='Sí'){
                     setChangeClass(classes.btnClick);
@@ -281,12 +281,14 @@ function Step1(){
                                 className={classes.firstPlaceHolder}
                                 width='640px'
                                 onChange={onChangeName}
+                                value={textName}
                                 placeHolder='Nombre de marca'
                                 height='60px'
                                 />
                                 <PlaceHolder
                                 width='640px'
                                 onChange={onChangeSlogan}
+                                value={textSlogan}
                                 placeHolder='Lema, slogan, tagline (opcional)'
                                 height='60px'
                                 />

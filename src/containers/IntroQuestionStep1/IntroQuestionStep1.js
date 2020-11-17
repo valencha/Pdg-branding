@@ -41,7 +41,6 @@ function IntroQuestionStep1(){
     
             docRef.get().then(function(doc) {
                 if (doc.exists) {
-                    console.log(doc.data().url);
                     setUrlNext(doc.data().url);
                 } else {
                     console.log("No such document!");
