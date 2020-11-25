@@ -7,6 +7,7 @@ import LateralBar from '../../components/LateralBar/LateralBar';
 import ProgressTool from '../../components/ProgressTool/ProgressTool';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
+import BtnYellow from '../../components/BtnYellow/BtnYellow';
 import SelectorLabel from '../../components/SelectorLabel/SelectorLabel';
 
 
@@ -21,9 +22,8 @@ function Step1_9(){
     let {project}= useParams();
     console.log(project);
     const classes = useStyles();
-    const [changeClass, setChangeClass] = React.useState(classes.btn);
-    const [changeClass2, setChangeClass2] = React.useState(classes.btn);
-    const [changeClass3, setChangeClass3] = React.useState(classes.btn);
+    const  [btns, setBtns ]= React.useState([]);
+
     
     const [showPlaceHolder, setShowPlaceHolder] = React.useState(false);
     const [isClick, setIsClick] = React.useState(false);
@@ -48,75 +48,16 @@ function Step1_9(){
 
     let history = useHistory();
 
-    function handleClick(event){  
-        setOptionSelected('Sí');
-        setValue(14.2857142857); 
-        setDisabled(false);
-        setIsClick(prev => !prev);
-        setChangeClass(classes.btnClick);
-        setShowPlaceHolder(prev => !prev);
+ 
+   
 
-        setChangeClass2(classes.btn);
-        setIsClick2(false);
-        setChangeClass3(classes.btn);
-        setIsClick3(false);
-        
-        if(isClick === true){
-         
-            setChangeClass(classes.btn);
-            setValue(0);
-            setDisabled(true);
-        }
-       
-    }
-
-    function handleClick2(event){
-        setOptionSelected('No');
-        setIsClick2(prev => !prev);
-        setDisabled(false);
-        setValue(14.2857142857); 
-        setShowPlaceHolder(false);
-        setChangeClass2(classes.btnClick);
-        setIsClick(false);
-        setChangeClass(classes.btn);
-        setIsClick3(false);
-        setChangeClass3(classes.btn);
-        
-        if(isClick2 === true){
-            setChangeClass2(classes.btn);
-            setDisabled(true);
-            setValue(0);
-        } 
-  
-    }
-
-    function handleClick3(event){
-        setOptionSelected('Omitir');
-        setIsClick3(prev => !prev);
-        setDisabled(false);
-        setValue(14.2857142857); 
-        setChangeClass3(classes.btnClick);
-        setIsClick2(false);
-        setShowPlaceHolder(false);
-        setChangeClass2(classes.btn);
-        setIsClick(false);
-        setChangeClass(classes.btn);
-
-        if(isClick3 === true){
-            setChangeClass3(classes.btn);
-            setValue(0);
-            setDisabled(true);
-           
-        } 
-
-    }
-
+ 
     function handleNextPage(event){
-        history.push('/dashboard/'+project+'/main');
+        history.push('/dashboard/'+project+'/finished1');
         
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 9').set({
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 10').set({
                respuesta: optionSelected,
                genero: valueGenre,
                edad:valueAge,
@@ -142,7 +83,7 @@ function Step1_9(){
       
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/intro`);
+        history.push(`/dashboard/${project}/step1_10`);
       } 
 
     function onChangeGenre(event){
@@ -188,29 +129,90 @@ function Step1_9(){
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
         var docRef = db.collection(`${user.email}`).doc(project);
+        if(disabled===false){
+
+            docRef.update({
+                url:'/dashboard/'+project+'/finished1',
+                step:'esenciaMarca_finished1',
+                percentStep2:100,
+                percent:40
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+             
+               // console.error("Error updating document: ", error);
+            });
+        }else{
+
+            docRef.update({
+                url:'/dashboard/'+project+'/step1_10',
+                step:'esenciaMarca_paso10',
+                percentStep2:90
+            })
+            .then(function(db) {
+         
+                console.log('done');
+            })
+            .catch(function(error) {
+             
+               // console.error("Error updating document: ", error);
+            });
+        }
+     
+
+
+        docRef.get().then(function(doc) {
+            if (doc.exists) {
+
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+                        percentStep2:100,
+                        percent:40
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
+            } else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
    
-           docRef.collection('Esencia de marca').doc('paso 9').get().then(function(doc) {
+           docRef.collection('Esencia de marca').doc('paso 10').get().then(function(doc) {
             if (doc.exists) {
                 console.log(doc.data().respuesta);
+                setOptionSelected(doc.data().respuesta);
 
                 if(doc.data().respuesta==='Sí'){
-                    setChangeClass(classes.btnClick);
+                    setIsClick(true);
                     setShowPlaceHolder(true);
                     setValueGenre(doc.data().genero)
                     setValueAge(doc.data().edad)
                     setValueInterests(doc.data().intereses)
                     setValuePoints(doc.data().puntosContacto)
+                   
                
-                    setDisabled(false);
                 }
                 if(doc.data().respuesta==='No'){
-                    setChangeClass2(classes.btnClick);
-                    setDisabled(false);
+                    setIsClick2(true);
+               
                 }
                 if(doc.data().respuesta==='Omitir'){
-                    setChangeClass3(classes.btnClick);
-                    setDisabled(false);
+                    setIsClick3(true);
+                
                 }
+
+   
                
             } else {
                 console.log("No such document!");
@@ -228,9 +230,37 @@ function Step1_9(){
             isCancelled = true;
         };
 
-    }, [project,classes.btnClick]);
+    }, [project,disabled]);
 
+    React.useEffect(()=>{
+        let btns=[{
+            id:1,
+            content:'Sí',
+            checked:isClick,
+        },
+        {
+            id:2,
+            content:'No',
+            checked:isClick2,
+        },
+        {
+            id:3,
+            content:'Omitir',
+            checked:isClick3,
+        },
+    ]
 
+    setBtns(btns);
+
+    if(isClick === true || isClick2 === true || isClick3===true){
+        setDisabled(false);
+    }else{
+        setDisabled(true);
+    }
+  
+    },[isClick,isClick2,isClick3])
+
+ 
 
 
 
@@ -246,22 +276,51 @@ function Step1_9(){
                         <ProgressTool
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
-                            numStep='9'
-                            numTotalStep='9'
+                            numStep='10'
+                            numTotalStep='10'
                             value={value}
                    
 
                         />
                     </div>
                     <div className={classes.contentText}>
-                       <h1 className={classes.question}> <span className={classes.num}>9. ¡Súper!</span> Por último ¿conoces las características de tu público objetivo (género,edad...)?</h1>
+                       <h1 className={classes.question}> <span className={classes.num}>10. ¡Súper!</span> Por último ¿conoces las características de tu público objetivo (género,edad...)?</h1>
                     </div>
                     <div className={classes.contentBottom}>
                         <div className={classes.options}>
                         <div className={classes.answers}>
-                            <button onClick={handleClick} className={changeClass}>Sí</button>
-                            <button onClick={handleClick2} className={changeClass2}>No</button>
-                            <button onClick={handleClick3} className={changeClass3}>Omitir</button>
+                        {btns.map((item,i)=>
+                               <BtnYellow key={i}{...item}  onClick={(event)=>{
+                            
+                                setOptionSelected(`${item.content}`);
+                                if(item.content==='Sí'){
+                                       setIsClick(prev=>!prev);
+                                       setShowPlaceHolder(prev=>!prev);
+                                      
+                                }else{
+                                    setIsClick(false);
+                                    setShowPlaceHolder(false);
+                                }
+                                if(item.content==='No'){
+                                    setIsClick2(prev=>!prev);
+                                   
+                                }else{
+                                    setIsClick2(false);
+                                
+                                }
+                                if(item.content==='Omitir'){
+                                    setIsClick3(prev=>!prev);  
+                                }else{
+                                 setIsClick3(false);
+
+                                }
+
+                               }}/>
+                               
+
+                           
+                            )}
+                            
                         </div>
 
                         {showPlaceHolder &&

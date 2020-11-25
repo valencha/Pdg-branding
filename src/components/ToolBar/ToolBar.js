@@ -480,17 +480,17 @@ function ToolBar(props){
         props.setContentShow7(true);  
      
     }
-
+/*
     React.useEffect(() => {
         let isCancelled = false;
         if (!isCancelled) {
           
-          
+       
           fb.auth().onAuthStateChanged(user => {
             if (user) {
-                  console.log('ingreso');
+         
               } else {
-                props.history.push('/login');
+                props.history('/login');
                    
               }
           
@@ -502,7 +502,7 @@ function ToolBar(props){
           isCancelled = true;
         };
       }, [props.history]);
-    
+   */
 
     function handleLogOut(event){
         fb.auth().signOut();

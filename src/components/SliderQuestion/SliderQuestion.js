@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
-
+import Typography from '@material-ui/core/Typography';
 
 
 
@@ -9,26 +9,31 @@ import Slider from '@material-ui/core/Slider';
 function SliderQuestion(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
-   
-  
+    const[value, setValue]= React.useState(props.value);
+    const onChange=(e,newValue)=>{
+      props.onChange(e, newValue)
+      setValue(newValue)
+     
+   }
     
 
-    return <div className={props.classes}>
-    
+    return <div className={props.className}>
+    <div className={classes.slider}>
    
     <Slider
         min={0}
         step={1}
-        max={6}
-        defaultValue={0}  
-        value={props.value}
+        max={100}
+        defaultValue={50}
+        value={value}
         classes={{root:classes.sliderQ, track:classes.track, rail:classes.rail, thumb:classes.thumb}}
-        onChange = { (event,value) => { props.onChange(event,value) } }
-        valueLabelDisplay="auto"
-        aria-labelledby="non-linear-slider"
+        onChange = { onChange } 
       />
-        
-    
+    <Typography id="non-linear-slider" className={classes.percent}>
+    {value}%
+    </Typography>
+    </div>
+
     </div>;
 }
 
@@ -68,6 +73,19 @@ const useStyles = makeStyles(theme => ({
     valueLabel: {
     left: 'calc(-50% + 10px)',
     },
+    slider:{
+      display:'flex',
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
+      alignContent:'center',
+    },
+
+    percent:{
+      marginLeft:'20px',
+      fontFamily:'Poppins',
+      color:'#5975FF'
+    }
 
 }));
 

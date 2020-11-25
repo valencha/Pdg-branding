@@ -15,13 +15,10 @@ import './style.css';
 function SelectorLabel(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
-    const [select, setSelect]= React.useState(props.select);
+   
 
     const onChange=(e)=>{
-      props.onChange(e)
-      let checked=e.target.value;
-      setSelect(checked);
-
+      props.onChange(e);
    }
 
 
@@ -144,6 +141,8 @@ function SelectorLabel(props){
 
        
         </Select>
+
+        
       </FormControl>
    
     </div>;

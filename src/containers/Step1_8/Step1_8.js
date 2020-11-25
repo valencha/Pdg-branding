@@ -24,7 +24,7 @@ function Step1_8(){
     let history = useHistory();
     
     
-    const [value, setValue] = React.useState(28.5714285714+14.2857142857);
+    const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
 
    
@@ -45,7 +45,7 @@ function Step1_8(){
       
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 8').set({
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 9').set({
                todo: todo,
                audienciaExterna: audienciaExterna,
                audienciaInterna: audienciaInterna,
@@ -68,7 +68,7 @@ function Step1_8(){
 
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_7`);
+        history.push(`/dashboard/${project}/step1_8`);
       } 
 
   
@@ -134,6 +134,9 @@ function Step1_8(){
                     if(column.items.length> 0){
                         column.className = classes.board1_1;
                         column.classNameTitle = classes.titleBoard2;
+                    }else{
+                        column.className = classes.board1;
+                        column.classNameTitle = classes.titleBoard;
                     }
                 }
                 if(column.name === 'Audiencia Externa'){
@@ -142,6 +145,9 @@ function Step1_8(){
                     if(column.items.length> 0){
                         column.className = classes.board2_2;
                         column.classNameTitle = classes.titleBoard2;
+                    }else{
+                        column.className = classes.board2;
+                        column.classNameTitle = classes.titleBoard;
                     }
                 }
                 if(column.name === 'Todo'){
@@ -157,13 +163,6 @@ function Step1_8(){
             
         });
 
-     
-      if(disabled===true){
-         setValue(28.5714285714+(14.2857142857*3)); 
-         
-      }else{
-         setValue(28.5714285714+(14.2857142857*4)); 
-      }
 
       if (!isCancelled) {
         let db = fb.firestore();
@@ -173,8 +172,9 @@ function Step1_8(){
         if(disabled===false){
 
             docRef.update({
-                url: '/dashboard/'+project+'/step1_9',
-                step:'esenciaMarca_paso9'
+                url: '/dashboard/'+project+'/step1_10',
+                step:'esenciaMarca_paso10',
+                percentStep2:90,
             })
             .then(function(db) {
          
@@ -187,8 +187,9 @@ function Step1_8(){
         }   else{
     
             docRef.update({
-                url: '/dashboard/'+project+'/step1_8',
-                step:'esenciaMarca_paso8'
+                url: '/dashboard/'+project+'/step1_9',
+                step:'esenciaMarca_paso9',
+                percentStep2:80,
             })
             .then(function(db) {
          
@@ -205,6 +206,19 @@ function Step1_8(){
             if (doc.exists) {
                 console.log(doc.data().url);
                 setUrlNext(doc.data().url);
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+                        percentStep2:100
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
             } else {
                 console.log("No such document!");
             }
@@ -227,7 +241,7 @@ function Step1_8(){
   
 
 
-     }, [project,data,disabled,columns,classes.titleBoard2,classes.board1_1,classes.board2_2]);
+     }, [project,data,disabled,columns,classes.titleBoard2,classes.board1_1,classes.board2_2,classes.board1,classes.board2,classes.titleBoard]);
 
      React.useEffect(()=>{
         let db = fb.firestore();
@@ -269,7 +283,7 @@ function Step1_8(){
 
         var docRef = db.collection(`${user.email}`).doc(project);
     
-        docRef.collection('Esencia de marca').doc('paso 8').get().then(function(doc) {
+        docRef.collection('Esencia de marca').doc('paso 9').get().then(function(doc) {
 
             if (doc.exists) {
          
@@ -324,8 +338,8 @@ function Step1_8(){
                         <ProgressTool
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
-                            numStep='8'
-                            numTotalStep='9'
+                            numStep='9'
+                            numTotalStep='10'
                             value={value}
                    
 

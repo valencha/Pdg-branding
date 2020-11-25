@@ -24,7 +24,7 @@ function Step1_6(){
     let history = useHistory();
     
     const [openDialog, setOpenDialog] = React.useState(true);
-    const [value, setValue] = React.useState(28.5714285714+14.2857142857);
+    const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
     const [urlNext, setUrlNext] = React.useState('');
   
@@ -84,12 +84,7 @@ function Step1_6(){
     React.useEffect(() => {
     let isCancelled = false;
 
-     if(disabled===true){
-        setValue(28.5714285714+(14.2857142857*3)); 
-        
-     }else{
-        setValue(28.5714285714+(14.2857142857*3)); 
-     }
+   
      if (!isCancelled) {
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
@@ -97,8 +92,9 @@ function Step1_6(){
         if(disabled===false){
 
             docRef.update({
-                url: '/dashboard/'+project+'/step1_6_1',
-                step:'esenciaMarca_paso6_1'
+                url: '/dashboard/'+project+'/step1_7',
+                step:'esenciaMarca_paso7',
+                percentStep2:60,
             })
             .then(function(db) {
          
@@ -112,7 +108,8 @@ function Step1_6(){
     
             docRef.update({
                 url: '/dashboard/'+project+'/step1_6',
-                step:'esenciaMarca_paso6'
+                step:'esenciaMarca_paso6',
+                percentStep2:50,
             })
             .then(function(db) {
          
@@ -129,6 +126,19 @@ function Step1_6(){
             if (doc.exists) {
                 console.log(doc.data().url);
                 setUrlNext(doc.data().url);
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+                        percentStep2:100
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
             } else {
                 console.log("No such document!");
             }
@@ -206,7 +216,7 @@ function Step1_6(){
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
                             numStep='6'
-                            numTotalStep='7'
+                            numTotalStep='10'
                             value={value}
                    
 

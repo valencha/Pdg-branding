@@ -26,7 +26,7 @@ function Step1_4(){
     const classes = useStyles();
     let history = useHistory();
     
-    const [value, setValue] = React.useState(28.5714285714);
+    const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
 
     const [urlNext, setUrlNext] = React.useState('');
@@ -88,7 +88,8 @@ function Step1_4(){
 
         docRef.update({
             url: '/dashboard/'+project+'/step1_5',
-            step:'esenciaMarca_paso5'
+            step:'esenciaMarca_paso5',
+            percentStep2:40,
         })
         .then(function(db) {
      
@@ -102,7 +103,8 @@ function Step1_4(){
 
         docRef.update({
             url: '/dashboard/'+project+'/step1_4',
-            step:'esenciaMarca_paso4'
+            step:'esenciaMarca_paso4',
+            percentStep2:30
         })
         .then(function(db) {
      
@@ -119,6 +121,19 @@ function Step1_4(){
             if (doc.exists) {
                 console.log(doc.data().url);
                 setUrlNext(doc.data().url);
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+                        percentStep2:100
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
             } else {
                 console.log("No such document!");
             }
@@ -190,7 +205,7 @@ function Step1_4(){
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
                             numStep='4'
-                            numTotalStep='7'
+                            numTotalStep='10'
                             value={value}
                    
 

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Button, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DataContext from '../../context/DataContext/DataContext';
 import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import BtnInitial from '../../components/BtnInitial/BtnInitial';
-
+import { useHistory } from "react-router-dom";
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
@@ -13,12 +14,16 @@ require('firebase/auth');
 
 
 
-function Login(props){
+function Login(){
+    const value = React.useContext(DataContext);
     const [email, setEmail] = React.useState('');
+    const [email2, setEmail2] = React.useState('');
     const [name, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [password2, setPassword2] = React.useState('');
+    let db = fb.firestore();
     const [sign, setSign] = React.useState(true);
-    const [user, setUser] = React.useState('');
+    const [user, setUser] = React.useState(value.user);
     const [changeBanner, setChangeBanner] = React.useState('images/imgLogin.jpg');
     const classes = useStyles({ urlBanner: `${changeBanner}`, urlLogo: 'images/LogoColor.svg'});
     const [changeDesc, setChangeDesc] = React.useState('La plataforma que te facilita aprender y aplicar');
@@ -26,34 +31,46 @@ function Login(props){
     const [focusInput2, setFocusInput2]= React.useState(false);
     const [focusInput3, setFocusInput3]= React.useState(false);
 
+    let history = useHistory();
     React.useEffect(() => {
         let isCancelled = false;
         if (!isCancelled) {
           
-          
-          fb.auth().onAuthStateChanged(user => {
-            setUser(user);
-            if (user) {
-                  
-            props.history.push('/dashboard');
-              } else {
-                props.history.push('/login');
+
+            if (user !== null) {
+
+               history.push('/dashboard');
+
+            } else {
+             
                    console.log("usuario nullo");
+
                    
-              }
+            }
           
             
-          })
+
           
         }
         return () => {
           isCancelled = true;
         };
-      }, [props.history]);
+      }, [history,user]);
 
-   
+  
     function getEmail(event){
         setEmail(event.target.value);
+
+        if(event.target.value === ''){
+            setFocusInput(false);  
+        }
+        else{
+            setFocusInput(true);  
+        }
+      
+    }
+    function getEmail2(event){
+        setEmail2(event.target.value);
 
         if(event.target.value === ''){
             setFocusInput(false);  
@@ -87,6 +104,17 @@ function Login(props){
         }
       
     }
+    function getPassword2(event){
+        setPassword2(event.target.value);
+        if(event.target.value === ''){
+            setFocusInput2(false);  
+        }
+        else{
+            setFocusInput2(true);  
+        }
+      
+    }
+    
 
     function handleSign(event){
         setSign(prev => !prev); 
@@ -107,77 +135,64 @@ function Login(props){
         const provider = new fb.auth.GoogleAuthProvider();
         
         fb.auth().signInWithPopup(provider)
-        .then(result => console.log(`${result.user.email} ha iniciado sesión`) )
+        .then((res)=>{
+            history.push('/dashboard');
+            return db.collection('users').doc(res.user.email).set({
+                name: res.user.displayName,
+                email: res.user.email,
+                id: res.user.uid
+            })
+        })
         .catch(error => console.log (`Error ${error.code}: ${error.message}`));
 
     }
 
-    const handleKeyDownSignIn = (event) => {
-        if (event.key === 'Enter') {
-            fb.auth().signInWithEmailAndPassword(email,password).then(result => console.log(`${result.user.email} ha iniciado sesión`))
-            .catch(error => console.log (`Error ${error.code}: ${error.message}`)); 
 
-        }
-      }
+  const signUp=(event)=>{
 
-      const handleKeyDownSignUp = (event) => {
-        if (event.key === 'Enter') {
-            fb.auth().createUserWithEmailAndPassword(email, password)
-            .then(
-                (data) => {
-        
-                const { user } = data
-                if (user) {
-                    user.updateProfile({
-                        displayName:{name},
-        
-                    })
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
+    fb.auth().createUserWithEmailAndPassword(email2, password2).then((res)=>{
+ 
+        return db.collection('users').doc(`${email2}`).set({
+            name: name,
+            email: email2,
+            id:res.user.uid
 
-        }
-      }
-    
-
-  function submitEmail(event){
-    fb.auth().createUserWithEmailAndPassword(email, password)
-    .then(
-        (data) => {
-
-        const { user } = data
-        if (user) {
-            user.updateProfile({
-                displayName:{name},
-
-            })
-        }
+        })
+    }).then(()=>{
+        history.push('/dashboard');
+        console.log('creo')
+    }).catch(err=>{
+        console.log('no funciono')
     })
-    .catch(e => {
-        console.log(e)
-    })
-
   }
 
     function loginEmail(event){
 
-        fb.auth().signInWithEmailAndPassword(email,password).then(result => console.log(`${result.user.email} ha iniciado sesión`))
+        fb.auth().signInWithEmailAndPassword(email,password).then(
+            
+            history.push("/dashboard"))
         .catch(error => console.log (`Error ${error.code}: ${error.message}`)); 
+
+
     }
-    
+    function handleLogOut(event){
+        fb.auth().signOut();
+       
+       
+    }
 
 
 
     return <div className={classes.body}>
-
+      
+        <button onClick={handleLogOut}>Cerrar</button>
+        
         <div className={classes.contentLeft}>
             <div className={classes.logo}></div>
         <h1 className={classes.description} style={{ width:'500px' }}>{changeDesc} {sign && <span className={classes.titleItalic}>Branding</span>}</h1>
         </div>
 
-    { !user &&
+ 
 
     <div className={classes.contentRight}>
    
@@ -212,8 +227,7 @@ function Login(props){
             label="Contraseña"
             width='412px'
             height='50px'
-            placeHolder="Contraseña"    
-            handleKeyDown={handleKeyDownSignIn}     
+            placeHolder="Contraseña"         
             alternativeLabel="¿Olvidaste tu contraseña?"
             className={classes.contentPlaceHolder2}
             focusInput ={focusInput2}
@@ -264,23 +278,22 @@ function Login(props){
                 placeHolder="E-mail"
                 width='412px'
                 height='50px'
-                onChange={getEmail}
-                value={email}
+                onChange={getEmail2}
+                value={email2}
                 className={classes.contentPlaceHolder4}
                 focusInput ={focusInput}
             />
 
             <PlaceHolder
             type="password"
-            onChange={getPassword}
+            onChange={getPassword2}
             width='412px'
             height='50px'
-            value={password}
+            value={password2}
             label="Contraseña"
             placeHolder="Contraseña"         
             className={classes.contentPlaceHolder4}
             focusInput ={focusInput2}
-            handleKeyDown={handleKeyDownSignUp}
             />
             <FormControlLabel
                 
@@ -295,7 +308,7 @@ function Login(props){
             <BtnInitial className={classes.btnStartNow}
             content="Regístrate gratis"
             width='410px'
-            onClick={submitEmail}
+            onClick={signUp}
             height='60px'
             marginTop='15px'
             />
@@ -312,7 +325,7 @@ function Login(props){
     }
     </div>
 
-    }
+    
    
 
     </div>;

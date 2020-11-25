@@ -16,16 +16,31 @@ require('firebase/auth');
 
 function Map_step(){
 
-    let {project}= useParams();
-    console.log(project);
+    let {project,id}= useParams();
+    console.log(project,id);
+   
+ 
     const classes = useStyles();
-    const [textName, setTextName] = React.useState('');
-    const [textSlogan, setTextSlogan] = React.useState('');
     const [urlNext, setUrlNext] = React.useState('/dashboard/'+project+'/step1');
+    const [urlNext2, setUrlNext2] = React.useState('/dashboard/'+project+'/intro2');
+    const [percentGeneral, setPercentGeneral] = React.useState(0);
 
-
+    const [percent1, setPercent1] = React.useState(0);
+    const [step1Active, setStep1Active] = React.useState(true);
+    const [percent2, setPercent2] = React.useState(0);
+    const [step2Active, setStep2Active] = React.useState(false);
+    const [percent3, setPercent3] = React.useState(0);
+    const [step3Active, setStep3Active] = React.useState(false);
+    const [percent4, setPercent4] = React.useState(0);
+    const [step4Active, setStep4Active] = React.useState(false);
+    const [percent5, setPercent5] = React.useState(0);
+    const [step5Active, setStep5Active] = React.useState(false);
+    const [percent6, setPercent6] = React.useState(0);
+    const [step6Active, setStep6Active] = React.useState(false);
 
    
+    
+    const [steps, setSteps] = React.useState([]);
     let history = useHistory();
 
 
@@ -33,13 +48,22 @@ function Map_step(){
       function handleBackPage(event){
         history.push(`/dashboard`);
       } 
+     
+      React.useEffect(()=>{
 
+        let db = fb.firestore();
+        var docRef = db.collection("projects").doc(id);
+        docRef.get().then(function(doc) {
+            
+        })
+   
+      },[id])
 
+    /*
 
     React.useEffect(() => {
         let isCancelled = false;
-        setTextName(textName);
-        setTextSlogan(textSlogan);
+        let active=false;
         setUrlNext(urlNext);
         let db = fb.firestore();
         if(!isCancelled){
@@ -52,6 +76,39 @@ function Map_step(){
          
             if (doc.exists) {
                 setUrlNext(doc.data().url);
+                setPercentGeneral(doc.data().percent);
+                setPercent1(doc.data().percentStep1);
+                setPercent2(doc.data().percentStep2);
+                setPercent3(doc.data().percentStep3);
+                setPercent4(doc.data().percentStep4);
+                setPercent5(doc.data().percentStep5);
+                setPercent6(doc.data().percentStep6);
+                if( doc.data().percentStep1===100){
+                  active=true;
+                  setStep2Active(active);
+                   
+                }
+                if(percent2===100){
+                    active=true;
+                    setPercent2(100);
+                    setStep3Active(active);
+
+                    docRef.update({
+                        percentStep2:100,
+                        percent:40,
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                        // The document probably doesn't exist.
+                        console.error("Error updating document: ", error);
+                    });
+                    
+
+                }
+
             } else {
                 console.log("No such document!");
             }
@@ -59,66 +116,66 @@ function Map_step(){
             console.log("Error getting document:", error);
         });
      
-    }  
+    } 
+
     )}
     setUrlNext(urlNext);
+   
     return () => {
         isCancelled = true;
       };
       
 
-    }, [project,textName,textSlogan,urlNext]);
 
+    }, [project,urlNext,percentGeneral,steps,step2Active,step3Active,percent2]);
 
-
-    let steps=[
+    */
+    let listSteps=[
         {
             title:'Aprendiendo sobre Branding',
-            percent:0,
-            active:true,
+            percent:percent1,
+            active:step1Active,
             urlImage:'/images/video.svg',
             urlNext:'/dashboard/'+project+'/videos',
     
         },
         {
             title:'Conociendo tu marca',
-            percent:0,
-            active:true,
+            percent:percent2,
+            active:step2Active,
             urlImage:'/images/step1.svg',
             urlNext:urlNext,
     
         },
     
         {
+            title:'Exploración de los recursos',
+            percent:percent3,
+            active:step3Active,
+            urlImage:'/images/step3.svg',
+            urlNext:urlNext2,
+        },
+        {
             title:'Selección de los recursos',
-            percent:0,
+            percent:percent4,
             active:true,
             urlImage:'/images/step2.svg',
-            urlNext:'/dashboard/'+project+'/step2',
-    
-        },
-    
-    
-        {
-            title:'Exploración de los recursos',
-            percent:0,
-            active:false,
-            urlImage:'/images/step3.svg'
+            urlNext:'/dashboard/'+project+'/intro3',
     
         },
     
         {
             title:'Moodboard Sensorial',
-            percent:0,
-            active:false,
+            percent:percent5,
+            active:step5Active,
             urlImage:'/images/step4.svg'
     
         },
     
         {
             title:'Creación del brief automático',
-            percent:0,
-            active:false,
+            percent:percent6,
+            active:step6Active,
             urlImage:'/images/step5.svg'
     
         },
@@ -127,7 +184,8 @@ function Map_step(){
     
     
         ];
-    
+
+
 
     return (
         <div className={classes.body}>
@@ -147,7 +205,7 @@ function Map_step(){
 
                     <h1 className={classes.description}> <span className={classes.bold}>¡Genial, aquí vamos! </span>Este es el proceso que llevas hasta el momento en la creación de la marca de tu empresa/proyecto/emprendimiento.</h1>
                     <div className={classes.progressBar}>
-                        <ProgressIndex className={classes.bar} progress={0}/>
+                        <ProgressIndex className={classes.bar} progress={percentGeneral}/>
                     </div>
 
    
@@ -157,10 +215,10 @@ function Map_step(){
                     <div className={classes.contentBottom}>
                     <div className={classes.steps}>
                                    
-                    {steps.map((item, i) =>
+                    {listSteps.map((item, i) =>
       
                     <Step key={i}
-                    {...item}
+                    {...item}   
    
                     />
 

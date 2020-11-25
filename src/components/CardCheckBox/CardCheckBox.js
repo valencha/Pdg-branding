@@ -2,9 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Checkbox} from '@material-ui/core';
 import clsx from "clsx";
-
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import 'react-circular-progressbar/dist/styles.css';
+
 
 
 

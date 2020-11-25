@@ -13,7 +13,7 @@ import Box from '@material-ui/core/Box';
 function Step(props){
 
     const classes = useStyles({ urlBack:'/images/Ellipse.svg'});
-
+    let select= props.active;
     let history = useHistory();
 
     const ColorCircularProgress = withStyles({
@@ -45,17 +45,20 @@ function Step(props){
  
 
       function handleClickProject(){
+          if(select===true){
             history.push(props.urlNext);
             console.log(props.urlNext);
+          }
+          
       }
 
 
     return <div className={classes.body}  onClick={handleClickProject}>
     
 
-        <Card className={ `${props.active ? classes.card : classes.cardInactive}`} >
+        <Card className={ `${select ? classes.card : classes.cardInactive}`} >
      
-            <h1 className={ `${props.active ? classes.titleProject : classes.titleInactive}`}>{props.title}</h1>
+            <h1 className={ `${select ? classes.titleProject : classes.titleInactive}`}>{props.title}</h1>
             <img src={props.urlImage} alt="img" width='114px' className={classes.imgStep}/>
  
         <div className={classes.contentBottom}>

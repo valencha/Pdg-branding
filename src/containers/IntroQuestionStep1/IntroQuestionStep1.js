@@ -62,7 +62,7 @@ function IntroQuestionStep1(){
       
 
       function handleBackPage(event){
-        history.push(urlNext);
+        history.push('/dashboard/'+project+'/main');
       }
       
 
@@ -156,12 +156,11 @@ function IntroQuestionStep1(){
             justifyContent:'flex-start',
         },
 
-        titleStep:{
+        title:{
             fontFamily:'Poppins',
             flexWrap:'no-wrap',
-            fontWeight:600,
-            marginTop:'24px',   
-            fontSize:'23px',
+            fontWeight:500, 
+            fontSize:'35px',
         },
         description:{
             fontFamily:'Open Sans',

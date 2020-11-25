@@ -24,7 +24,7 @@ function Step1_6_1(){
     let history = useHistory();
     
     
-    const [value, setValue] = React.useState(28.5714285714+14.2857142857);
+    const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
     const [showTitle, setShowTitle] = React.useState(true);
   
@@ -47,7 +47,7 @@ function Step1_6_1(){
       
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 6_1').set({
+            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 7').set({
                todo: todo,
                relevanciaAlta: relevanciaAlta,
                relevanciaMedia: relevanciaMedia,
@@ -73,7 +73,11 @@ function Step1_6_1(){
       function handleBackPage(event){
         history.push(`/dashboard/${project}/step1_6`);
       } 
+ 
 
+      function onAlert(event){
+        console.log('hola')
+      }
   
   
 
@@ -135,16 +139,40 @@ function Step1_6_1(){
 
                     
                     setRelevanciaAlta(column.items);
+                    if(column.items.length> 0){
+                        column.className = classes.board1_1;
+                        column.showTitle= false;
+                      
+                    }else{
+                        column.className = classes.board1;
+                        column.showTitle= true;
+                    }
                   
                 }
                 if(column.name === 'Relevancia Media'){
 
                     setRelevanciaMedia(column.items);
+                    if(column.items.length> 0){
+                        column.className = classes.board2_2;
+                        column.showTitle= false;
+                      
+                    }else{
+                        column.className = classes.board2;
+                        column.showTitle = true;
+                    }
                 }
 
                 if(column.name === 'Relevancia Baja'){
                     
                     setRelevanciaBaja(column.items);
+                    if(column.items.length> 0){
+                        column.className = classes.board3_3;
+                        column.showTitle= false;
+                      
+                    }else{
+                        column.className = classes.board3;
+                        column.showTitle = true;
+                    }
                 }
                 if(column.name === 'Todo'){
                   
@@ -155,12 +183,7 @@ function Step1_6_1(){
             
         });
      
-      if(disabled===true){
-         setValue(28.5714285714+(14.2857142857*3)); 
-         
-      }else{
-         setValue(28.5714285714+(14.2857142857*4)); 
-      }
+
       if (!isCancelled) {
         let db = fb.firestore();
         fb.auth().onAuthStateChanged(user => {
@@ -169,8 +192,9 @@ function Step1_6_1(){
         if(disabled===false){
 
             docRef.update({
-                url: '/dashboard/'+project+'/step1_7',
-                step:'esenciaMarca_paso7'
+                url: '/dashboard/'+project+'/step1_8',
+                step:'esenciaMarca_paso8',
+                percentStep2:70,
             })
             .then(function(db) {
          
@@ -183,8 +207,9 @@ function Step1_6_1(){
         }   else{
     
             docRef.update({
-                url: '/dashboard/'+project+'/step1_6_1',
-                step:'esenciaMarca_paso6_1'
+                url: '/dashboard/'+project+'/step1_7',
+                step:'esenciaMarca_paso7',
+                percentStep2:60,
             })
             .then(function(db) {
          
@@ -201,6 +226,19 @@ function Step1_6_1(){
             if (doc.exists) {
                 console.log(doc.data().url);
                 setUrlNext(doc.data().url);
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+                        percentStep2:100
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
             } else {
                 console.log("No such document!");
             }
@@ -216,7 +254,7 @@ function Step1_6_1(){
             isCancelled = true;
         };
 
-     }, [project,data,disabled,columns]);
+     }, [project,data,disabled,columns,classes.board1_1,classes.board1,classes.board2,classes.board2_2,classes.board3,classes.board3_3]);
 
      React.useEffect(()=>{
         let db = fb.firestore();
@@ -255,7 +293,7 @@ function Step1_6_1(){
 
         var docRef = db.collection(`${user.email}`).doc(project);
     
-        docRef.collection('Esencia de marca').doc('paso 6_1').get().then(function(doc) {
+        docRef.collection('Esencia de marca').doc('paso 7').get().then(function(doc) {
 
             if (doc.exists) {
          
@@ -308,15 +346,7 @@ function Step1_6_1(){
                         setColumns(columnsFromBackend);
                         setDisabled(true);
                     } else {
-                        Object.values(columnsFromBackend).map(column=> {
-                         
-                               column.items=[];
-                               
-                            return column;
-
-                        });
-                        setColumns(columnsFromBackend);
-                        setDisabled(true);
+                       
                     }
                 }).catch(function(error) {
                    // console.log("Error getting document:", error);
@@ -326,7 +356,7 @@ function Step1_6_1(){
            // console.log("Error getting document:", error);
         });  
 
-       // setColumns(columnsFromBackend);
+
     })
         },[project,classes.board1,classes.board2,classes.board3,classes.contentNotes,showTitle])
 
@@ -369,15 +399,15 @@ function Step1_6_1(){
                         <ProgressTool
                             className={classes.progress}
                             titleStep='Conociendo tu marca'
-                            numStep='6'
-                            numTotalStep='7'
+                            numStep='7'
+                            numTotalStep='10'
                             value={value}
                    
 
                         />
                     </div>
                     <div className={classes.contentText}>
-                       <h1 className={classes.question}> <span className={classes.num}>6. </span>¡Es tiempo de conocer tus valores de marca! Escribe mediante palabras claves los valores de tu empresa/proyecto/emprendimiento.</h1>
+                       <h1 className={classes.question}> <span className={classes.num}>7. </span>¡Es tiempo de conocer tus valores de marca! Escribe mediante palabras claves los valores de tu empresa/proyecto/emprendimiento.</h1>
                     </div>
                     <div className={classes.contentBottom}>
 
@@ -450,9 +480,9 @@ function Step1_6_1(){
                                                             </Draggable>
                                                         )
                                                     })}
-                                                    {!column.showTitle?
+                                                    {column.name === 'Todo'?
                                                     <div className={classes.plus}>
-                                                    <img alt='tutorial' className={classes.iconsAction}   src={('/images/plus.svg')}/>
+                                                    <img alt='tutorial' className={classes.iconsAction} onClick={onAlert}  src={('/images/plus.svg')}/>
                                                     </div>:null}
                                                    
                                                    {provided.placeholder}
@@ -725,7 +755,54 @@ function Step1_6_1(){
         color:'#CCCCCC'
     },
 
-    
+    board1_1:{
+        backgroundColor:'rgba(36,234,139,0.15)',
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
+        position:'absolute',
+        border: '2px dashed #24EA8B',
+        boxSizing: 'border-box',
+        borderRadius: '15px',
+        left: '734px',
+        top: '294px',
+        width: '477px',
+        height: '100px',
+    },
+    board2_2:{
+        display:'flex',
+        backgroundColor:'rgba(252,192,16,0.15)',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
+        border: '2px dashed #FCC010',
+        boxSizing: 'border-box',
+        borderRadius: '15px',
+        width: '477px',
+        position:'absolute',
+        height: '100px',
+        left: '734px',
+        top: '404px',
+
+    },
+
+    board3_3:{
+        display:'flex',
+        backgroundColor:'rgba(255,107,108,0.15)',
+        position:'absolute',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
+        border: '2px dashed #FF6B6C',
+        boxSizing: 'border-box',
+        borderRadius: '15px',
+        width: '477px',
+        height: '100px',
+        left: '734px',
+        top: '516px',
+
+    },
     
     }));
 

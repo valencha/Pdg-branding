@@ -25,7 +25,7 @@ function Step1_3(){
     const classes = useStyles();
     let history = useHistory();
     
-    const [value, setValue] = React.useState(28.5714285714);
+    const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
 
     const [urlNext, setUrlNext] = React.useState('');
@@ -88,7 +88,8 @@ function Step1_3(){
 
         docRef.update({
             url: '/dashboard/'+project+'/step1_4',
-            step:'esenciaMarca_paso4'
+            step:'esenciaMarca_paso4',
+            percentStep2:30,
         })
         .then(function(db) {
      
@@ -102,7 +103,8 @@ function Step1_3(){
 
         docRef.update({
             url: '/dashboard/'+project+'/step1_3',
-            step:'esenciaMarca_paso3'
+            step:'esenciaMarca_paso3',
+            percentStep2:20,
         })
         .then(function(db) {
      
@@ -119,6 +121,20 @@ function Step1_3(){
             if (doc.exists) {
                 console.log(doc.data().url);
                 setUrlNext(doc.data().url);
+                setValue(doc.data().percentStep2);
+                if(doc.data().percentStep2===100){
+                    docRef.update({
+     
+                        percentStep2:100
+                    })
+                    .then(function(db) {
+                 
+                        console.log('done');
+                    })
+                    .catch(function(error) {
+                      //   console.error("Error updating document: ", error);
+                    });
+                }
             } else {
                 console.log("No such document!");
             }

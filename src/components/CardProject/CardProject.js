@@ -5,6 +5,7 @@ import { Card } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import DataContext from '../../context/DataContext/DataContext';
 
 
 
@@ -13,7 +14,7 @@ function CardProject(props){
 
     const classes = useStyles({ urlBanner: 'images/imgDefaultProject.svg', urlBack:'images/Ellipse.svg'});
     let history = useHistory();
-
+    const value = React.useContext(DataContext);
     const ColorCircularProgress = withStyles({
         root: {
           color: '#5975FF',
@@ -39,8 +40,8 @@ function CardProject(props){
 
       function handleClickProject(){
           console.log(props.id);
-          console.log(props.url);
-          history.push('/dashboard/'+props.titleProject+'/main');
+          history.push('/dashboard/'+props.titleProject+'/'+props.id+'/main');
+           
         
           
 

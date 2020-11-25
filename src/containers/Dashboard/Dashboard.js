@@ -2,13 +2,13 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import PlaceHolderBuscar from '../../components/PlaceHolderBuscar/PlaceHolderBuscar';
 import ToolBar from '../../components/ToolBar/ToolBar';
-import { useHistory } from "react-router-dom";
+import DataContext from '../../context/DataContext/DataContext';
 import BtnInitial from '../../components/BtnInitial/BtnInitial';
 import BtnOutlined from '../../components/BtnOutlined/BtnOutlined';
 import CardProject from '../../components/CardProject/CardProject';
 import Dialog from '@material-ui/core/Dialog';
 import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
-
+import { useHistory } from "react-router-dom";
 
 
 //Todos los imports se coloca   n arriba de este 
@@ -19,8 +19,8 @@ require('firebase/auth');
 
 function Dashboard(props){
   
-
-
+  let history = useHistory();
+  const value = React.useContext(DataContext);
   const classes = useStyles({urlLogo: 'images/logoEasyBrandingColor.svg'});
   const [contentShow, setContentShow] = React.useState(true);
   const [contentShow2, setContentShow2] = React.useState(false);
@@ -45,16 +45,16 @@ function Dashboard(props){
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const [titleProject, setTitleProject] = React.useState('Sin titulo');
-  const [dateProject, setDateProject] = React.useState('Sin titulo');
+  const [collaborator, setCollaborator] = React.useState('');
+  const [dateProject, setDateProject] = React.useState('Sin fecha');
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [user, setUser] = React.useState('');
+  
   const [marginBell, setMarginBell] = React.useState('40px');
   const [project, setProject] = React.useState([]);
-  const [step, setStep]=React.useState(titleProject);
-  const [url, setUrl] = React.useState('/dashboard/'+step+'/main');
+  const [projectShare, setProjectShare] = React.useState([]);
 
+  let url = '/dashboard/'+titleProject+'/main'
 
-  let history = useHistory();
 
 
   const handleClickOpen = () => {
@@ -81,6 +81,11 @@ function Dashboard(props){
 function handleTitle(event) {
   setTitleProject(event.target.value);
   setDateProject(formatDate(new Date()));
+}
+
+function handleCollaborator(event) {
+  setCollaborator(event.target.value);
+  console.log(collaborator)
 }
 
  
@@ -149,86 +154,168 @@ function handleOption4(){
   setOption2(classes.btnOption);
   setOption3(classes.btnOption);
 }
+function handleAddProject(){
+  let users= [value.user.email,collaborator]
+
+  let db = fb.firestore();
 
 
+  console.log(users)
+  setOpenDialog(false);
 
 
-  function handleAddProject(){
-    let db = fb.firestore();
-    let data = {
-      titleProject: titleProject,
-      dateProject: dateProject,
-      step: step,
-      url:url,
-      percent:0,
-
-    }
-    
-
-    // Add a new document in collection "cities" with ID 'LA'
-    db.collection(`${user.email}`).doc(titleProject).set(data)
-  .then(function(docRef) {
-      window.location.reload();
-
-  })
-  .catch(function(error) {
-      console.error("Error adding document: ", error);
-  });
-  
+  let data = {
+    titleProject: titleProject,
+    dateProject: dateProject,
+    step: 'Esencia de la marca',
+    id:'',
+    url:url,
+    percent:0,
+    percentStep1:0,
+    percentStep2:0,
+    percentStep3:0,
+    percentStep4:0,
+    percentStep5:0,
+    percentStep6:0,
 
   }
-
-
-    
-  React.useEffect(() => {
-    let isCancelled = false;
-    setStep(titleProject);
-    setUrl('/dashboard/'+step+'/intro'); 
-    
-    let db = fb.firestore();
-
-    console.log(url);
-    fb.auth().onAuthStateChanged(user => {
-      setUser(user);
+  var docRefU = db.collection('users');
+  db.collection("projects").add(data)
+  .then(function(docRef) {
+    console.log("Document written with ID: ", docRef.id);
+    db.collection("projects").doc(docRef.id).update({
+      "id":  docRef.id,
+  })
+  .then(function() {
+      console.log("Document successfully updated!");
+  });
+ 
+    docRefU.get().then(function(querySnapshot) {
       
-     
-      if (user) {
-            console.log('ingreso' + user.displayName);
-             
-    db.collection(`${user.email}`).get().then((snapShots) => {
-      if (!isCancelled) {
-        setProject(snapShots.docs.map(doc => {
+    querySnapshot.forEach(function(doc) {
+      Object.values(users).forEach(element => {
+        if(element === doc.id){
+          if(doc.id===value.user.email){
+            db.collection("projects").doc(docRef.id).collection("users").doc(doc.id).set({            
+              owner:true,
+            })
+            db.collection('users').doc(doc.id).collection("projects").doc(docRef.id).set({            
+              owner:true,
+            })
+
+
+          }      
+          if(doc.id ===collaborator){
+            db.collection("projects").doc(docRef.id).collection("users").doc(doc.id).set({            
+              owner:false,
+
+            })
+            db.collection('users').doc(doc.id).collection("projects").doc(docRef.id).set({            
+              owner:false,
+
+            })
+          }
+       
+          console.log(doc.id, " => ", doc.data());
+        }
+      })
+        // doc.data() is never undefined for query doc snapshots
+       
+    });
+});
+
+
+})
+.catch(function(error) {
+    console.error("Error adding document: ", error);
+});
+
+
+}
+
+
+  React.useEffect(()=>{
+
+    if(value.user !==null){
+
+    let db = fb.firestore();
+   
+    var docRefU = db.collection("projects");
+    var docRef = db.collection("users");
+    
+    docRef.get().then(function(querySnapshot) {
+     querySnapshot.forEach(function(doc) {
+      let idsP= []
+      let idsPS= []
+      let projects= []
+      let projectsShare= []
+          if(doc.id===value.user.email){
+            var docUserCurrent = db.collection("users").doc(doc.id).collection("projects");
+            docUserCurrent.get().then(function(querySnapshot) {
           
-          return {
-            titleProject: doc.data().titleProject,
-            dateProject: doc.data().dateProject,
-            step: doc.data().step,
-            url:doc.data().url,
-            id: doc.id,
+      
+              querySnapshot.forEach(function(doc) {
+                if(doc.data().owner===true){
+                  idsP.push(doc.id)
+                }
+                if(doc.data().owner===false){
+                  idsPS.push(doc.id)
+                }
+              });
+
+ 
+
+            });
+
+            docRefU.get().then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc2) {
+                
+              Object.values(idsP).forEach(element => {
+                if(doc2.id ===element){
+                  projects.push(doc2.data());
+                  console.log(doc2.data());
+                }
+           
+              });
+
+              Object.values(idsPS).forEach(element => {
+                if(doc2.id ===element){
+                  projectsShare.push(doc2.data());
+                  console.log(doc2.data());
+                }
+           
+              });
+          
+  
+            });
+            setProject(projects)
+            setProjectShare(projectsShare)
+
+          });
+           
+            
 
           }
-        })
-        )
-      }
-     
-    })
-        } else {
-         history.push('/login');
-             
-        }
+
+       
+          // doc.data() is never undefined for query doc snapshots
+         
+    });
+
+  });
+}else{
+  history.push('/login')
+}
+
+
+ 
+
+
     
-      
-    })
-    
+  },[value,history])
+
+
    
-    
-    return () => {
-      isCancelled = true;
-    };
-    
-  }, [user.email,history,step,url,setUrl,titleProject]);
-  
-  
    
 
     return (
@@ -333,6 +420,13 @@ function handleOption4(){
                             width='357px'
                             height='50px'/>
 
+                            <PlaceHolder      
+                            type="text"
+                            placeHolder="Añade un coloborador"
+                            onChange={handleCollaborator}
+                            width='357px'
+                            height='50px'/>
+
                           </div>
                           <div className={classes.actionsDialog}>
                           <BtnOutlined
@@ -389,9 +483,21 @@ function handleOption4(){
 
                       { contentOption2 &&
 
-                      <div>
-                         <h1>Compartidos conmigo</h1>
-                      </div>
+                        <div className={classes.projects}>
+                                            
+                                                  
+                        {projectShare.map((item, i) =>
+
+                          <CardProject key={i}
+                          {...item}
+
+                          />
+
+                        )}
+
+                          
+                        
+                        </div>
                       }
                       { contentOption3 &&
 
