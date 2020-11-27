@@ -1,11 +1,12 @@
 import React from 'react';
 import{useParams} from 'react-router-dom';
-import Papa from 'papaparse'
 import TopBar from '../../components/TopBar/TopBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import LateralBar from '../../components/LateralBar/LateralBar';
 import CardMediaCheck from '../../components/CardMediaCheck/CardMediaCheck';
+import CardCheckVideo from '../../components/CardCheckVideo/CardCheckVideo';
+import CardCheckSound from '../../components/CardCheckSound/CardCheckSound';
 import BtnYellow from '../../components/BtnYellowG/BtnYellowG';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
@@ -13,35 +14,637 @@ import CardMediaS from '../../components/CardMediaS/CardMediaS';
 import PlaceHolderBuscarMedia from '../../components/PlaceHolderBuscarMedia/PlaceHolderBuscarMedia';
 import Slider from 'react-grid-carousel';
 import './style.css'
-
+import uuid from "uuid/v4";
 
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
 
+let listImg=[
+    {
+      "url": "/images/db/limon.png",
+      "nombre": "limon",
+      "select": false,
+      "tipo": "imagen",
+      "categoria":"general",
+      id: uuid(),
+    },
+    {
+      "url": "/images/db/olas.png",
+      "nombre": "olas",
+      "select": false,
+      "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/pato.png",
+      "nombre": "pato",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/tambor.png",
+      "nombre": "tambor",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/cafe.png",
+      "nombre": "cafe",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+
+    },
+    {
+      "url": "/images/db/fresas.png",
+      "nombre": "fresas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/donas.png",
+      "nombre": "donas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/trompeta.png",
+      "nombre": "trompeta",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/bosque.png",
+      "nombre": "bosque",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/manzana.png",
+      "nombre": "manzana",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/saxo.png",
+      "nombre": "saxo",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/piano.png",
+      "nombre": "piano",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/flores.png",
+      "nombre": "flores",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/script.png",
+      "nombre": "script",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/serifa.png",
+      "nombre": "serifa",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/paloSeco.png",
+      "nombre": "paloSeco",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/gamuza.png",
+      "nombre": "gamuza",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/rocas.png",
+      "nombre": "rocas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/naranja.png",
+      "nombre": "naranja",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/cadenas.png",
+      "nombre": "cadenas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/gomas.png",
+      "nombre": "gomas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/chile.png",
+      "nombre": "chile",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/fogata.png",
+      "nombre": "fogata",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/olla.png",
+      "nombre": "olla",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/ukelele.png",
+      "nombre": "ukelele",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+         "id": uuid(),
+    },
+    {
+      "url": "/images/db/chelo.png",
+      "nombre": "chelo",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/violin.png",
+      "nombre": "violin",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/bateria.png",
+      "nombre": "bateria",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/sandia.png",
+      "nombre": "sandia",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/arandanos.png",
+      "nombre": "arandanos",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/mora.png",
+      "nombre": "mora",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/kiwi.png",
+      "nombre": "kiwi",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/aguacate.png",
+      "nombre": "aguacate",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/papaya.png",
+      "nombre": "papaya",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/cereza.png",
+      "nombre": "cereza",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/pera.png",
+      "nombre": "pera",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/display.png",
+      "nombre": "display",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/piña.png",
+      "nombre": "piña",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/manzanaVerde.png",
+      "nombre": "manzanaVerde",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/leche.png",
+      "nombre": "leche",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/sedaVerde.png",
+      "nombre": "sedaVerde",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/sedaRoja.png",
+      "nombre": "sedaRoja",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/crispetas.png",
+      "nombre": "crispetas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/chocolate.png",
+      "nombre": "chocolate",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/vainilla.png",
+      "nombre": "vainilla",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/menta.png",
+      "nombre": "menta",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/canela.png",
+      "nombre": "canela",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/chicle.png",
+      "nombre": "chicle",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/mani.png",
+      "nombre": "mani",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/chocolateTaza.png",
+      "nombre": "chocolateTaza",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/italica.png",
+      "nombre": "italica",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/metroPared.png",
+      "nombre": "metroPared",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/hojas.png",
+      "nombre": "hojas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/barraRestaurante.png",
+      "nombre": "barraRestaurante",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/relojColgado.png",
+      "nombre": "relojColgado",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/sombra.png",
+      "nombre": "sombra",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/salida.png",
+      "nombre": "salida",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/hamacaRelajo.png",
+      "nombre": "hamacaRelajo",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/riachueloHombre.png",
+      "nombre": "riachueloHombre",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/comidas.png",
+      "nombre": "comidas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/avion.png",
+      "nombre": "avion",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/pasarela.png",
+      "nombre": "pasarela",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/casaBlanca.png",
+      "nombre": "casaBlanca",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/cientificos.png",
+      "nombre": "cientificos",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/realidadVirtual.png",
+      "nombre": "realidadVirtual",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/libreta.png",
+      "nombre": "libreta",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/salonClase.png",
+      "nombre": "salonClase",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/paisaje.png",
+      "nombre": "paisaje",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/calleCasas.png",
+      "nombre": "calleCasas",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/equipoManos.png",
+      "nombre": "equipoManos",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/playaMujer.png",
+      "nombre": "playaMujer",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    },
+    {
+      "url": "/images/db/bibliotecaClasica.png",
+      "nombre": "bibliotecaClasica",
+      "select": false,
+       "tipo": "imagen",
+      "categoria":"general",
+      "id": uuid(),
+    }
+   ]
+
+ let  listVideo=[
+    {
+      "video": '/videos/mar.mp4',
+      "url":'/images/db/mar.png',
+      "nombre": "mar",
+      "select": false,
+      "tipo": "video",
+      "categoria": "general",
+      "id": uuid(),
+    }
+   ]
+
+   let  listSound=[
+    {
+      "audio": "/sounds/instrumento1.mp3",
+      "url":'/images/db/mar.png',
+      "nombre": "intrumento1",
+      "select": false,
+      "tipo": "audio",
+      "categoria": "general",
+      "id": uuid(),
+    }
+   ]
 
 function Step3(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
-    const [disabled, setDisabled] = React.useState(false);
-    const [rows, setRows] = React.useState([]);
-    const [data, setData] = React.useState([]);
+    const [disabled, setDisabled] = React.useState(true);
+    
     const  [btns, setBtns ]= React.useState([]);
 
     const [showImg, setShowImg] = React.useState(true);
     const [showVideo, setShowVideo] = React.useState(false);
     const [showSound, setShowSound] = React.useState(false);
-
     const [isClick, setIsClick] = React.useState(true);
     const [isClick2, setIsClick2] = React.useState(false);
     const [isClick3, setIsClick3] = React.useState(false);
-    const [optionSelected, setOptionSelected] = React.useState('Imágenes');
 
     const [answers, setAnswers] = React.useState([]);
-    let answersTemp=Object.assign([],answers)
+
+
 
  
     const MyDot = ({ isActive }) => (
@@ -58,362 +661,62 @@ function Step3(){
 
      
     function handleBackPage(event){
-        history.push(`/dashboard/${project}/main`);
+        history.push('/dashboard/'+project+'/'+id+'/intro3');
     } 
 
+
+
     React.useEffect(() => {
-        let protoData= {
-            alimentos:1,
-            viajes:1,
-            moda:1,
-            hogar:1,
-            educacion:1,
-            marketing:1,
-            joyeria:1,
-            familia:1,
-            gamificacion:1,
-            solidaridad:1,
-            empatia:1,
-            seguridad:1,
-            sostenibilidad:1,
-            confianza:1,
-            fidelidad:1,
-            lealtad:1,
-            respeto:1,
-            compasion:1,
-            compromiso:1,
-            amor:1,
-            honestidad:1,
-            responsabilidad:1,
-            felicidad:1,
-            sencillez:1,
-            tranquilidad:1,
-            apoyo:1,
-            flexibilidad:1,
-            joven:1,
-            adulta:1,
-            creativa:1,
-            innovadora:1,
-            clasica:1,
-            tradicional:1,
-            artesanal:1,
-            tecnologia:1,
-            racional:1,
-            emocional:1,
-            masculina:1,
-            femenina:1,
-            global:1,
-            local:1,
-            premium:1,
-            popular:1,
-            juguetona:1,
-            seria:1,
-            autoridad:1,
-            amigable:1,
-        }
+      
+        var docRef = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')
 
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            var docRef = db.collection(`${user.email}`).doc(project);
-            docRef.collection('Esencia de marca').doc('paso 2').get().then(function(doc) {
-                if (doc.exists) {
-                    var words = doc.data().respuestas;
-                    words.map((t)=>{
+        const listener = docRef.onSnapshot(function(doc) {
+      
+            if(doc.exists){
+          
 
-                        if(t==='Alimentos'){
-                            protoData.alimentos=5;
-                        
-                        }
-                        if(t==='Viajes'){
-                            protoData.viajes=5;
-                 
-                        }
-                        if(t==='Moda'){
-                            protoData.moda=5;
-                 
-                        }
-                        if(t==='Hogar'){
-                            protoData.hogar=5;
-                            protoData.familia=5;
-                 
-                        }
-                        return t;
-                    })
-                    setData(protoData)
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-
-            docRef.collection('Esencia de marca').doc('paso 3').get().then(function(doc) {
-                if (doc.exists) {
-                    var words = doc.data().respuestas;
-                    words.map((t)=>{
- 
-                            var text= Object.values(t);
-                            var string= text.toString().split(" ");
-                 
-                             string.map((w)=>{
+            setAnswers(doc.data().answersT)
   
-                                if(w==='Hacemos' || w==='hacemos' ){
-                                     protoData.artesanal=5
-                                }
-                                if(w==='Diseñamos'|| w==='Diseñar'|| w==='diseñamos' || w==='diseño'|| w==='Creamos' || w==='creamos' || w==='ideamos' || w==='Ideamos' ){
-                                    protoData.creativa=5
-                               }
+                setDisabled(false)
+      
+        }   
+        })
+        return () => listener()
+   
+    }, [id]);
+    React.useEffect(()=>{
+    
+        if(disabled===false){
 
-                                if(w==='educación' || w==='Educación' || w=== 'Educacion' || w==='educacion'){
-                                    protoData.educacion=5
-                                }
-
-                                if(w==='tecnologia' || w==='Tecnologia' || w=== 'tecnología' || w==='Tecnología'){
-                                    protoData.tecnologia=5
-                                }
-
-                                if(w==='gamificacion' || w==='Gamificación' || w=== 'gamificación' || w==='Gamificacion'){
-                                    protoData.gamificacion=5
-                                }
-
-
-
-                                 return w;
-                             })
-                       
-
-                        return t;
-                    })
-                    setData(protoData)
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-
-            docRef.collection('Esencia de marca').doc('paso 4').get().then(function(doc) {
-                if (doc.exists) {
-                    var words = doc.data().respuestas;
-                    words.map((t)=>{
-
-                            var text= Object.values(t);
-                            var string= text.toString().split(" ");
-                 
-                             string.map((w)=>{
            
-                                if(w==='Sostenible'|| w==='Eco' || w==='Ecológicos'|| w==='ecológicos' || w==='eco' || w==='ecologicos' || w==='ecoamigables' ){
-                                     protoData.sostenibilidad=5
-                                }
-
-                                if(w==='Creatividad'|| w==='creación' || w==='crear'|| w==='Crear' || w==='Creando'  ){
-                                    protoData.creativa=5
-                               }
-
-                               if(w==='Apoyar'|| w==='apoyar' || w==='apoyamos'|| w==='Apoyamos' || w==='acompañando' || w==='acompañamos'  ){
-                                protoData.apoyo=5
-                            }
+            db.collection("projects").doc(id).update({
+            "percent": 80,
+            "percentStep3": 100,
+            }) 
+            
+        }else{
+     
+            db.collection("projects").doc(id).update({
+                "percent": 60,
+                "percentStep3": 0,
+                }) 
+        }
    
 
+    },[disabled,id])
 
 
-                                 return w;
-                             })
-                       
-
-                        return t;
-                    })
-                    setData(protoData)
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-
-            docRef.collection('Esencia de marca').doc('paso 5').get().then(function(doc) {
-                if (doc.exists) {
-                    var words = doc.data().respuestas;
-                    words.map((t)=>{
-                            var text= Object.values(t);
-                            var string= text.toString().split(" ");
-                 
-                             string.map((w)=>{
-                                if(w==='pasion' || w==='apasionados' || w==='amor' || w==='pasión' || w==='Pasión' ){
-                                     protoData.amor=5
-                                     protoData.emocional=4
-                                }
-
-                                if(w==='innovación' || w==='Innovación' ){
-                                    protoData.innovadora=5
-                         
-                               }
-
-                                 return w;
-                             })
-                       
-
-                        return t;
-                    })
-                    setData(protoData) 
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-
-            docRef.collection('Esencia de marca').doc('paso 6').get().then(function(doc) {
-                if (doc.exists) {
-                    var words = doc.data().respuestas;
-                    words.map((t)=>{
-                            var text= Object.values(t);
-                    
-                        if(text === 'amor' || text ==='Amor' || text==='AMOR'){
-                            protoData.amor=5;
-                        }
-       
-                        if(text === 'SOLIDARIDAD' || text ==='Solidaridad' || text==='solidaridad'){
-                            protoData.solidaridad=5;
-                        }
-
-                        if(text === 'Empatía' || text ==='Empatia' || text==='EMPATÍA' || text==='EMPATIA' || text==='empatía' || text==='empatia'){
-                            protoData.empatia=5;
-                        }
-
-                        if(text === 'Seguridad' || text==='SEGURIDAD'  || text ==='seguro' || text==='SEGURO' || text==='Seguro' || text==='segura' || text==='SEGURA' || text === 'Segura'){
-                            protoData.seguridad=5;
-                        }
-
-                        if(text === 'Confianza' || text==='CONFIANZA'  || text ==='confianza' || text==='Confiable' || text==='CONFIABLE' || text==='confiable' ){
-                            protoData.confianza=5;
-                        }
-
-                        if(text === 'Fiel' || text==='fidelidad'  || text ==='FIEL' || text==='FIDELIDAD' || text==='fiel' || text==='Fidelidad' ){
-                            protoData.fidelidad=5;
-                        }
-
-                        if(text === 'Leal' || text==='lealtad'  || text ==='LEAL' || text==='LEALTAD' || text==='leal' || text==='Lealtad' ){
-                            protoData.lealtad=5;
-                        }
-                        if(text === 'Respeto' || text==='respeto'  || text ==='RESPETO' ){
-                            protoData.respeto=5;
-                        }
-                        if(text === 'Compasión' || text==='COMPASIÓN'  || text ==='compasión' || text === 'Compasion' || text==='COMPASION'  || text ==='compasion'){
-                            protoData.compasion=5;
-                        }
-                        if(text === 'Compromiso' || text==='COMPROMISO'  || text ==='compromiso' || text === 'Comprometidos' || text==='Comprometido'  || text ==='Comprometida'){
-                            protoData.compromiso=5;
-                        }
-                        if(text === 'Honestidad' || text==='HONESTIDAD'  || text ==='honestidad' ){
-                            protoData.honestidad=5;
-                        }
-
-                        if(text === 'Felicidad' || text==='feliz'  || text ==='FELICIDAD' ||text ==='felicidad' ){
-                            protoData.felicidad=5;
-                        }
-
-                        if(text === 'sencillez' || text==='Sencillez'  || text ==='sencillo' ||text ==='SENCILLEZ' || text ==='Sencillo' || text==='fácil' || text==='a la mano'){
-                            protoData.sencillez=5;
-                        }
-
-                        if(text === 'responsable' || text==='Responsable'  || text ==='RESPONSABLE' ||text ==='responsabilidad' || text ==='Responsabilidad' || text==='RESPONSABILIDAD'){
-                            protoData.responsabilidad=5;
-                        }
-                        if(text === 'tranquilidad' || text==='Tranquilidad'  || text ==='TRANQUILIDAD' ||text ==='Tranquilo' || text ==='TRANQUILO' || text==='TRANQUILA'){
-                            protoData.tranquilidad=5;
-                        }
-                       
-
-                        return t;
-                    })
-                    setData(protoData) 
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-              
-    setData(protoData)
-
-     
-})
-
-
-
-    }, [project]);
-
-    React.useEffect(() =>{
-        async function getData() {
-			const response = await fetch('/database/baseDatosSistema.csv')
-			const reader = response.body.getReader()
-			const result = await reader.read() // raw array
-			const decoder = new TextDecoder('utf-8')
-			const csv = decoder.decode(result.value) // the csv text
-			const results = Papa.parse(csv, { header: true }) // object with { data, errors, meta }
-			const rows = results.data // array of objects
-			setRows(rows)
-		}
-		getData()
-
-    }, [])
-    	
-
-    let proto =Object.assign(data) ;
-    var objetoX = proto;
-    var newRows= Object.assign(rows);
-    var newArray = newRows;
-    const [listaOrdenados, setListaOrdenados] = React.useState([]);
-
-    React.useEffect(()=>{
-        var nuevosK = [];
-      
-        let objetoB;
-        let objetoA=Object.values(objetoX);
-
-        for (let index = 0; index < newArray.length; index++) {
-            objetoB = Object.values(newArray[index]).slice(3);
-          
-			
-			var numerador = 0;
-			var denominadorA = 0;
-			var denominadorB = 0;
-	
-			
-			for (let index = 0; index < objetoA.length; index++) {
-				numerador += (parseInt(objetoA[index]) * parseInt(objetoB[index]));
-				denominadorA += (parseInt(objetoA[index]) * parseInt(objetoA[index]));
-				denominadorB += (parseInt(objetoB[index]) * parseInt(objetoB[index]));
-			}
-			
-			denominadorA = Math.sqrt(denominadorA);
-			denominadorB = Math.sqrt(denominadorB);
-			var valorK = numerador / (denominadorA * denominadorB);
-            var valorFinalK = parseInt(valorK * 100);
-
-       
-            
-			
-			if (valorFinalK < 99) {
-				nuevosK.push({
-                    nombreArchivo: newArray[index].nombre,
-                    url: newArray[index].url,
-                    valorK: valorFinalK ,
-                    select:false,
-				});
-            }
-           
-            setListaOrdenados( nuevosK.sort((a, b) => (a.valorK > b.valorK) ? - 1 : 1));
-       
-		}
-        
-    },[newArray,objetoX])
-
+    
       function handleNextPage(event){
-        console.log(project.step);
+        history.push('/dashboard/'+project+'/'+id+'/finished3');
+
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/finished3',
        
-       history.push('/dashboard/'+project+'/finished3');
+
+        })
       }
  
 
@@ -444,12 +747,15 @@ function Step3(){
   
     },[isClick,isClick2,isClick3])
 
-    React.useEffect(()=>{
-        
-    })
+    const setFunction = (list = []) =>{
+      let hash = {};
+      const array = list.filter(o => hash[o.nombre] ? false : hash[o.nombre] = true);
+      const evaluation = array.length === 0 ? listImg : array 
+      return evaluation
+    }
 
 
-      
+
 
     return (
         <div className={classes.body}>
@@ -468,8 +774,8 @@ function Step3(){
                 </div>
                 <div className={classes.btns}>
                 {btns.map((item,i)=>
-                               <BtnYellow key={i}{...item}  onClick={(event)=>{
-                                setOptionSelected(`${item.content}`);
+                               <BtnYellow key={i}{...item} onClick={(event)=>{
+                     
 
                             
                                 if(item.content==='Imágenes'){
@@ -513,48 +819,32 @@ function Step3(){
                     <Slider showDots={true} dot={MyDot} cols={4} rows={2} gap={10} containerStyle={{ background: 'transparent',  width:'820px', 
                     height: '400px', margin: '0 auto'}} >
           
-                    {listaOrdenados.map((item, i) =>
-                    <Slider.Item  key={i}>         
-                        <CardMediaCheck
-                        {...item}
-                        onChange={(event)=>{
-                            let checked=event.target.checked;
-                                var j = -1;
-                                
-                                answersTemp.forEach((answer,k) => {
-                                 
-                                    if(item.nombreArchivo===answer.nombre){
-                                        console.log(item.nombreArchivo);
-                                        console.log(answers.nombre)
-                                       j=k;
-                                    }
-                            
-                                });
-                                item.select=checked;
-                                //ENCONTRO
-                                if(j!== -1){
-                                    
-                                    if(checked===true){
-                                        answersTemp[j].select=true;
-                                    }else{
-                                        
-                                        answersTemp.splice(j,1);
-                                    }
-
-                                }else{//NO ENCONTRO
-                                    answersTemp.push({nombre:item.nombreArchivo, url:item.url, select:true, tipo:item.tipo})
-                                    
-                                }
-                                setAnswers(answersTemp)
-                        
-                                if(answersTemp.length>0){
-                                    setDisabled(false)
-                                }
-                        }}
-
-                        />
-                    </Slider.Item>
-           
+                    {setFunction(listImg).map((item, i) => {
+                        const index = answers.findIndex(({ nombre }) => nombre === item.nombre);
+                        return (    <Slider.Item  key={i}>         
+                            <CardMediaCheck
+                            {...item}
+                            select={index > -1}
+                            onChange={async (event)=>{
+                                var docRef = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')  ;
+                                const data =  await docRef.get()
+                                const currentData = data.data()?.answersT ?? []
+                                const res = currentData.find((obj) => obj.nombre === item.nombre )
+                                if(res){
+                                  const newData =  currentData.filter((obj) => obj.nombre !== item.nombre)
+                                  await docRef.set({answersT:newData})
+                                }else{
+                                  const newData = [...currentData]
+                                  newData.push({...item,select:true})
+                                  await docRef.set({answersT:newData})
+                                }                                    
+                            }}
+    
+                            />
+                        </Slider.Item>
+               )
+                    }
+                
   
                 )}
                 </Slider>
@@ -564,51 +854,36 @@ function Step3(){
                     <div className={classes.carousel}>
                     <Slider showDots={true} dot={MyDot} cols={4} rows={2} gap={10} containerStyle={{ background: 'transparent',  width:'820px', 
                     height: '400px', margin: '0 auto'}} >
-          
-                    {listaOrdenados.map((item, i) =>
-                    <Slider.Item  key={i}>         
-                        <CardMediaCheck
-                        {...item}
-                        onChange={(event)=>{
-                            let checked=event.target.checked;
-                                var j = -1;
-                                
-                                answersTemp.forEach((answer,k) => {
-                                 
-                                    if(item.nombreArchivo===answer.nombre){
-                                        console.log(item.nombreArchivo);
-                                        console.log(answers.nombre)
-                                       j=k;
-                                    }
-                            
-                                });
-                                item.select=checked;
-                                //ENCONTRO
-                                if(j!== -1){
-                                    
-                                    if(checked===true){
-                                        answersTemp[j].select=true;
-                                    }else{
-                                        
-                                        answersTemp.splice(j,1);
-                                    }
-
-                                }else{//NO ENCONTRO
-                                    answersTemp.push({nombre:item.nombreArchivo, url:item.url, select:true})
-                                    
-                                }
-                                setAnswers(answersTemp)
-                        
-                                if(answersTemp.length>0){
-                                    setDisabled(false)
-                                }
-                        }}
-
-                        />
-                    </Slider.Item>
-           
+                        {setFunction(listSound).map((item, i) => {
+                        const index = answers.findIndex(({ nombre }) => nombre === item.nombre);
+                        return (    <Slider.Item  key={i}>         
+                            <CardCheckSound
+                            {...item}
+                            select={index > -1}
+                            onChange={async (event)=>{
+                                var docRef = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')  ;
+                                const data =  await docRef.get()
+                                const currentData = data.data()?.answersT ?? []
+                                const res = currentData.find((obj) => obj.nombre === item.nombre )
+                                if(res){
+                                  const newData =  currentData.filter((obj) => obj.nombre !== item.nombre)
+                                  await docRef.set({answersT:newData})
+                                }else{
+                                  const newData = [...currentData]
+                                  newData.push({...item,select:true})
+                                  await docRef.set({answersT:newData})
+                                }                                    
+                            }}
+    
+                            />
+                        </Slider.Item>
+               )
+                    }
+                
   
                 )}
+       
+                
                 </Slider>
                 </div>:null}
                 
@@ -616,51 +891,36 @@ function Step3(){
                     <div className={classes.carousel}>
                     <Slider showDots={true} dot={MyDot} cols={4} rows={2} gap={10} containerStyle={{ background: 'transparent',  width:'820px', 
                     height: '400px', margin: '0 auto'}} >
-          
-                    {listaOrdenados.map((item, i) =>
-                    <Slider.Item  key={i}>         
-                        <CardMediaCheck
-                        {...item}
-                        onChange={(event)=>{
-                            let checked=event.target.checked;
-                                var j = -1;
-                                
-                                answersTemp.forEach((answer,k) => {
-                                 
-                                    if(item.nombreArchivo===answer.nombre){
-                                        console.log(item.nombreArchivo);
-                                        console.log(answers.nombre)
-                                       j=k;
-                                    }
-                            
-                                });
-                                item.select=checked;
-                                //ENCONTRO
-                                if(j!== -1){
-                                    
-                                    if(checked===true){
-                                        answersTemp[j].select=true;
-                                    }else{
-                                        
-                                        answersTemp.splice(j,1);
-                                    }
-
-                                }else{//NO ENCONTRO
-                                    answersTemp.push({nombre:item.nombreArchivo, url:item.url, select:true})
-                                    
-                                }
-                                setAnswers(answersTemp)
-                        
-                                if(answersTemp.length>0){
-                                    setDisabled(false)
-                                }
-                        }}
-
-                        />
-                    </Slider.Item>
-           
+                    {setFunction(listVideo).map((item, i) => {
+                        const index = answers.findIndex(({ nombre }) => nombre === item.nombre);
+                        return (    <Slider.Item  key={i}>         
+                            <CardCheckVideo
+                            {...item}
+                            select={index > -1}
+                            onChange={async (event)=>{
+                                var docRef = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')  ;
+                                const data =  await docRef.get()
+                                const currentData = data.data()?.answersT ?? []
+                                const res = currentData.find((obj) => obj.nombre === item.nombre )
+                                if(res){
+                                  const newData =  currentData.filter((obj) => obj.nombre !== item.nombre)
+                                  await docRef.set({answersT:newData})
+                                }else{
+                                  const newData = [...currentData]
+                                  newData.push({...item,select:true})
+                                  await docRef.set({answersT:newData})
+                                }                                    
+                            }}
+    
+                            />
+                        </Slider.Item>
+               )
+                    }
+                
   
                 )}
+         
+                
                 </Slider>
                 </div>:null}
                 
@@ -700,24 +960,17 @@ function Step3(){
                 </div>
                 <div className={classes.cardSelects}>
                 {answers.map((item,i)=>
-                               <CardMediaS key={i}{...item} onClick={(event)=>{
-                                
-                               
-                               let lista=Object.assign([],listaOrdenados)
-                                lista.forEach((answer,k) => {
-                                 
-                                    if(answer.nombreArchivo===item.nombre){
-                                        answer.select=false;
-                                        console.log(answer.select);
-                                        console.log(item.nombre)
-                                
-                                    }
-                            
-                                });
-                                setListaOrdenados(lista)
-                                answersTemp.splice(i, 1);
-                                setAnswers(answersTemp);
-                  
+                               <CardMediaS key={i}{...item} onClick={async(event)=>{
+
+
+                                var docRef = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')  ;
+                                const data =  await docRef.get()
+                                const currentData = data.data()?.answersT ?? []
+                                const res = currentData.find((obj) => obj.nombre === item.nombre )
+                                if(res){
+                                  const newData =  currentData.filter((obj) => obj.nombre !== item.nombre)
+                                  await docRef.set({answersT:newData})
+                                }
                              
                                }
                             }/>

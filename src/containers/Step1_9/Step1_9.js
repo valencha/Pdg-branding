@@ -14,28 +14,40 @@ import SelectorLabel from '../../components/SelectorLabel/SelectorLabel';
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
+
+let btns=[{
+    id:1,
+    content:'Sí',
+    checked:false,
+},
+{
+    id:2,
+    content:'No',
+    checked:false,
+},
+{
+    id:3,
+    content:'Omitir',
+    checked:false,
+},
+]
 
 
 function Step1_9(){
 
-    let {project}= useParams();
-    console.log(project);
-    const classes = useStyles();
-    const  [btns, setBtns ]= React.useState([]);
+    let {project,id}= useParams();
 
-    
+    const classes = useStyles();
+
     const [showPlaceHolder, setShowPlaceHolder] = React.useState(false);
-    const [isClick, setIsClick] = React.useState(false);
-    const [isClick2, setIsClick2] = React.useState(false);
-    const [isClick3, setIsClick3] = React.useState(false);
+   
     const [valueGenre, setValueGenre] = React.useState([]);
     const [valueAge, setValueAge] = React.useState([]);
     const [valuePoints, setValuePoints] = React.useState([]);
     const [valueInterests, setValueInterests] = React.useState([]);
-    const [optionSelected, setOptionSelected] = React.useState('');
-  
-
+    const [indexOption, setIndexOption] = React.useState('none') 
     const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
 
@@ -49,218 +61,171 @@ function Step1_9(){
     let history = useHistory();
 
  
-   
-
- 
     function handleNextPage(event){
-        history.push('/dashboard/'+project+'/finished1');
-        
+        history.push('/dashboard/'+project+'/'+id+'/finished1');
+
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 10').set({
-               respuesta: optionSelected,
-               genero: valueGenre,
-               edad:valueAge,
-               puntosContacto: valuePoints,
-               intereses:valueInterests,
- 
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/finished1',
+            "percent": 40,
+       
+
         })
 
-
     }
-      
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_10`);
+        history.push('/dashboard/'+project+'/'+id+'/step1_9');
       } 
 
     function onChangeGenre(event){
-       
-        setValueGenre(event.target.value);
-        console.log(event.target.value);
+       let valueGenre=Object.values(event.target.value)
+
+       setValueGenre(event.target.value)
+     
+
+       var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10');
 
   
+  
+       docRef.update({
+        "genero": valueGenre,
+    })
+    .then(function() {
+        console.log("Document successfully updated!");
+    });
         
     }
 
 
     function onChangeAge(event){
-        setValueAge(event.target.value);
-        console.log(event.target.value);
-        
+        let valueAge=Object.values(event.target.value)
+
+        setValueAge(event.target.value)
+      
+ 
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10');
+ 
+   
+   
+        docRef.update({
+         "edad": valueAge,
+     })
+     .then(function() {
+         console.log("Document successfully updated!");
+     });
     }
 
     function onChangePoints(event){
-        setValuePoints(event.target.value);
-        console.log(event.target.value);
-        
+        let valuePoints=Object.values(event.target.value)
+
+        setValuePoints(event.target.value)
+      
+ 
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10');
+ 
+   
+   
+        docRef.update({
+         "puntosContacto": valuePoints,
+     })
+     .then(function() {
+         console.log("Document successfully updated!");
+     });
     }
 
     function onChangeInterests(event){
-        setValueInterests(event.target.value);
-        console.log(event.target.value);
-        
-    }
+        let valueInterests=Object.values(event.target.value)
 
-
-
-
+        setValueInterests(event.target.value)
+      
+ 
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10');
+        docRef.update({
+         "intereses": valueInterests,
+     })
+     .then(function() {
+         console.log("Document successfully updated!");
+     });
+    }   
 
     React.useEffect(() => {
 
 
-      
-        let isCancelled = false;
-        if (!isCancelled) {
+        
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10')
 
+        const listener = docRef.onSnapshot(function(doc) {
+            
+           
+            if(doc.exists){
+              
+              
+            setIndexOption(doc.data()?.optionSelected ?? 'none')
+            setShowPlaceHolder(doc.data()?.optionSelected === 'Sí')
+
+            if(doc.data().genero){
+                setValueGenre(doc.data().genero)
+            }else{
+                setValueGenre([])
+            }
+            if(doc.data().edad){
+                setValueAge(doc.data().edad)
+            }else{
+                setValueAge([])
+            }
+            if(doc.data().intereses){
+                setValueInterests(doc.data().intereses)
+            }else{
+                setValueInterests([])
+            }
+            if(doc.data().puntosContacto){
+
+                setValuePoints(doc.data().puntosContacto)
+            }else{
+                setValuePoints([])
+            }
+            setDisabled(false);
+
+
+            }else{
+            setValueGenre([])
+            setValueAge([])
+            setValueInterests([])
+            setValuePoints([])
+            }
+        })
+        return () => listener()
    
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-        if(disabled===false){
-
-            docRef.update({
-                url:'/dashboard/'+project+'/finished1',
-                step:'esenciaMarca_finished1',
-                percentStep2:100,
-                percent:40
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-             
-               // console.error("Error updating document: ", error);
-            });
-        }else{
-
-            docRef.update({
-                url:'/dashboard/'+project+'/step1_10',
-                step:'esenciaMarca_paso10',
-                percentStep2:90
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-             
-               // console.error("Error updating document: ", error);
-            });
-        }
-     
+    }, [id]);
 
 
+    React.useEffect(() => {
+        var docRef = db.collection("projects").doc(id);
         docRef.get().then(function(doc) {
-            if (doc.exists) {
-
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100,
-                        percent:40
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
+            if(disabled===true){
+                db.collection("projects").doc(id).update({
+                    "percentStep2": 90,
+                    }) 
+            }else{
+                db.collection("projects").doc(id).update({
+                    "percentStep2": 100,
+           
+                    }) 
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-   
-           docRef.collection('Esencia de marca').doc('paso 10').get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().respuesta);
-                setOptionSelected(doc.data().respuesta);
-
-                if(doc.data().respuesta==='Sí'){
-                    setIsClick(true);
-                    setShowPlaceHolder(true);
-                    setValueGenre(doc.data().genero)
-                    setValueAge(doc.data().edad)
-                    setValueInterests(doc.data().intereses)
-                    setValuePoints(doc.data().puntosContacto)
-                   
-               
-                }
-                if(doc.data().respuesta==='No'){
-                    setIsClick2(true);
-               
-                }
-                if(doc.data().respuesta==='Omitir'){
-                    setIsClick3(true);
-                
-                }
-
-   
-               
-            } else {
-                console.log("No such document!");
+            if(doc.exists){
+                setValue(doc.data().percentStep2)
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-          
+            
 
         })
+      },[id,disabled])
 
-        }
+      
 
-        return () => {
-            isCancelled = true;
-        };
 
-    }, [project,disabled]);
 
-    React.useEffect(()=>{
-        let btns=[{
-            id:1,
-            content:'Sí',
-            checked:isClick,
-        },
-        {
-            id:2,
-            content:'No',
-            checked:isClick2,
-        },
-        {
-            id:3,
-            content:'Omitir',
-            checked:isClick3,
-        },
-    ]
-
-    setBtns(btns);
-
-    if(isClick === true || isClick2 === true || isClick3===true){
-        setDisabled(false);
-    }else{
-        setDisabled(true);
-    }
-  
-    },[isClick,isClick2,isClick3])
-
- 
 
 
 
@@ -290,37 +255,27 @@ function Step1_9(){
                         <div className={classes.options}>
                         <div className={classes.answers}>
                         {btns.map((item,i)=>
-                               <BtnYellow key={i}{...item}  onClick={(event)=>{
-                            
-                                setOptionSelected(`${item.content}`);
-                                if(item.content==='Sí'){
-                                       setIsClick(prev=>!prev);
-                                       setShowPlaceHolder(prev=>!prev);
-                                      
-                                }else{
-                                    setIsClick(false);
-                                    setShowPlaceHolder(false);
-                                }
-                                if(item.content==='No'){
-                                    setIsClick2(prev=>!prev);
-                                   
-                                }else{
-                                    setIsClick2(false);
-                                
-                                }
-                                if(item.content==='Omitir'){
-                                    setIsClick3(prev=>!prev);  
-                                }else{
-                                 setIsClick3(false);
+                               <BtnYellow key={i}{...item}
+                               checked={ indexOption === item.content} onChange={async(event)=>{
+                                setIndexOption(item.content)
+                                let db = fb.firestore();
+                                var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1')
+                                await docRef.set({optionSelected:item.content})
 
+                                if(item.content==='Sí'){   
+                                setShowPlaceHolder(prev => !prev)
                                 }
-
-                               }}/>
+                                else if(item.content==='No'){
+                                    setShowPlaceHolder(false)
+                                }
+                                else if(item.content==='Omitir'){
+                                    setShowPlaceHolder(false)
+                                }
+                            }}/>
                                
 
                            
-                            )}
-                            
+                        )}  
                         </div>
 
                         {showPlaceHolder &&
@@ -332,6 +287,7 @@ function Step1_9(){
                                  label='Género'
                                  value={valueGenre}
                                  onChange={onChangeGenre}/>
+
                                 <SelectorLabel
                                  options={options2}
                                  label='Edad'

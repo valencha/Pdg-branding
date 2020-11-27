@@ -20,7 +20,6 @@ import Congrats2 from '../ScreenCongrat2/ScreenCongrat2';
 import Congrats3 from '../ScreenCongrat3/ScreenCongrat3';
 import Step3 from '../Step3/Step3';
 import Step4 from '../Step4/Step4';
-import Step4c from '../Step4c/Step4c';
 import IntroQuestionStep1 from '../IntroQuestionStep1/IntroQuestionStep1';
 import IntroQuestionStep2 from '../IntroQuestionStep2/IntroQuestionStep2';
 import IntroQuestionStep3 from '../IntroQuestionStep3/IntroQuestionStep3';
@@ -78,27 +77,26 @@ function App() {
       <Route path="/login" component ={Login}/>
       <Route exact path="/dashboard" component ={Dashboard}/>
       <Route exact path="/dashboard/:project/:id/main" component ={Map_step}/>
-      <Route exact path="/dashboard/:project/videos" component ={Step0}/>
-      <Route exact path="/dashboard/:project/intro" component ={IntroQuestionStep1}/>
-      <Route exact path="/dashboard/:project/step1" component ={Step1}/>
-      <Route exact path="/dashboard/:project/step1_2" component ={Step1_2}/>
-      <Route exact path="/dashboard/:project/step1_3" component ={Step1_3}/>
-      <Route exact path="/dashboard/:project/step1_4" component ={Step1_4}/>
-      <Route exact path="/dashboard/:project/step1_5" component ={Step1_5}/>
-      <Route exact path="/dashboard/:project/step1_6" component ={Step1_6}/>
-      <Route exact path="/dashboard/:project/step1_7" component ={Step1_6_1}/>
-      <Route exact path="/dashboard/:project/step1_8" component ={Step1_7}/>
-      <Route exact path="/dashboard/:project/step1_9" component ={Step1_8}/>
-      <Route exact path="/dashboard/:project/step1_10" component ={Step1_9}/>
-      <Route exact path="/dashboard/:project/finished1" component ={Congrats1}/>
-      <Route exact path="/dashboard/:project/intro2" component ={IntroQuestionStep2}/> 
-      <Route exact path="/dashboard/:project/finished2" component ={Congrats2}/>
-      <Route exact path="/dashboard/:project/intro3" component ={IntroQuestionStep3}/> 
-      <Route exact path="/dashboard/:project/step3" component ={Step3}/>
-      <Route exact path="/dashboard/:project/finished3" component ={Congrats3}/>
-      <Route exact path="/dashboard/:project/intro4" component ={IntroQuestionStep4}/> 
-      <Route exact path="/dashboard/:project/step4" component ={Step4}/>
-      <Route exact path="/dashboard/:project/step4c" component ={Step4c}/>
+      <Route exact path="/dashboard/:project/:id/videos" component ={Step0}/>
+      <Route exact path="/dashboard/:project/:id/intro" component ={IntroQuestionStep1}/>
+      <Route exact path="/dashboard/:project/:id/step1" component ={Step1}/>
+      <Route exact path="/dashboard/:project/:id/step1_2" component ={Step1_2}/>
+      <Route exact path="/dashboard/:project/:id/step1_3" component ={Step1_3}/>
+      <Route exact path="/dashboard/:project/:id/step1_4" component ={Step1_4}/>
+      <Route exact path="/dashboard/:project/:id/step1_5" component ={Step1_5}/>
+      <Route exact path="/dashboard/:project/:id/step1_6" component ={Step1_6}/>
+      <Route exact path="/dashboard/:project/:id/step1_7" component ={Step1_6_1}/>
+      <Route exact path="/dashboard/:project/:id/step1_8" component ={Step1_7}/>
+      <Route exact path="/dashboard/:project/:id/step1_9" component ={Step1_8}/>
+      <Route exact path="/dashboard/:project/:id/step1_10" component ={Step1_9}/>
+      <Route exact path="/dashboard/:project/:id/finished1" component ={Congrats1}/>
+      <Route exact path="/dashboard/:project/:id/intro2" component ={IntroQuestionStep2}/> 
+      <Route exact path="/dashboard/:project/:id/finished2" component ={Congrats2}/>
+      <Route exact path="/dashboard/:project/:id/intro3" component ={IntroQuestionStep3}/> 
+      <Route exact path="/dashboard/:project/:id/step3" component ={Step3}/>
+      <Route exact path="/dashboard/:project/:id/finished3" component ={Congrats3}/>
+      <Route exact path="/dashboard/:project/:id/intro4" component ={IntroQuestionStep4}/> 
+      <Route exact path="/dashboard/:project/:id/step4" component ={Step4}/>
       </DataContext.Provider>
   </Router>
 );

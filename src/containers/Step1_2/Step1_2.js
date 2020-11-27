@@ -14,48 +14,67 @@ import AddCategory from '../../components/AddCategory/AddCategory';
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+
+let db = fb.firestore();
+
 require('firebase/auth');
 
 
+let listCategory =[
+    {
+        id:1,
+       label:'Alimentos',
+       urlImage:'/images/food.png',
+       select:false
+
+   },
+     {
+        id:2,
+       label:'Viajes',
+       urlImage:'/images/trip.png',
+       select:false
+   },
+    {
+        id:3,
+       label:'Moda',
+       urlImage:'/images/fashion.png',
+       select:false
+   },
+
+    {
+        id:4,
+       label:'Hogar',
+       urlImage:'/images/house.png',
+       select:false
+   },       
+]
+
 function Step1_2(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
     
     const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
     const [openDialog, setOpenDialog] = React.useState(false);
-    const [urlNext, setUrlNext] = React.useState('');
    
-    const [answers, setAnswers] = React.useState([]);
+    const [answers, setAnswers] = React.useState(listCategory);
 
     const [answersTemp, setAnswersTemp] = React.useState([]);
 
-
     function handleNextPage(event){
-        history.push(urlNext);
+        history.push('/dashboard/'+project+'/'+id+'/step1_3');
 
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-    
-    
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 2').set({
-              respuestas:answersTemp
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/step1_3',
+       
+
         })
+       
+    
 
 
     }
@@ -64,7 +83,7 @@ function Step1_2(){
  
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1`);
+        history.push('/dashboard/'+project+'/'+id+'/step1');
       } 
    
   
@@ -77,185 +96,93 @@ function Step1_2(){
       };
 
 
-    React.useEffect(() => {
-    let isCancelled = false;
-
-    if (!isCancelled) {
-        
- 
-     let db = fb.firestore();
-     fb.auth().onAuthStateChanged(user => {
-
-     var docRef = db.collection(`${user.email}`).doc(project);
-   
-     if(disabled ===false){
-     docRef.update({
-         url: '/dashboard/'+project+'/step1_3',
-         step:'esenciaMarca_paso3',
-         percentStep2:20
-     })
-     .then(function(db) {
-  
-         //console.log('done');
-     })
-     .catch(function(error) {
-         // The document probably doesn't exist.
-         //console.error("Error updating document: ", error);
-     });
-    }else{
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_2',
-            step:'esenciaMarca_paso2',
-            percentStep2:10
-        })
-        .then(function(db) {
-     
-            //console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            //console.error("Error updating document: ", error);
-        });
-    }
-     docRef.get().then(function(doc) {
-   
-         if (doc.exists) {
-         
-             setUrlNext(doc.data().url);
-             setValue(doc.data().percentStep2);
-             if(doc.data().percentStep2===100){
-                docRef.update({
-
-                    percentStep2:100
-                })
-                .then(function(db) {
-             
-                    console.log('done');
-                })
-                .catch(function(error) {
-                  //   console.error("Error updating document: ", error);
-                });
+      React.useEffect(() => {
+        var docRef = db.collection("projects").doc(id);
+        docRef.get().then(function(doc) {
+            if(doc.exists){
+                setValue(doc.data().percentStep2)
             }
-         } else {
-             //console.log("No such document!");
-         }
-     }).catch(function(error) {
-        // console.log("Error getting document:", error);
-     });
-  
 
-     
-    })
- 
+        })
+      },[id])
+      React.useEffect(()=>{
+        let db = fb.firestore();
+        if(answersTemp.length>0){
+            setDisabled(false);  
+           
 
-   }
+            db.collection("projects").doc(id).update({
+            "percentStep2": 20,
+            }) 
+            
+        }else{
+            setDisabled(true);  
+            db.collection("projects").doc(id).update({
+                "percentStep2": 10,
+                }) 
+        }
+   
 
-    return () => {
-    isCancelled = true;
-    };
-    
-    }, [project,disabled,answersTemp,urlNext,answers]);
+    },[answersTemp,id])
 
     React.useEffect(() => {
         
-        let listCategory =[
-            {
-                id:1,
-               label:'Alimentos',
-               urlImage:'/images/food.png',
-               select:false
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-2')
 
-           },
-             {
-                id:2,
-               label:'Viajes',
-               urlImage:'/images/trip.png',
-               select:false
-           },
-            {
-                id:3,
-               label:'Moda',
-               urlImage:'/images/fashion.png',
-               select:false
-           },
-       
-            {
-                id:4,
-               label:'Hogar',
-               urlImage:'/images/house.png',
-               select:false
-           },
-       
-       ]
+        const listener = docRef.onSnapshot(function(doc) {
+            var respuestasTemp=[];
+            const updated = []
+            if(doc.exists){
+            setAnswers([]);
+            setAnswersTemp([]);
+                const respuestas =doc.data().respuestas;
+                console.log(respuestas)
+
+                listCategory.forEach((value) => {
+
+                    const exist = respuestas.find((str) => str === value.label )
+                    if(exist){
+                        const itemUpdated = {
+                            ...value,
+                            select:true,
+                        }
+                    respuestasTemp.push();
+                    updated.push(itemUpdated)
+                    }else {
+                        updated.push(value)
+                    }
+                })
+              setAnswers(updated);
+              setAnswersTemp(respuestasTemp);
+              setDisabled(false)
+            }   
+        })
+        return () => listener()
    
- 
-    let db = fb.firestore();
-    fb.auth().onAuthStateChanged((user) => {
-
-    var respuestasTemp =[];
-
-    var docRef = db.collection(`${user.email}`).doc(project);
-
- 
-   
-
-
-
-    docRef.collection('Esencia de marca').doc('paso 2').get().then(function(doc) {
-
-        if (doc.exists) {
-          // console.log(Object.values(doc.data().respuestas));
-          console.log(doc.data());;
-          var respuestas =doc.data().respuestas;
-          listCategory.forEach(item=> {
-
-              respuestas.map((d)=>{
-                  if(item.label=== d){
-                      item.select=true;
-                      respuestasTemp.push(item.label);
-
-                  }
-                  return d;
-              
-              })
-          });
-        setAnswers(listCategory);
-        setAnswersTemp(respuestasTemp);
-        if(respuestasTemp.length>0){
-            setDisabled(false)
-        }else{   
-            setDisabled(true);
-            setAnswers(listCategory);
-        }
-        
-        } else {
-            setAnswers(listCategory);
-            setAnswersTemp([])  
-            //console.log("No such document!");
-        }
-    }).catch(function(error) {
-       // console.log("Error getting document:", error);
-    });
-})
-
-
-   
-
- 
-      }, [project]);
+    }, [id]);
 
 
       React.useEffect(()=>{
+        let db = fb.firestore();
         if(answersTemp.length>0){
-            setDisabled(false);   
+            setDisabled(false);  
+           
+
+            db.collection("projects").doc(id).update({
+            "percentStep2": 20,
+            }) 
+            
         }else{
             setDisabled(true);  
+            db.collection("projects").doc(id).update({
+                "percentStep2": 10,
+                }) 
         }
    
 
-    },[answersTemp,project])
+    },[answersTemp,id])
 
- 
+
     return (
         <div className={classes.body}>
             <div>
@@ -306,6 +233,15 @@ function Step1_2(){
                                         aTemp.push(item.label)
                                     }
                                     setAnswersTemp(aTemp);
+
+                                    let db = fb.firestore();
+
+                                    var docRef = db.collection("projects").doc(id);
+
+                                    docRef.collection('esencia-de-marca').doc('paso-2').set({
+                                    respuestas:answersTemp
+                                    })
+
                                     if(aTemp.length>0){
                                         setDisabled(false)
                                     }else{   

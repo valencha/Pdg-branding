@@ -23,7 +23,7 @@ function Login(){
     const [password2, setPassword2] = React.useState('');
     let db = fb.firestore();
     const [sign, setSign] = React.useState(true);
-    const [user, setUser] = React.useState(value.user);
+    let user = value.user;
     const [changeBanner, setChangeBanner] = React.useState('images/imgLogin.jpg');
     const classes = useStyles({ urlBanner: `${changeBanner}`, urlLogo: 'images/LogoColor.svg'});
     const [changeDesc, setChangeDesc] = React.useState('La plataforma que te facilita aprender y aplicar');

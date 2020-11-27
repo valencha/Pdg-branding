@@ -9,7 +9,7 @@ function ToolBoxText(props){
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/move.svg'alt="move" width='10px' /></div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/mouse-pointer.svg'alt="mouse" width='24px' /></div> </Button>
             <Button className={classes.btnTool} onClick={props.handleCreateNotes} > <div className={classes.contentBtn}><img src='/images/square.svg'alt="textArea" width='24px' /></div> </Button>
-            <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/upload.svg'alt="upload" width='24px' /></div> </Button>
+            <Button className={classes.btnTool} onClick={props.handleSaveF}> <div className={classes.contentBtn}><img src='/images/upload.svg'alt="upload" width='24px' /></div> </Button>
           
         </div>
       );

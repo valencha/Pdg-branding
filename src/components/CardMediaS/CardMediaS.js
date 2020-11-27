@@ -11,12 +11,11 @@ function CardMediaS(props){
     const classes = useStyles({ urlIcon: '/images/checked.svg'});
     
 
-   
   
 
     return <Card className={classes.containCheckBox}>
  
-        <img src={`${props.url}`} alt='media'width="60px" height="auto" className={classes.img}/>
+        <img src={`${props.url}`} alt={`${props.nombre}`} width="60px" height="auto" className={classes.img}/>
 
         <img src={'/images/trash.svg'} alt='media'width="20px" height="auto" className={classes.imgTrash} onClick={props.onClick}/>
        

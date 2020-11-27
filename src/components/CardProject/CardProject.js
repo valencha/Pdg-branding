@@ -5,7 +5,7 @@ import { Card } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import DataContext from '../../context/DataContext/DataContext';
+
 
 
 
@@ -14,7 +14,7 @@ function CardProject(props){
 
     const classes = useStyles({ urlBanner: 'images/imgDefaultProject.svg', urlBack:'images/Ellipse.svg'});
     let history = useHistory();
-    const value = React.useContext(DataContext);
+    
     const ColorCircularProgress = withStyles({
         root: {
           color: '#5975FF',
@@ -42,9 +42,6 @@ function CardProject(props){
           console.log(props.id);
           history.push('/dashboard/'+props.titleProject+'/'+props.id+'/main');
            
-        
-          
-
       }
 
 
@@ -67,7 +64,7 @@ function CardProject(props){
 
              
             <Box position="relative" display="inline-flex">
-            <ColorCircularProgress variant="static" value={50} className={classes.bottom}/>
+            <ColorCircularProgress variant="static" value={props.percent} className={classes.bottom}/>
             <Box
             top={0}
             left={0}
@@ -79,7 +76,7 @@ function CardProject(props){
             justifyContent="center"
             >
             <Typography variant="caption" className={classes.text}component="div">{`${Math.round(
-            50,
+            `${props.percent}`,
             )}%`}</Typography>
             </Box>
             </Box>

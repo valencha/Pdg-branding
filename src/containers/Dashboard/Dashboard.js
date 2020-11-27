@@ -229,7 +229,7 @@ function handleAddProject(){
 .catch(function(error) {
     console.error("Error adding document: ", error);
 });
-
+window.location.reload();
 
 }
 

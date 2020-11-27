@@ -1,5 +1,4 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import{useParams} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import TopBar from '../../components/TopBar/TopBar';
@@ -14,21 +13,55 @@ import uuid from "uuid/v4";
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
+
+const columnsFromBackend ={
+    [uuid()]: {
+        name: 'Todo',
+        i:1,
+        className:'classes.contentNotes',
+        items: [],
+        showTitle:false,
+      },
+      [uuid()]: {
+        name: 'Relevancia Alta',
+        i:2,
+        className:'classes.board1',
+        items: [],
+        showTitle:true,
+    
+      },
+      [uuid()]: {
+        name: 'Relevancia Media',
+        className:'classes.board2',
+        i:3,
+        items: [],
+        showTitle:true,
+
+      },
+      [uuid()]: {
+        name: 'Relevancia Baja',
+        i:4,
+        className:'classes.board3',
+        items: [],
+        showTitle:true,
+  
+      },
+}
 
 function Step1_6_1(){
 
-    let {project}= useParams();
-    const data = React.useContext(DataContext);
+    let {project,id}= useParams();
+   
     const classes = useStyles();
     let history = useHistory();
     
     
     const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
-    const [showTitle, setShowTitle] = React.useState(true);
+    
   
-    const [urlNext, setUrlNext] = React.useState('');
 
    
     const [todo, setTodo]= React.useState([]);
@@ -38,40 +71,44 @@ function Step1_6_1(){
 
    
 
-    const[columns,setColumns]=React.useState({});
+    const[columns,setColumns]=React.useState(columnsFromBackend);
 
-  
-
-    function handleNextPage(event){
-        history.push(urlNext);
+    function handleSaveF(event){
+     
       
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 7').set({
-               todo: todo,
-               relevanciaAlta: relevanciaAlta,
-               relevanciaMedia: relevanciaMedia,
-               relevanciaBaja: relevanciaBaja,  
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-7').set({
+        todo:todo,
+        relevanciaAlta:relevanciaAlta,
+        relevanciaBaja:relevanciaBaja,
+        relevanciaMedia:relevanciaMedia,
         })
 
       }
 
+      function handleNextPage(event){
+        history.push('/dashboard/'+project+'/'+id+'/step1_8');
+
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/step1_8',
+       
+
+        })
+       
+    
+ 
+
+
+    }
+
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_6`);
+        history.push('/dashboard/'+project+'/'+id+'/step1_6');
       } 
  
 
@@ -85,7 +122,6 @@ function Step1_6_1(){
     const onDragEnd=(result,columns, setColumns)=>{
         if(!result.destination) return;
 
-        
         
         const {source, destination} =result;
         if(source.droppableId !== destination.droppableId){
@@ -130,7 +166,7 @@ function Step1_6_1(){
     };
   
     React.useEffect(() => {
-        let isCancelled = false;
+        
         Object.entries(columns).map(([id,column])=>{
 
          
@@ -175,7 +211,7 @@ function Step1_6_1(){
                     }
                 }
                 if(column.name === 'Todo'){
-                  
+                    column.className = classes.contentNotes;
                     setTodo(column.items);
                 }
                 
@@ -183,198 +219,113 @@ function Step1_6_1(){
             
         });
      
+ 
 
-      if (!isCancelled) {
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-    
-        if(disabled===false){
+     }, [columns,classes.board1_1,classes.board1,classes.board2,classes.board2_2,classes.board3,classes.board3_3,classes.contentNotes]);
 
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_8',
-                step:'esenciaMarca_paso8',
-                percentStep2:70,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-        }   else{
-    
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_7',
-                step:'esenciaMarca_paso7',
-                percentStep2:60,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    
-        }
-
+     React.useEffect(() => {
+        var docRef = db.collection("projects").doc(id);
         docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
+            if(doc.exists){
+                setValue(doc.data().percentStep2)
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-          
-              
-    })
 
-        }
-        return () => {
-            isCancelled = true;
-        };
+        })
+      },[id])
 
-     }, [project,data,disabled,columns,classes.board1_1,classes.board1,classes.board2,classes.board2_2,classes.board3,classes.board3_3]);
-
-     React.useEffect(()=>{
-        let db = fb.firestore();
-        const columnsFromBackend ={
-            [uuid()]: {
-                name: 'Todo',
-                className:classes.contentNotes,
-                items: [],
-                showTitle:false,
-              },
-              [uuid()]: {
-                name: 'Relevancia Alta',
-                className:classes.board1,
-                items: [],
-                showTitle:true,
-                setShowTitle:setShowTitle,
-              },
-              [uuid()]: {
-                name: 'Relevancia Media',
-                className:classes.board2,
-                items: [],
-                showTitle:true,
-                setShowTitle:setShowTitle,
-              },
-              [uuid()]: {
-                name: 'Relevancia Baja',
-                className:classes.board3,
-                items: [],
-                showTitle:true,
-                setShowTitle:setShowTitle,
-              },
-        }
+     React.useEffect(() => {
         
-        fb.auth().onAuthStateChanged((user) => {
-          
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-7')
 
-        var docRef = db.collection(`${user.email}`).doc(project);
-    
-        docRef.collection('Esencia de marca').doc('paso 7').get().then(function(doc) {
+        const listener = docRef.onSnapshot(function(doc) {
+      
+            const updated = []
+            if(doc.exists){
+            setColumns([]);
+                const todo =doc.data().todo;
+                const respuestas =doc.data().relevanciaAlta;
+                const respuestasB =doc.data().relevanciaBaja;
+                const respuestasM =doc.data().relevanciaMedia;
 
-            if (doc.exists) {
-         
-                var respuestasAlta =doc.data().relevanciaAlta;
-                var respuestasBaja =doc.data().relevanciaBaja;
-                var respuestasMedia =doc.data().relevanciaMedia;
-                var respuestasTodo =doc.data().todo;
 
-                Object.values(columnsFromBackend).map(column=> {
-        
-                    if(column.name=== 'Todo'){
-                       column.items=respuestasTodo;
-                       
+                Object.entries(columnsFromBackend).map(([id,value])=>{
+                    console.log(value)
+                   
+                    if(value.name==='Todo'){
+                        value.items=todo
                     }
-                    if(column.name=== 'Relevancia Alta'){
-                        column.items=respuestasAlta;
-                        
-                     }
-                     if(column.name=== 'Relevancia Media'){
-                        column.items=respuestasMedia;
-                        
-                     }
-                     if(column.name=== 'Relevancia Baja'){
-                        column.items=respuestasBaja;
-                        
-                     }
 
-                    return column;
-
-                });
-                setColumns(columnsFromBackend);
-                setDisabled(false);
-         
-            } else {
-                docRef.collection('Esencia de marca').doc('paso 6').get().then(function(doc) {
-    
-                    if (doc.exists) {
-                        console.log(doc.data().respuestas);;
-                        var respuestas =doc.data().respuestas;
-                        Object.values(columnsFromBackend).map(column=> {
-                
-                            if(column.name=== 'Todo'){
-                               column.items=respuestas;
-                            
-                            }
-                            return column;
-
-                        });
-                        
-                        setColumns(columnsFromBackend);
-                        setDisabled(true);
-                    } else {
+                    if(value.name==='Relevancia Alta'){
                        
+                            value.items=respuestas
+                   
+                    }
+                    if(value.name==='Relevancia Baja'){
+                        value.items=respuestasB
+                    }
+
+                    if(value.name==='Relevancia Media'){
+                        value.items=respuestasM
+                    }
+                    return value;
+                    
+                  
+                })
+              setColumns(columnsFromBackend);
+   
+            }else{
+                setColumns([]);
+                var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-6')
+
+                docRef.get().then(function(doc) {
+                    if (doc.exists) {
+                        console.log("Document data:", doc.data());
+
+                        Object.values(columnsFromBackend).forEach((value) => {
+                   
+                            if(value.name==='Todo'){
+                                const itemUpdated = {
+                                    ...value,
+                                    items:doc.data().notas,
+                                }
+                                updated.push(itemUpdated)
+                            }else{
+                                updated.push(value)
+                            }
+
+                        })
+                        setColumns(updated);
+                    } else {
+                        // doc.data() will be undefined in this case
+                        console.log("No such document!");
                     }
                 }).catch(function(error) {
-                   // console.log("Error getting document:", error);
+                    console.log("Error getting document:", error);
                 });
+
             }
-        }).catch(function(error) {
-           // console.log("Error getting document:", error);
-        });  
-
-
-    })
-        },[project,classes.board1,classes.board2,classes.board3,classes.contentNotes,showTitle])
-
+        })
+        return () => listener()
+   
+    }, [id]);
 
     React.useEffect(()=>{
 
-     let btn= true;
+
         Object.entries(columns).map(([id,column])=>{
                 
             if(column.name === 'Todo' ){
                 console.log(Object.entries(column.items).length);
                 if(Object.entries(column.items).length ===0){
-                    btn=false;
+              
 
-                    setDisabled(btn);  
-                    console.log(disabled);  
+                    setDisabled(false);  
+                  
+
+                 
                 }else{
-                    setDisabled(true);  
+                    setDisabled(true);
+                   
                 }
                 
 
@@ -384,7 +335,23 @@ function Step1_6_1(){
                 
         });
              
-        },[columns,disabled])
+        },[columns])
+
+
+        React.useEffect(()=>{
+            
+            if(disabled===true){
+                db.collection("projects").doc(id).update({
+                    "percentStep2": 60,
+                    }) 
+            }else{
+                db.collection("projects").doc(id).update({
+                    "percentStep2": 70,
+                    }) 
+            }
+
+
+        },[disabled,id])
 
 
     return (
@@ -483,6 +450,7 @@ function Step1_6_1(){
                                                     {column.name === 'Todo'?
                                                     <div className={classes.plus}>
                                                     <img alt='tutorial' className={classes.iconsAction} onClick={onAlert}  src={('/images/plus.svg')}/>
+                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/plus.svg')}/>
                                                     </div>:null}
                                                    
                                                    {provided.placeholder}

@@ -5,14 +5,22 @@ import { makeStyles } from '@material-ui/core/styles';
 function BtnYellow(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, marginTop:`${props.marginTop}`});
-    let select= props.checked;
+    const [select,setSelect]=React.useState(props.checked)
     
-    const onClick=(e)=>{
-        props.onClick(e);
-
+    const onChange=(e)=>{
+        props.onChange(e)
+        let checked=e.target.checked;
+        setSelect(checked);
      }
 
-    return <button onClick={onClick}  className={select ? classes.btnClick:classes.btn }>{props.content}</button>;
+     React.useEffect(()=>{
+        setSelect(props.checked);
+     },[props.checked])
+
+     return (
+        <label className={select ? classes.btnClick:classes.btn }>{props.content} <input hidden type="checkbox"   checked={select ? select : false} onChange={onChange} id="Name" name="Name" /></label>
+  
+      );
 }
 
 const useStyles = makeStyles(theme => ({
@@ -22,6 +30,10 @@ const useStyles = makeStyles(theme => ({
         width: '149px',
         height: '48px',
         cursor:'pointer',
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
         textTransform: 'none',
         fontFamily: 'Poppins',
         fontSize:'16px',
@@ -45,6 +57,10 @@ const useStyles = makeStyles(theme => ({
   },
 
   btnClick: {
+    display:'flex',
+    justifyContent:'center',
+    alignContent:'center',
+    alignItems:'center',
     width: '149px',
     height: '48px',
     cursor:'pointer',

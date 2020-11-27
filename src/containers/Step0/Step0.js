@@ -16,7 +16,7 @@ require('firebase/auth');
 
 function Step0(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
     const [numStep, setNumStep] = React.useState('1');
@@ -27,103 +27,7 @@ function Step0(){
     const [option3, setOption3] = React.useState(classes.btnOption);
    
 
-    React.useEffect(() => {
 
-       
-
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            var docRef = db.collection(`${user.email}`).doc(project);
-
-           
-    
-
-
-
-            if(value===33.33333){
-                docRef.get().then(function(doc) {
-                    if (doc.exists) {
-                        if(doc.data().percentStep1===100){
-                            setValue(100);
-                        }
-                    } else {
-                        console.log("No such document!");
-                    }
-                }).catch(function(error) {
-                    console.log("Error getting document:", error);
-                });
-                
-                docRef.update({
-                    percentStep1:33.333333
-                })
-                .then(function(db) {
-                    
-                })
-                .catch(function(error) {
-               
-                });
-            
-            }
-            if(value===66.6666666){
-                docRef.get().then(function(doc) {
-                    if (doc.exists) {
-                        if(doc.data().percentStep1===100){
-                            setValue(100);
-                        }
-                    } else {
-                        console.log("No such document!");
-                    }
-                }).catch(function(error) {
-                    console.log("Error getting document:", error);
-                });
-                
-                docRef.update({
-                    percentStep1:67
-                })
-                .then(function(db) {
-                    
-                })
-                .catch(function(error) {
-               
-                });
-            
-            }
-            if(value ===100){
-                docRef.update({
-                    percent:20,
-                    percentStep1:100
-                })
-                .then(function(db) {
-                    
-                })
-                .catch(function(error) {
-               
-                });
-                
-
-
-
-            }else{
-                docRef.update({
-                    percent:10
-                })
-                .then(function(db) {
-                    
-                })
-                .catch(function(error) {
-               
-                });
-            }
-       
-
-
-        })
-
-        
-
-
-  
-    }, [project,value]);
 
     function handleOption(){
         setValue(33.33333); 
@@ -151,9 +55,15 @@ function Step0(){
       }
 
       function handleNextPage(event){
-        console.log(project.step);
+        let db = fb.firestore();
+        var docRef = db.collection("projects").doc(id);
+
+       docRef.update({
+            percentStep1: 100,
+            percent:20
+        });
        
-       history.push('main');
+        history.push('main');
       }
      
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import{useParams} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import TopBar from '../../components/TopBar/TopBar';
@@ -14,12 +13,46 @@ import uuid from "uuid/v4";
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
+
+const columnsFromBackend ={
+    [uuid()]: {
+        name: 'Todo',
+        className:'classes.contentNotes',
+        items: [{text: "Empleados",id: uuid()},
+        {text: "Colaboradores",id: uuid()},
+        {text: "Clientes",id: uuid()},
+        {text: "Accionistas",id: uuid()},
+        {text: "Proveedores",id: uuid()},
+        {text: "Consumidores",id: uuid()},
+        {text: "Líderes de opinión",id: uuid()},
+        {text: "Redes sociales",id: uuid()},
+        ],
+        showTitle:false,
+        
+      },
+      [uuid()]: {
+        name: 'Audiencia Interna',
+        className:'classes.board1',
+        items: [],
+        classNameTitle:'classes.titleBoard',
+        showTitle:true,
+      },
+      [uuid()]: {
+        name: 'Audiencia Externa',
+        className:'classes.board2',
+        classNameTitle:'classes.titleBoard',
+        items: [],
+        showTitle:true,
+      },
+
+}
 
 function Step1_8(){
 
-    let {project}= useParams();
-    const data = React.useContext(DataContext);
+    let {project,id}= useParams();
+
     const classes = useStyles();
     let history = useHistory();
     
@@ -28,7 +61,7 @@ function Step1_8(){
     const [disabled, setDisabled] = React.useState(true);
 
    
-    const [urlNext, setUrlNext] = React.useState('');
+   
 
     const [todo, setTodo]= React.useState([]);
     const [audienciaInterna, setAudienciaInterna]= React.useState([]);
@@ -36,44 +69,43 @@ function Step1_8(){
 
 
 
-    const[columns,setColumns]=React.useState({});
+    const[columns,setColumns]=React.useState(columnsFromBackend);
 
-  
-
-    function handleNextPage(event){
-        history.push(urlNext);
+    function handleSaveF(event){
+     
       
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 9').set({
-               todo: todo,
-               audienciaExterna: audienciaExterna,
-               audienciaInterna: audienciaInterna,
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-9').set({
+        todo:todo,
+        audienciaExterna:audienciaExterna,
+        audienciaInterna:audienciaInterna,
+        })
+
+    }
+
+    function handleNextPage(event){
+        history.push('/dashboard/'+project+'/'+id+'/step1_10');
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/step1_10',
+       
+
         })
 
       }
 
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_8`);
+        history.push('/dashboard/'+project+'/'+id+'/step1_8');
       } 
 
   
+ 
   
-
     
     const onDragEnd=(result,columns, setColumns)=>{
         if(!result.destination) return;
@@ -122,209 +154,150 @@ function Step1_8(){
         }
   
     };
-  
-    React.useEffect(() => {
-        let isCancelled = false;
+
+    React.useEffect(()=>{
         Object.entries(columns).map(([id,column])=>{
             
-                if(column.name === 'Audiencia Interna'){
+            if(column.name === 'Audiencia Interna'){
 
-                    setAudienciaInterna(column.items);
+                setAudienciaInterna(column.items);
 
-                    if(column.items.length> 0){
-                        column.className = classes.board1_1;
-                        column.classNameTitle = classes.titleBoard2;
-                    }else{
-                        column.className = classes.board1;
-                        column.classNameTitle = classes.titleBoard;
-                    }
+                if(column.items.length> 0){
+                    column.className = classes.board1_1;
+                    column.classNameTitle = classes.titleBoard2;
+                }else{
+                    column.className = classes.board1;
+                    column.classNameTitle = classes.titleBoard;
                 }
-                if(column.name === 'Audiencia Externa'){
-
-                    setAudienciaExterna(column.items);
-                    if(column.items.length> 0){
-                        column.className = classes.board2_2;
-                        column.classNameTitle = classes.titleBoard2;
-                    }else{
-                        column.className = classes.board2;
-                        column.classNameTitle = classes.titleBoard;
-                    }
-                }
-                if(column.name === 'Todo'){
-
-                    setTodo(column.items);
-                    if(column.items.length> 0){
-                       setDisabled(true);
-                    }
-                }
-
-                
-                return column;
-            
-        });
-
-
-      if (!isCancelled) {
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-    
-        if(disabled===false){
-
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_10',
-                step:'esenciaMarca_paso10',
-                percentStep2:90,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-        }   else{
-    
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_9',
-                step:'esenciaMarca_paso9',
-                percentStep2:80,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    
-        }
-
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-          
-              
-    })
+            if(column.name === 'Audiencia Externa'){
 
-        }
+                setAudienciaExterna(column.items);
+                if(column.items.length> 0){
+                    column.className = classes.board2_2;
+                    column.classNameTitle = classes.titleBoard2;
+                }else{
+                    column.className = classes.board2;
+                    column.classNameTitle = classes.titleBoard;
+                }
+            }
+            if(column.name === 'Todo'){
+                column.className = classes.contentNotes;
+                setTodo(column.items);
+                if(column.items.length> 0){
+                   setDisabled(true);
+                }
+            }
 
-
-
-
-        return () => {
-            isCancelled = true;
-        };
-
-  
-
-
-     }, [project,data,disabled,columns,classes.titleBoard2,classes.board1_1,classes.board2_2,classes.board1,classes.board2,classes.titleBoard]);
-
-     React.useEffect(()=>{
-        let db = fb.firestore();
-        const columnsFromBackend ={
-            [uuid()]: {
-                name: 'Todo',
-                className:classes.contentNotes,
-                items: [{text: "Empleados",id: uuid()},
-                {text: "Colaboradores",id: uuid()},
-                {text: "Clientes",id: uuid()},
-                {text: "Accionistas",id: uuid()},
-                {text: "Proveedores",id: uuid()},
-                {text: "Consumidores",id: uuid()},
-                {text: "Líderes de opinión",id: uuid()},
-                {text: "Redes sociales",id: uuid()},
-                ],
-                showTitle:false,
-                
-              },
-              [uuid()]: {
-                name: 'Audiencia Interna',
-                className:classes.board1,
-                items: [],
-                classNameTitle:classes.titleBoard,
-                showTitle:true,
-              },
-              [uuid()]: {
-                name: 'Audiencia Externa',
-                className:classes.board2,
-                classNameTitle:classes.titleBoard,
-                items: [],
-                showTitle:true,
-              },
-    
-        }
-        
-        fb.auth().onAuthStateChanged((user) => {
-          
-
-        var docRef = db.collection(`${user.email}`).doc(project);
-    
-        docRef.collection('Esencia de marca').doc('paso 9').get().then(function(doc) {
-
-            if (doc.exists) {
-         
-                var respuestasExterna =doc.data().audienciaExterna;
-                var respuestasInterna =doc.data().audienciaInterna;
-                var respuestasTodo =doc.data().todo;
-
-                Object.values(columnsFromBackend).map(column=> {
-        
-                    if(column.name=== 'Todo'){
-                       column.items=respuestasTodo;
             
+            return column;
+        
+    });
+    },[disabled,classes.contentNotes,columns,classes.titleBoard2,classes.board1_1,classes.board2_2,classes.board1,classes.board2,classes.titleBoard])
+  
+    React.useEffect(() => {
+        
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-9')
+
+        const listener = docRef.onSnapshot(function(doc) {
+      
+
+            if(doc.exists){
+            setColumns([]);
+                const todo =doc.data().todo;
+                const respuestasE =doc.data().audienciaExterna;
+                const respuestasI =doc.data().audienciaInterna;
+               
+
+
+                Object.entries(columnsFromBackend).map(([id,value])=>{
+                    console.log(value)
+                   
+                    if(value.name==='Todo'){
+                        value.items=todo
+                    }
+
+                    if(value.name==='Audiencia Interna'){
+                       
+                            value.items=respuestasI
+                   
+                    }
+                    if(value.name==='Audiencia Externa'){
+                        value.items=respuestasE
+                    }
+
+                    return value;
+                    
+                  
+                })
+              setColumns(columnsFromBackend);
+   
+            }else{
+                setColumns(columnsFromBackend);
+                
+                
+            } 
+
+            
+        }
+        
+        )
+        return () => listener()
+   
+    }, [id]);
+
+        React.useEffect(() => {
+            var docRef = db.collection("projects").doc(id);
+            docRef.get().then(function(doc) {
+                if(doc.exists){
+                    setValue(doc.data().percentStep2)
+                }
+    
+            })
+          },[id])
+
+        React.useEffect(()=>{
+
+
+            Object.entries(columns).map(([id,column])=>{
+                    
+                if(column.name === 'Todo' ){
+                    console.log(Object.entries(column.items).length);
+                    if(Object.entries(column.items).length ===0){
+                  
+    
+                        setDisabled(false);  
+                      
+    
+                     
+                    }else{
+                        setDisabled(true);
                        
                     }
-                    if(column.name=== 'Audiencia Interna'){
-                        column.items=respuestasInterna;
+                    
+    
+                }
                         
-                     }
-                     if(column.name=== 'Audiencia Externa'){
-                        column.items=respuestasExterna;
-                        
-                     }
-
-                    return column;
-
-                });
-                setColumns(columnsFromBackend);
-                setDisabled(false);
-         
-            } else {
-                setColumns(columnsFromBackend);
-            }
-        }).catch(function(error) {
-           // console.log("Error getting document:", error);
-        });  
-
-       // setColumns(columnsFromBackend);
-    })
-        },[project,classes.board1,classes.board2,classes.board3,classes.contentNotes,classes.titleBoard])
-
-
+                return column;
+                    
+            });
+                 
+            },[columns])
+    
+            React.useEffect(()=>{
+            
+                if(disabled===true){
+                    db.collection("projects").doc(id).update({
+                        "percentStep2": 80,
+                        }) 
+                }else{
+                    db.collection("projects").doc(id).update({
+                        "percentStep2": 90,
+                        }) 
+                }
+    
+    
+            },[disabled,id])
 
     return (
         <div className={classes.body}>
@@ -424,6 +397,7 @@ function Step1_8(){
                                                     {!column.showTitle?
                                                     <div className={classes.plus}>
                                                     <img alt='tutorial' className={classes.iconsAction}   src={('/images/plus.svg')}/>
+                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/plus.svg')}/>
                                                     </div>:null}
                                                    
                                                    {provided.placeholder}

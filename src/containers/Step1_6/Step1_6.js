@@ -1,5 +1,4 @@
 import React from 'react';
-import DataContext from '../../context/DataContext/DataContext';
 import{useParams} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import TopBar from '../../components/TopBar/TopBar';
@@ -14,19 +13,19 @@ import uuid from "uuid/v4";
 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
 
 function Step1_6(){
 
-    let {project}= useParams();
-    const data = React.useContext(DataContext);
+    let {project,id}= useParams();
+
     const classes = useStyles();
     let history = useHistory();
     
     const [openDialog, setOpenDialog] = React.useState(true);
     const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
-    const [urlNext, setUrlNext] = React.useState('');
   
   
     const [listNotes, setListNotes] = React.useState([]);
@@ -34,173 +33,99 @@ function Step1_6(){
     var listNotesTemp= Object.assign([],listNotes);
 
 
-
     function handleNextPage(event){
-        history.push(urlNext);
+        history.push('/dashboard/'+project+'/'+id+'/step1_7');
+        let db = fb.firestore();
+        db.collection("projects").doc(id).update({
+            "url": '/dashboard/'+project+'/'+id+'/step1_7',
+        }) 
+    }
+    function handleSaveF(event){
 
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 6').set({
-                respuestas: listNotesTemp 
- 
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-6').set({notas :listNotesTemp})
+        .then(function(docRef) {
+
+        
         })
-
-
-    }
+      }
 
       function handleOpen(event){
         setOpenDialog(prev => !prev);
       }   
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_5`);
+        history.push('/dashboard/'+project+'/'+id+'/step1_5');
       } 
 
-  
-
-    function handleCreateNotes(event){
-
+      function handleCreateNotes(event){
         listNotesTemp.push({ text: '',id: uuid()});
-     
         setListNotes(listNotesTemp);
         console.log(listNotes);
-   
+
     }
+    React.useEffect(() => {
+        
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-6')
+
+        const listener = docRef.onSnapshot(function(doc) {
+           
+            const updated = []
+            if(doc.exists){
+            setListNotes([]);
+                const respuestas =doc.data().notas;
+                console.log(respuestas)
+
+                respuestas.forEach((value) => {
+
+           
+                    updated.push({text:value.text,id:value.id})
+         
+                })
+              setListNotes(updated);
+         
+            }   
+        })
+        return () => listener()
+   
+    }, [id]);
 
 
     React.useEffect(() => {
-    let isCancelled = false;
-
-   
-     if (!isCancelled) {
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-        if(disabled===false){
-
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_7',
-                step:'esenciaMarca_paso7',
-                percentStep2:60,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-        }   else{
-    
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_6',
-                step:'esenciaMarca_paso6',
-                percentStep2:50,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    
-        }
-
+        var docRef = db.collection("projects").doc(id);
         docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
+            if(doc.exists){
+                setValue(doc.data().percentStep2)
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-          
-              
-    })
 
-        }
+        })
+      },[id])
+
+   React.useEffect(()=>{
+    let db = fb.firestore();
+    if(listNotes.length>0){
+        setDisabled(false);   
+
+            db.collection("projects").doc(id).update({
+            "percentStep2": 60,
+            }) 
+    }else{
+        setDisabled(true); 
+        db.collection("projects").doc(id).update({
+            "percentStep2": 50,
+            })  
+    }
 
 
 
+},[listNotes,id])
 
-        return () => {
-            isCancelled = true;
-        };
-      
-        
-    }, [project,data,disabled,listNotes,listNotesTemp]);
 
-    React.useEffect(()=>{
-        let db = fb.firestore();
-        
-        fb.auth().onAuthStateChanged((user) => {
-            var respuestasTemp =[];
-        var docRef = db.collection(`${user.email}`).doc(project);
-        docRef.collection('Esencia de marca').doc('paso 6').get().then(function(doc) {
-    
-            if (doc.exists) {
-              // console.log(Object.values(doc.data().respuestas));
-                console.log(doc.data().respuestas);
-                var respuestas =doc.data().respuestas;
-               
-                    respuestas.map((d)=>{
-                        console.log(d);
-                        respuestasTemp.push({ text: d.text, id: uuid()});
-           
-                        return d;
-                    
-                    })
-            setListNotes(respuestasTemp);
-     
-     
-            } else {
-                //console.log("No such document!");
-            }
-        }).catch(function(error) {
-           // console.log("Error getting document:", error);
-        });})
-        },[project])
 
-    React.useEffect(()=>{
-            if(listNotesTemp.length>0){
-                setDisabled(false);   
-            }else{
-                setDisabled(true);  
-            }
-    },[listNotesTemp])
-    
-
+ 
 
 
     return (
@@ -234,6 +159,7 @@ function Step1_6(){
                         }
                             <ToolBoxText
                             handleCreateNotes={handleCreateNotes}
+                            handleSaveF={handleSaveF}
                             />
                        
                           

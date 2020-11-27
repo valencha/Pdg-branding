@@ -13,56 +13,42 @@ require('firebase/auth');
 
 function IntroQuestionStep1(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     console.log(project);
     const classes = useStyles();
     let history = useHistory();
-    const [urlNext, setUrlNext] = React.useState('');
 
-    
 
-    React.useEffect(() => {
+    React.useEffect(()=>{
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            var docRef = db.collection(`${user.email}`).doc(project);
-            // Set the "capital" field of the city 'DC'
-            docRef.update({
-                url: '/dashboard/'+project+'/step1',
-                step:'esenciaMarca_paso1'
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    
-            docRef.get().then(function(doc) {
-                if (doc.exists) {
-                    setUrlNext(doc.data().url);
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-              
-                  
-        })
-       
-        
-    }, [project,urlNext]);
+        var docRef = db.collection("projects").doc(id);
+        docRef.get().then(function(doc) {
+            if(doc.exists){
+                docRef.update({
+                    url: '/dashboard/'+project+'/'+id+'/step1',
+                    step:'esenciaMarca_paso1'
+                })
+      
+
+            }else{
+                alert('No se pude')
+
+            }
+        })    
+
+
+
+    },[project,id])
 
 
     function handleNextPage(event){
-        history.push(`/dashboard/${project}/step1`);
+        history.push('/dashboard/'+project+'/'+id+'/step1');
+
       }
       
 
       function handleBackPage(event){
-        history.push('/dashboard/'+project+'/main');
+        history.push('/dashboard/'+project+'/'+id+'/main');
       }
       
 

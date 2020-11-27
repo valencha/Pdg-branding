@@ -15,10 +15,11 @@ import './style.css';
 function SelectorLabel(props){
 
     const classes = useStyles({marginRight: `${props.marginRight}`, width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
-   
+
 
     const onChange=(e)=>{
       props.onChange(e);
+
    }
 
 

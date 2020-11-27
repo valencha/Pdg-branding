@@ -14,222 +14,152 @@ import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
 
 
+let btns=[{
+    id:1,
+    content:'Sí',
+    checked:false,
+},
+{
+    id:2,
+    content:'No',
+    checked:false,
+},
+{
+    id:3,
+    content:'Omitir',
+    checked:false,
+},
+]
+
 function Step1(){
 
-    let {project}= useParams();
-    console.log(project);
+    let {project,id}= useParams();
     const classes = useStyles();
  
     
     const [showPlaceHolder, setShowPlaceHolder] = React.useState(false);
-    const  [btns, setBtns ]= React.useState([]);
 
-
-    const [isClick, setIsClick] = React.useState(false);
-    const [isClick2, setIsClick2] = React.useState(false);
-    const [isClick3, setIsClick3] = React.useState(false);
+  
     const [textName, setTextName] = React.useState('');
     const [textSlogan, setTextSlogan] = React.useState('');
-    const [optionSelected, setOptionSelected] = React.useState('');
-    const [urlNext, setUrlNext] = React.useState('');
-
+    
     const [value, setValue] = React.useState(0);
     const [disabled, setDisabled] = React.useState(true);
 
-
+    const [indexOption, setIndexOption] = React.useState('none') 
    
     let history = useHistory();
 
-  
+
+    React.useEffect(() => {
+        
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1')
+
+        const listener = docRef.onSnapshot(function(doc) {
+        
+            if(doc.exists){
+                setIndexOption(doc.data()?.optionSelected ?? 'none')
+                setTextName(doc.data()?.nombreMarca ?? '')
+                setTextSlogan(doc.data()?.slogan ?? '')   
+                setShowPlaceHolder(doc.data()?.optionSelected === 'Sí')
+                setDisabled(false)
+            }   
+        })
+        return () => listener()
+   
+    }, [id]);
+
+    React.useEffect(() => {
+        var docRef = db.collection("projects").doc(id);
+        docRef.get().then(function(doc) {
+            if(doc.exists){
+                setValue(doc.data().percentStep2)
+            }
+
+        })
+      },[id])
+
+    React.useEffect(()=>{
+        let db = fb.firestore();
+        if(disabled===false){
+
+           
+
+            db.collection("projects").doc(id).update({
+            "percentStep2": 10,
+            }) 
+            
+        }else{
+            db.collection("projects").doc(id).update({
+                "percentStep2": 0,
+                }) 
+        }
+   
+
+    },[id,disabled])
+
 
 
 
     function handleNextPage(event){
+        history.push('/dashboard/'+project+'/'+id+'/step1_2');
 
-        history.push(urlNext);
-        
         let db = fb.firestore();
-        
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 1').set({
-            respuesta: optionSelected,
-               nombreMarca:textName,
-               tagline:textSlogan
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-   
-          
-              
-                  
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/step1_2',
+       
+
         })
+       
+    
 
 
     }
-      
+ 
 
       function handleBackPage(event){
-        history.push(`/dashboard/${project}/intro`);
+        history.push('/dashboard/'+project+'/'+id+'/intro');
       } 
 
     function onChangeName(event){
         setTextName(event.target.value);
+
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1');
+
+  
+  
+        docRef.update({
+         "nombreMarca": event.target.value,
+     })
+     .then(function() {
+         console.log("Document successfully updated!");
+     });
         
     }
 
     function onChangeSlogan(event){
         setTextSlogan(event.target.value);
-        
-    }
+        var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1');
 
-
-    React.useEffect(() => {
-        let isCancelled = false;
-       
-        if (!isCancelled) {
-         
-       
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-        // Set the "capital" field of the city 'DC'
-        if(disabled === false){
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_2',
-                step:'esenciaMarca_paso2',
-                percentStep2:10
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-             
-               // console.error("Error updating document: ", error);
-            });
-            
-        }else{
-            docRef.update({
-                url: '/dashboard/'+project+'/step1',
-                step:'esenciaMarca_paso1',
-                percentStep2:0
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-              //   console.error("Error updating document: ", error);
-            });
-        }
-   
-
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-
-        docRef.collection('Esencia de marca').doc('paso 1').get().then(function(doc) {
-    
-            if (doc.exists) {
-                    setOptionSelected(doc.data().respuesta)
-
-          
-                    if(doc.data().respuesta==='Sí'){
-                        setIsClick(true);
-                        setShowPlaceHolder(true);
-                        setTextName(doc.data().nombreMarca);
-                        setTextSlogan(doc.data().tagline)
-                    }
-                    if(doc.data().respuesta==='No'){
-                        setIsClick2(true);
-                    }
-                    if(doc.data().respuesta==='Omitir'){
-                        setIsClick3(true);
-                    }
-   
-     
-            } else {
-                //console.log("No such document!");
-            }
-        }).catch(function(error) {
-           // console.log("Error getting document:", error);
-        });
-
-   
-        
-              
-    })
-
-        }
-
-
-
-
-        return () => {
-            isCancelled = true;
-        };
-
-    }, [project,urlNext,disabled]);
-
-
-    React.useEffect(()=>{
-        let btns=[{
-            id:1,
-            content:'Sí',
-            checked:isClick,
-        },
-        {
-            id:2,
-            content:'No',
-            checked:isClick2,
-        },
-        {
-            id:3,
-            content:'Omitir',
-            checked:isClick3,
-        },
-    ]
-
-    setBtns(btns);
-
-    if(isClick === true || isClick2 === true || isClick3===true){
-        setDisabled(false);
-    }else{
-        setDisabled(true);
-    }
   
-    },[isClick,isClick2,isClick3])
+  
+        docRef.update({
+         "slogan": event.target.value,
+     })
+     .then(function() {
+         console.log("Document successfully updated!");
+     });
+        
+    }
 
- 
+
+
+
 
     return (
         <div className={classes.body}>
@@ -246,8 +176,7 @@ function Step1(){
                             numStep='1'
                             numTotalStep='10'
                             value={value}
-                   
-
+                
                         />
                     </div>
                     <div className={classes.contentText}>
@@ -257,39 +186,29 @@ function Step1(){
                         <div className={classes.options}>
                         <div className={classes.answers}>
 
-                            {btns.map((item,i)=>
-                               <BtnYellow key={i}{...item}  onClick={(event)=>{
-                                setOptionSelected(`${item.content}`);
+                        {btns.map((item,i)=>
+                               <BtnYellow key={i}{...item}
+                               checked={ indexOption === item.content} onChange={async(event)=>{
+                                setIndexOption(item.content)
+                                let db = fb.firestore();
+                                var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1')
+                                await docRef.set({optionSelected:item.content})
 
-                            
-                                if(item.content==='Sí'){
-                                       setIsClick(prev=>!prev);
-                                       setShowPlaceHolder(prev=>!prev);
-                                      
-                                }else{
-                                    setIsClick(false);
-                                    setShowPlaceHolder(false);
+                                if(item.content==='Sí'){   
+                                setShowPlaceHolder(prev => !prev)
                                 }
-                                if(item.content==='No'){
-                                    setIsClick2(prev=>!prev);
-                                   
-                                }else{
-                                    setIsClick2(false);
-                                
+                                else if(item.content==='No'){
+                                    setShowPlaceHolder(false)
                                 }
-                                if(item.content==='Omitir'){
-                                    setIsClick3(prev=>!prev);  
-                                }else{
-                                 setIsClick3(false);
-
+                                else if(item.content==='Omitir'){
+                                    setShowPlaceHolder(false)
                                 }
-
-                               }}/>
+                            }}/>
                                
 
                            
-                            )}
-                            
+                        )}
+
                         </div>
 
                         {showPlaceHolder &&

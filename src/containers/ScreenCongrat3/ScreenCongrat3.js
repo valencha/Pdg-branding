@@ -8,64 +8,26 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import { useHistory } from "react-router-dom";
 //Todos los imports se coloca   n arriba de este 
 
-import { fb } from '../../utils/firebase'
-require('firebase/auth');
 
 function ScreenCongrat3(){
     let history = useHistory();
 
-    let {project}= useParams();
-    console.log(project);
+    let {project,id}= useParams();
+
     const classes = useStyles();
 
-    const [urlNext, setUrlNext] = React.useState('');
 
 
     function handleBackPage(event){
-        history.push(`/dashboard/${project}/step3`);
+        history.push('/dashboard/'+project+'/'+id+'/step3');
       } 
     
     function handleNextPage(event){
 
-        history.push(`/dashboard/${project}/main`);
+        history.push('/dashboard/'+project+'/'+id+'/main');
         
     }
-    React.useEffect(() => {
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            var docRef = db.collection(`${user.email}`).doc(project);
-            // Set the "capital" field of the city 'DC'
-            docRef.update({
-                url: '/dashboard/'+project+'/step1',
-                step:'esenciaMarca_paso1'
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-    
-            docRef.get().then(function(doc) {
-                if (doc.exists) {
-                    setUrlNext(doc.data().url);
-                } else {
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-              
-                  
-        })
-       
-        
-    }, [project,urlNext]);
-
-
-
+ 
       
 
     return (

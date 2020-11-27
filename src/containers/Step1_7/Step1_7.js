@@ -15,264 +15,143 @@ import Selector from '../../components/Selector/Selector';
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
+
+let options1=[
+    {  item: 'Selecciona una',
+    value: '',
+    disabled:false,
+
+    },
+
+     {
+        item: 'Tradicional',
+        value: 'tradicional',
+        disabled:false,
+
+     },
+     {
+        item: 'Adulta',
+        value: 'adulta',
+        disabled:false,
+     },
+     {
+        item: 'Clásica',
+        value: 'clásica',
+        disabled:false,
+     },
+     {
+        item: 'Emocional',
+        value: 'emocional',
+        disabled:false,
+     },
+     {
+        item: 'Racional',
+        value: 'racional',
+        disabled:false,
+     },
+     {
+        item: 'Local',
+        value: 'local',
+        disabled:false,
+     },
+     {
+        item: 'Global',
+        value: 'global',
+        disabled:false,
+     },
+     {
+        item: 'Premium',
+        value: 'premium',
+        disabled:false,
+     },
+     {
+        item: 'Popular',
+        value: 'popular',
+        disabled:false,
+     },
+     {
+        item: 'Innovadora',
+        value: 'innovadora',
+        disabled:false,
+     },
+     {
+        item: 'Joven',
+        value: 'joven',
+        disabled:false,
+     },
+     {
+        item: 'Creativa',
+        value: 'creativa',
+        disabled:false,
+     },
+
+    ]
 
 function Step1_7(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
     
 
 
     const [value, setValue] = React.useState(0);
-    const [disabled, setDisabled] = React.useState(false);
+    const [disabled, setDisabled] = React.useState(true);
     const [sliders, setSliders] =React.useState([]);
-  
-    const [limit,setLimit] = React.useState(true); 
+    
     const [answers,setAnswers] = React.useState([]); 
     const [select,setSelect] = React.useState(''); 
 
     const [currentSelect,setCurrentSelect] = React.useState([]); 
-  
-    const [urlNext, setUrlNext] = React.useState('');
-    const[imgChange, setImgChange]= React.useState('/images/loading.svg');
-  
-
-  
-   
-
-    function handleNextPage(event){
-      
-        history.push(urlNext);
-
-        let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-            db.collection(`${user.email}`).doc(project).collection('Esencia de marca').doc('paso 8').set({
-             respuestas:answers,
-             currentSelect: currentSelect,  
-        
-              
-            })
-            .then(function() {
-                console.log("Document successfully written!");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
-            
-            
-          
-              
-                  
-        })
-
-        
-    }
-
-      
-    function handleAddCategory(event){
-        setLimit(false);
     
-     
-    }
+    const[imgChange, setImgChange]= React.useState('/images/loading.svg');
+    
+
+  
+
 
  
   
 
 
     function handleBackPage(event){
-        history.push(`/dashboard/${project}/step1_7`);
+        history.push('/dashboard/'+project+'/'+id+'/step1_7');
     } 
 
-
-    React.useEffect(() => {
-        let isCancelled = false;
-
-
-
-    
-     if (!isCancelled) {
+    function handleSaveF(event){
         let db = fb.firestore();
-        fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
 
-        if(disabled=== false){
-    
-        docRef.update({
-            url: '/dashboard/'+project+'/step1_9',
-            step:'esenciaMarca_paso9',
-            percentStep2:80,
+        var docRef = db.collection("projects").doc(id);
+      
+        docRef.collection('esencia-de-marca').doc('paso-8').set({
+            respuestas:answers,
+            currentSelect: currentSelect,  
         })
-        .then(function(db) {
-     
-            console.log('done');
-        })
-        .catch(function(error) {
-            // The document probably doesn't exist.
-            console.error("Error updating document: ", error);
-        });
-        }else{
-            docRef.update({
-                url: '/dashboard/'+project+'/step1_8',
-                step:'esenciaMarca_paso8',
-                percentStep2:70,
-            })
-            .then(function(db) {
-         
-                console.log('done');
-            })
-            .catch(function(error) {
-                // The document probably doesn't exist.
-                console.error("Error updating document: ", error);
-            });
-        }
-
-        docRef.get().then(function(doc) {
-            if (doc.exists) {
-                console.log(doc.data().url);
-                setUrlNext(doc.data().url);
-                setValue(doc.data().percentStep2);
-                if(doc.data().percentStep2===100){
-                    docRef.update({
-                        percentStep2:100
-                    })
-                    .then(function(db) {
-                 
-                        console.log('done');
-                    })
-                    .catch(function(error) {
-                      //   console.error("Error updating document: ", error);
-                    });
-                }
-            } else {
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
-
+    }
  
+    function handleNextPage(event){
+        history.push('/dashboard/'+project+'/'+id+'/step1_9');
+
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "url":  '/dashboard/'+project+'/'+id+'/step1_9',
+       
+
+        })
+      
    
 
-
-          
-              
-    })
- 
-
-    if(answers.length>=1){
-        setDisabled(false);
-    }
-
-    }
-     return () => {
-            isCancelled = true;
-        };
         
-    }, [project,disabled,answers.length]);
-
+    }
 
 
 React.useEffect(() => {
-    let options1=[
-        {  item: 'Selecciona una',
-        value: '',
-        disabled:false,
-
-        },
-    
-         {
-            item: 'Tradicional',
-            value: 'tradicional',
-            disabled:false,
-
-         },
-         {
-            item: 'Adulta',
-            value: 'adulta',
-            disabled:false,
-         },
-         {
-            item: 'Clásica',
-            value: 'clásica',
-            disabled:false,
-         },
-         {
-            item: 'Emocional',
-            value: 'emocional',
-            disabled:false,
-         },
-         {
-            item: 'Racional',
-            value: 'racional',
-            disabled:false,
-         },
-         {
-            item: 'Local',
-            value: 'local',
-            disabled:false,
-         },
-         {
-            item: 'Global',
-            value: 'global',
-            disabled:false,
-         },
-         {
-            item: 'Premium',
-            value: 'premium',
-            disabled:false,
-         },
-         {
-            item: 'Popular',
-            value: 'popular',
-            disabled:false,
-         },
-         {
-            item: 'Innovadora',
-            value: 'innovadora',
-            disabled:false,
-         },
-         {
-            item: 'Joven',
-            value: 'joven',
-            disabled:false,
-         },
-         {
-            item: 'Creativa',
-            value: 'creativa',
-            disabled:false,
-         },
-    
-        ]
-        let db = fb.firestore();
-
-        currentSelect.map((o)=>{
- 
-            options1.map((l)=>{
-                if(l.value=== o.value){
-                    l.disabled=true;
-                }
-
-
-
-
-                return l;
-            })
-
-
-  
-
-        
-        return o;
-    })
-
    
-      
-      
-    
-  
-   
+       
+
     let slider=[{
         options:options1,
         id: 1,
@@ -290,96 +169,100 @@ React.useEffect(() => {
         id: 3,
         value:'',
         value2:50,
+    },
+    {
+        options:options1,
+        id: 4,
+        value:'',
+        value2:50,
     }
     ]
-     
+   
+    var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-8')
+    
+        const listener = docRef.onSnapshot(function(doc) {
+            let sTemp=Object.assign([],slider);
+            let current = [];
+            
+            if(doc.exists){
+            
+            setDisabled(false);
+            setCurrentSelect([])
+            setAnswers([]);
+            setSliders([])
+            setCurrentSelect([])
+         
+            var respuestas =doc.data().respuestas;
           
+            //setAnswers(respuestas)
+            //setSelect(doc.data().currentSelect.value)
+            respuestas.map((r)=>{
 
-    fb.auth().onAuthStateChanged(user => {
-        var docRef = db.collection(`${user.email}`).doc(project);
-        docRef.collection('Esencia de marca').doc('paso 8').get().then(function(doc) {
-    
-            if (doc.exists) {
-              // console.log(Object.values(doc.data().respuestas));
-                
-                var respuestas =doc.data().respuestas;
-
-                let currentl =doc.data().currentSelect;
-
-
-     
+                sTemp.map((d)=>{
                
-                setSelect(doc.data().currentSelect.value)
-    
-                setAnswers(respuestas)
 
-           
-                let sTemp=slider;
-                let current = currentSelect;
+                        if(d.id===r.id){
+                            
+                            d.value= r.value;
+                            d.value2= r.value2;
+                        
+                            current.push({value:r.value, id: r.id})
+                        
+                            d.options.map((o)=>{
+                                if(r.value=== o.value){
+                                    o.disabled=true;
+                                    
+                                }
+                                return o;
+                            })
 
-                respuestas.map((r)=>{
-               
-                    
-     
+                            
       
-                    sTemp.map((d)=>{
-                   
-
-                            if(d.id===r.id){
-                                
-                                d.value= r.value;
-                                d.value2= r.value2;
-                            
-                                current.push({value:r.value, id: r.id})
-                            
-                                d.options.map((o)=>{
-                                    if(r.value=== o.value){
-                                        o.disabled=true;
-                                        
-                                    }
-                                    return o;
-                                })
-
-                                
-          
-                            }
-                            return d;
-                        
-                        })
-                        
-                        
-                return r;
+                        }
+                        return d;
                     
-                })
-                    setSliders(sTemp)
-                    setCurrentSelect(current)
+                    })
+                    
+                    
+            return r;
            
-
-            } else {
+            })
+            setSliders(sTemp)
+            setCurrentSelect(current)
+       
+            } else{
                 setSliders(slider)
             }
-        }).catch(function(error) {
-           // console.log("Error getting document:", error);
-        });
-    })
+        })
         
-  
-    if(limit === false){
-        slider.push({ options:options1, id: 4, value:'', value2:50})
-    
+        return () => listener()
+ 
+
+},[id])
+
+React.useEffect(()=>{
+
+    if(disabled===true){
+        db.collection("projects").doc(id).update({
+            "percentStep2": 70,
+            }) 
+    }else{
+        db.collection("projects").doc(id).update({
+            "percentStep2": 80,
+            }) 
     }
 
-   
+},[disabled,id])
 
+React.useEffect(() => {
+    var docRef = db.collection("projects").doc(id);
+    docRef.get().then(function(doc) {
+        if(doc.exists){
+            setValue(doc.data().percentStep2)
+        }
 
-
-    
-
-   
-
-},[currentSelect,select,limit,project])
-
-
+    })
+  },[id])
 
     return (
         <div className={classes.body}>
@@ -419,6 +302,21 @@ React.useEffect(() => {
                    
                                        setSelect( event.target.value);
                                 
+                                        currentSelect.map((o)=>{
+                                
+                                            item.options.map((l)=>{
+                                                if(l.value=== o.value){
+                                                    l.disabled=true;
+                                                }
+
+
+
+
+                                                return l;
+                                            })
+
+                                        return o;
+                                    })
                                  
                           
                     
@@ -445,15 +343,7 @@ React.useEffect(() => {
                                     }
                                     setCurrentSelect(current);
                           
-                                    if(current.length>0){
-                                        setDisabled(false)
-                                    }else{   
-                                        setDisabled(true);
-                                    }
- 
-         
-                            
-                                     
+
                                         
                                     }}
                                     onChange2={(event, newValue)=>{
@@ -466,6 +356,7 @@ React.useEffect(() => {
                                         aTemp.map((a)=>{
                                             if(a.value=== select){
                                                a.value2=newValue
+                                               setDisabled(true);
                                             }
                                             return a;   
                                         })
@@ -480,7 +371,7 @@ React.useEffect(() => {
                             </div>
                         )}
                             <div className={classes.add}>
-                            <img  src='/images/add.svg' alt="watch" width='73px' onClick={handleAddCategory} />
+                            <img  src='/images/add.svg' alt="watch" width='73px' />
                         
                             </div>
                         </div>     
@@ -490,7 +381,7 @@ React.useEffect(() => {
                         <img className={classes.imgPerson} src={imgChange} alt="watch" width='83px' />
 
                         </div>
-                        <button className={classes.btnChangeImg}>Cambiar a Femenino</button>
+                        <button onClick={handleSaveF}className={classes.btnChangeImg}>Generar Avatar</button>
                         </div> 
                         
                         </div>

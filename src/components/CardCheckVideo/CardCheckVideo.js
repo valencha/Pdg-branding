@@ -1,43 +1,57 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Checkbox} from '@material-ui/core';
+import { Checkbox,Card, Dialog} from '@material-ui/core';
+import ReactPlayer from 'react-player'
 import clsx from "clsx";
-
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-
-
-
 
 
 function CardCheckVideo(props){
   
     const classes = useStyles({ urlIcon: '/images/checked.svg'});
-    const [select, setSelect]= React.useState(props.select);
+   
+    const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
    
      const onChange=(e)=>{
         props.onChange(e)
-        let checked=e.target.checked;
-        setSelect(checked);
+    
      }
+        
+   
 
-    return <FormControlLabel 
-    label={
-        <img src={`${props.url}`} alt='media'width="100px" height="auto" className={classes.img}/>
-    }
-            classes={{
-              
-                root: `${select ? classes.cardYellow : classes.containCheckBox}`,
-                label: classes.labelCheck,
+    return <Card className= {props.select ? classes.cardYellow : classes.containCheckBox} >
 
-            }}  
+        <img src={`${props.url}`} alt='media'width="100px" height="auto" className={classes.img} onClick={handleClickOpen}   />
+        <Dialog open={open} onClose={handleClose}    
+        BackdropProps={{
+        classes: {
+         root: classes.root
+        }
+       }
+      }aria-labelledby="form-dialog-title" classes={{paper:classes.dialog, root: classes.dialog}}>
+        <div className={classes.containImg}>
+        <ReactPlayer
+          url={props.video}
+          playing
+          controls
+          width='516px'
+          height='400px'
+        />
+      </div>
 
+      <img src='/images/x.svg' alt='icon' onClick={handleClose} className={classes.iconBtn} />
+        </Dialog>
 
-            labelPlacement="start"
-            control={
             <Checkbox
             onChange = {onChange}
-            checked={select ? select : false}
+            checked={props.select ? props.select : false}
             checkedIcon={<span className={clsx(classes.icon, classes.checkedIcon)} />}
             icon={<span className={classes.icon} />}
             color='primary'
@@ -50,9 +64,9 @@ function CardCheckVideo(props){
        
             name="checkedF"
             />
-            }
+            
        
-            />;
+            </Card>;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -69,7 +83,7 @@ const useStyles = makeStyles(theme => ({
         boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
         borderRadius: '15px',
         display: 'flex',
-        flexDirection: 'column-reverse',
+        flexDirection: 'column',
         flexWrap: 'no-wrap',
         justifyContent: 'center',
         alignContent: 'center',
@@ -96,7 +110,7 @@ const useStyles = makeStyles(theme => ({
         boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.1)',
         borderRadius: '15px',
         display: 'flex',
-        flexDirection: 'column-reverse',
+        flexDirection: 'column',
         flexWrap: 'no-wrap',
         justifyContent: 'center',
         alignContent: 'center',
@@ -151,6 +165,45 @@ const useStyles = makeStyles(theme => ({
 
 
     },
+    containImg:{
+        backgroundColor:'transparent'
+    },
+    tools:{
+        backgroundColor:'transparent',
+        display:'flex',
+        width:'100%',
+        justifyContent:'center',
+        marginTop:'24px',
+
+    },
+    dialog:{
+        backgroundColor:'transparent',
+        display:'flex',
+        boxShadow: "none",
+        overflow: "hidden",
+        flexDirection:'row',
+        justifyContent:'center',
+        alignContent:'flex-start',
+        alignItems:'flex-start',
+
+    },
+    iconZoom:{
+        marginRight:'24px',
+        cursor:'pointer',
+    },
+    root: {
+        backgroundColor: 'rgba(33,36,41,0.8)',
+        opacity:75,
+      },
+
+    iconZoomIn:{
+        cursor:'pointer',
+    },
+
+    iconBtn:{
+        cursor:'pointer'
+    }
+
 
 
 

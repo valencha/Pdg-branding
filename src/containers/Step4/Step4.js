@@ -7,17 +7,26 @@ import LateralBar from '../../components/LateralBar/LateralBar';
 import BtnYellow from '../../components/BtnYellowG/BtnYellowG';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
-import uuid from "uuid/v4";
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Slider from 'react-grid-carousel';
+import './styles.css';
 
+import { fb } from '../../utils/firebase'
+let db = fb.firestore();
+require('firebase/auth');
 
-
-
+var columns={
+    general:[],
+    vista: [],
+    oido: [],
+    olfato: [],
+    tacto: [],
+    gusto: [],
+}
 
 
 function Step4(){
 
-    let {project}= useParams();
+    let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
     const [disabled, setDisabled] = React.useState(false);
@@ -31,112 +40,77 @@ function Step4(){
     const [isClick, setIsClick] = React.useState(true);
     const [isClick2, setIsClick2] = React.useState(false);
     const [isClick3, setIsClick3] = React.useState(false);
-    const [optionSelected, setOptionSelected] = React.useState('Imágenes');
-
+    const [score, setScore] = React.useState('');
+    const [insignias, setInsignias] = React.useState([]);
     const [items, setItems] = React.useState([]);
+    const[itemsGeneral, setItemsGeneral]= React.useState([]);
+    const[itemsVista, setItemsVista]= React.useState([]);
+    const[itemsOido, setItemsOido]= React.useState([]);
+    const[itemsOlfato, setItemsOlfato]= React.useState([]);
+    const[itemsTacto, setItemsTacto]= React.useState([]);
+    const[itemsGusto, setItemsGusto]= React.useState([]);
 
-    const[columns,setColumns]=React.useState({});
+const MyDot = ({ isActive }) => (
+    <span
+      style={{
+        display: 'inline-block',
+        height: '10px',
+        width: '10px',
+        borderRadius:'10px',
+        background: isActive ? '#7A76FF' : '#C4C4C4',
+      }}
+    ></span>
+  )
+
+const onDragStart=(e,id)=>{
+    console.log('dragstart:',id);
+    e.dataTransfer.setData("id",id)
+}
+
  
 
     function handleBackPage(event){
-        history.push(`/dashboard/${project}/intro4`);
+        history.push('/dashboard/'+project+'/'+id+'/intro4');
     } 
 
+    React.useEffect(() => {
       
+        var docRef = db.collection("projects").doc(id).collection('moodboard-sensorial').doc('recursos-clasificados')
 
-    function onAlert(event){
-        console.log('hola')
-      }
+        const listener = docRef.onSnapshot(function(doc) {
+      
+            if(doc.exists){
+          
+
+      
+        }else{
+            var docInit = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')
+            docInit.get().then(function(doc) {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data());
+                    setItems(doc.data().answersT)
+                    setItemsGeneral(doc.data().answersT)
+                } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                }
+            }).catch(function(error) {
+                console.log("Error getting document:", error);
+            });
+
+        }   
+        })
+        return () => listener()
+   
+    }, [id]);
     	
 
 
       function handleNextPage(event){
-        console.log(project.step);
-       
-       history.push('/dashboard/'+project+'/finished3');
+        history.push('/dashboard/'+project+'/'+id+'/finished3');
       }
  
 
-      const onDragEnd=(result,columns, setColumns)=>{
-        if(!result.destination) return;
-
-        
-        
-        const {source, destination} =result;
-        if(source.droppableId !== destination.droppableId){
-            
-            const sourceColumn = columns[source.droppableId];
-            const destColumn=columns[destination.droppableId];
-            const sourceItems=[...sourceColumn.items];
-            const destItems=[...destColumn.items];
-            const [removed]= sourceItems.splice(source.index,1);
-            
-            destItems.splice(destination.index,0,removed);
-
-            setColumns({
-                ...columns,
-                [source.droppableId]:{
-                    ...sourceColumn,
-                    items:sourceItems
-                },
-                [destination.droppableId]:{
-                    ...destColumn,
-                    items: destItems
-                }
-            });
-
-
-        }else{
-            
-            const column = columns[source.droppableId];
-           
-            const copiedItems=[...column.items];
-            const[removed]= copiedItems.splice(source.index,1);
-  
-            copiedItems.splice(destination.index,0, removed);
-
-                var itemsFilter= '';
-    
-         
-                
-         
-            
-            setColumns({
-                ...columns,[source.droppableId]:{
-                    ...column,
-                    items:copiedItems
-                }
-            })
-        }
-  
-    };
-    React.useEffect(()=>{
-    
-        const columnsFromBackend ={
-            [uuid()]: {
-                name: 'Todo',
-                className:classes.board1,
-                items: items,
-                showTitle:false,
-                different:false,
-           
-              },
-              [uuid()]: {
-                name: 'Vista',
-                className:classes.board2,
-                items: [],
-                url:'/images/vista.svg',
-                different:true,
-                showTitle:true,
-              },
-        }
-     
-  
-        
-
-        setColumns(columnsFromBackend);
-
-        },[project,classes.board1,items,classes.board2,showImg])
 
      
     React.useEffect(()=>{
@@ -164,54 +138,25 @@ function Step4(){
   
     },[isClick,isClick2,isClick3])
 
-    React.useEffect(()=>{
-  
-
-    let list=[{
-        url:'/images/db/fresas.png',
-        id: uuid(),
-        tipo:'img'
-        
-    },
-    {
-        url:'/images/db/aguacate.png',
-        id: uuid(),
-        tipo:'video'
-        
-    },
-    {
-        url:'/images/db/fresas.png',
-        id: uuid(),
-        tipo:'img'
-        
-    },
-    {
-        url:'/images/db/limon.png',
-        id: uuid(),
-        tipo:'sonido'
-        
-    },
-
-
-]
-    setItems(list)
- 
-        
-        
-    },[])
-
-    React.useEffect(()=>{
-       
-        Object.values(columns).forEach(element => {
-
-
-            if(element.name ==='Todo' && showImg===true ){
+    const onDragOver=(e)=>{
+        e.preventDefault();
+    }
+    const onDrop=(e, cat)=>{
+        let id = e.dataTransfer.getData("id");
+        let itemsT = items.filter((item)=>{
+            if(item.id === id){
+                item.categoria =cat;
                
-
             }
-        
+            return item;
         });
-    },[columns,showImg])
+
+        setItems(itemsT)
+        
+
+    }
+
+   
 
   
 
@@ -233,46 +178,13 @@ function Step4(){
                         <img className ={classes.skip} alt='skip'  src={('/images/skipStep.svg')} onClick={handleNextPage}/>
                        <h3 className={classes.title}>Moodboard Sensorial</h3>
                        </div>
-                       <div className={classes.btns}>
-                        {btns.map((item,i)=>
-                               <BtnYellow key={i}{...item}  onClick={(event)=>{
-                                setOptionSelected(`${item.content}`);
+                       <div className={classes.divScore}>
+                           <div className={classes.score}> <p className={classes.scoreP}>Puntaje:<span className={classes.scoreBold}> {score}</span></p></div>
+                           <div className={classes.insignias}>
 
-                            
-                                if(item.content==='Imágenes'){
-                                    setIsClick(true);
-                                    setShowImg(true);
-                                      
-                                }else{
-                                    setIsClick(false);
-                                    setShowImg(false);
-                               
-                                }
-                                if(item.content==='Sonidos'){
-                                    setIsClick2(true);
-                                    setShowSound(true);
-                                   
-                                }else{
-                                    setIsClick2(false);
-                                    setShowSound(false);
-                                
-                                }
-                                if(item.content==='Vídeos'){
-                                    setIsClick3(true); 
-                                    setShowVideo(true); 
-                                }else{
-                                 setIsClick3(false);
-                                 setShowVideo(false); 
-
-                                }
-
-                               }}/>
-                               
-
-                           
-                            )}
-                
-                </div>
+                           </div>
+                       </div>
+                    
 
                 </div>
                 
@@ -281,96 +193,197 @@ function Step4(){
 
                 <div className={classes.options}>
                 <div className={classes.answers} >
-
-
-                <DragDropContext onDragEnd={result=> onDragEnd(result, columns, setColumns)} >
-                    {Object.entries(columns).map(([id,column])=>{
-                        return(
-                            
-                            <div key={id}>
-                            <img  src='/images/vista.svg' width='54px' className={classes.imgVista}height='83.17px' alt='media'/>      
-                            <Droppable droppableId={id} key={id} >
-                                {(provided,snapshot)=>{
-                                    return(
-                                      
-                                        <div
-                                        {...provided.droppableProps} 
-                                        ref={provided.innerRef}
-                                        key={id}
-                                        
-                                        className={column.className}
-                                        >
-                          
-
-                                            {column.items.map((item, index)=>{
-                                                return(
-                                                    <Draggable key={item.id} draggableId={item.id} index={index} >
-                                                        {(provided, snapshot)=>{
-                                                            return(
-                                                                <div ref={provided.innerRef} 
-                                                                {...provided.draggableProps} 
-                                                                {...provided.dragHandleProps}
-                                                                key={item.id}
-                                                                style={{
-                                                                    userSelect:'none',
-                                                                 
-                                                                
-                                                                    ...provided.draggableProps.style
-                                                                }}
-                                                                >
-                                                                
-
-
-
-
-
-                                                                {column.different ?
-                                                                <div className={classes.containImgInput}>
-                                                                <div className={classes.containImg}>  
-                                                                    <img key={item.id} src={item.url} width='92px' alt='media'className={classes.imgS}/>
-                                                                </div>   
-                                                            
-                                                                <input type='text'/>
-
-                                                                </div>: <img key={item.id} src={item.url} width='92px' alt='media'className={classes.imgU} />
-
-                                                                }
-
-                                                                
-                                                                </div>
-                                                            )
-                                                            
-                                                        }
-                                                    
-                                                        }
-
-                                                    </Draggable>
-                                                )
-                                            })}
-                                            {column.name === 'Todo'?
-                                            <div className={classes.plus}>
-                                            <img alt='tutorial' className={classes.iconsAction} onClick={onAlert}  src={('/images/plus.svg')}/>
-                                            </div>:null}
-                                        
-                                        {provided.placeholder}
-                                        </div>
-                                    )
-                                }
-                                
-                                }
-                            </Droppable>
-
-                            </div>
-                        )
-
-
-
-                    })}
-
-
-
-                </DragDropContext>
                     
+
+                    
+                        <div className={classes.left}>
+                            <div className={classes.btns}>
+                           
+                           {btns.map((item,i)=>
+                              <BtnYellow key={i}{...item}  onClick={(event)=>{
+                             
+
+                           
+                               if(item.content==='Imágenes'){
+                                   setIsClick(true);
+                                   setShowImg(true);
+                                     
+                               }else{
+                                   setIsClick(false);
+                                   setShowImg(false);
+                              
+                               }
+                               if(item.content==='Sonidos'){
+                                   setIsClick2(true);
+                                   setShowSound(true);
+                                  
+                               }else{
+                                   setIsClick2(false);
+                                   setShowSound(false);
+                               
+                               }
+                               if(item.content==='Vídeos'){
+                                   setIsClick3(true); 
+                                   setShowVideo(true); 
+                               }else{
+                                setIsClick3(false);
+                                setShowVideo(false); 
+
+                               }
+
+                              }}/>
+                              
+
+                          
+                           )}
+                       </div>
+                     
+                            <div onDragOver={(e)=>{
+                            onDragOver(e)}}   onDrop={(e)=>{onDrop(e,"general")}} 
+                            className={classes.containGeneral}>
+                            <Slider showDots={true} dot={MyDot} cols={3} rows={3} gap={10} containerStyle={{ background: 'transparent',  width:'348px', 
+                            height: '300px', margin: '0 auto'}} >
+
+                          
+                           
+                          
+                            {itemsGeneral.map((element, i) => {
+                            const exists= itemsGeneral.find(({element }) => element.tipo === "imagen");
+    
+                            if(exists){
+                                 
+                                return <Slider.Item  key={i}>  
+
+                                <div onDragStart={(e)=>onDragStart(e,element.id)} draggable                    
+                                className={classes.containGeneralItem}> 
+                                                        
+                                    <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/>             
+                                </div>
+                                </Slider.Item>
+                            }  
+                            return element;
+                            })} 
+                         
+                           
+                             </Slider>
+                    
+                        </div>
+                        
+  
+                        </div>
+
+                     
+                        <div className={classes.columns}>
+                            <div className={classes.senses}>
+                                <div className={classes.label}> <img src='/images/vista.svg' width='54px' alt='media'/> </div>
+                                <div className={classes.containVista} onDragOver={(e)=>{
+                            onDragOver(e)
+                        }}
+                        onDrop={(e)=>{
+                            onDrop(e,"vista")
+                        }}>
+                        {itemsVista.map((element,i)=>
+                            <div 
+                               key={element.id}                     
+                               onDragStart={(e)=>onDragStart(e,element.id)}                    
+                               draggable                    
+                               className={classes.containVistaItem}                    
+                              >  
+                              <div className={classes.containImg}> <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
+                           
+                            <input className={classes.containInput} type='text'/>               
+                            </div>)}
+                        </div>
+                            </div>
+
+                            <div className={classes.senses}>
+                                <div className={classes.label}> <img src='/images/oido.svg' width='54px' alt='media'/> </div>
+                                <div className={classes.containOido} onDragOver={(e)=>{
+                            onDragOver(e)
+                        }}
+                        onDrop={(e)=>{
+                            onDrop(e,"oido")
+                        }}>
+                        {itemsOido.map((element,i)=>
+                            <div 
+                               key={element.id}                     
+                               onDragStart={(e)=>onDragStart(e,element.id)}                    
+                               draggable                    
+                               className={classes.containVistaItem}                    
+                              >  
+                              <div className={classes.containImg}> <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
+                           
+                            <input className={classes.containInput} type='text'/>               
+                            </div>)}
+                        </div>
+                            </div>
+                            <div className={classes.senses}>
+                                <div className={classes.label}> <img src='/images/olfato.svg' width='54px' alt='media'/> </div>
+                                <div className={classes.containOlfato} onDragOver={(e)=>{
+                            onDragOver(e)
+                        }}
+                        onDrop={(e)=>{
+                            onDrop(e,"olfato")
+                        }}>
+                        {itemsOlfato.map((element,i)=>
+                            <div 
+                               key={element.id}                     
+                               onDragStart={(e)=>onDragStart(e,element.id)}                    
+                               draggable                    
+                               className={classes.containVistaItem}                    
+                              >  
+                              <div className={classes.containImg}> <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
+                           
+                            <input className={classes.containInput} type='text'/>               
+                            </div>)}
+                        </div>
+                            </div>
+                            <div className={classes.senses}>
+                            <div className={classes.label}> <img src='/images/tacto.svg' width='54px' alt='media'/> </div>
+                            <div className={classes.containTacto} onDragOver={(e)=>{
+                            onDragOver(e)
+                        }}
+                        onDrop={(e)=>{
+                            onDrop(e,"tacto")
+                        }}>
+                        {itemsTacto.map((element,i)=>
+                            <div 
+                               key={element.id}                     
+                               onDragStart={(e)=>onDragStart(e,element.id)}                    
+                               draggable                    
+                               className={classes.containVistaItem}                    
+                              >  
+                              <div className={classes.containImg}> <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
+                           
+                            <input className={classes.containInput} type='text'/>               
+                            </div>)}
+                        </div>
+                            </div>
+                            <div className={classes.senses}>
+                            <div className={classes.label}> <img src='/images/gusto.svg' width='54px' alt='media'/> </div>
+                            <div className={classes.containGusto} onDragOver={(e)=>{
+                            onDragOver(e)
+                        }}
+                        onDrop={(e)=>{
+                            onDrop(e,"gusto")
+                        }}>
+                        {itemsGusto.map((element,i)=>
+                            <div 
+                               key={element.id}                     
+                               onDragStart={(e)=>onDragStart(e,element.id)}                    
+                               draggable                    
+                               className={classes.containVistaItem}                    
+                              >  
+                              <div className={classes.containImg}> <img key={element.id} src={element.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
+                           
+                            <input className={classes.containInput} type='text'/>               
+                            </div>)}
+                        </div>
+                            </div>
+                        </div>
+                     
+       
+
 
                 </div>     
                 
@@ -432,22 +445,7 @@ function Step4(){
 
     
         },
-        board1:{
-            left: '243px',
-            top: '230px',      
-            background: '#F4F6F8',
-            display:'flex',
-            flexWrap:'wrap',
-            justifyContent:'center',
-            alignContent:'center',
-            alignItems:'center',
-            position:'absolute',
-            boxSizing: 'border-box',
-            borderRadius: '15px',
-            width: '348px',
-            height: '398px',
-
-        },
+   
         mediaSelect:{
             display:'flex',
             flexDirection:'column',
@@ -496,14 +494,12 @@ function Step4(){
         contentText:{
             marginTop:'16px',
             display:'flex',
-            flexDirection:'column',
-            justifyContent:'center',
+            flexDirection:'row',
+            justifyContent:'flex-between',
             alignContent:'center',
-            alignItems:'flex-start',
+            alignItems:'center',
             width:'100%',
 
-            
-         
         },
         text:{
             display:'flex',
@@ -522,6 +518,8 @@ function Step4(){
             alignItems:'center',
 
         },
+
+        
 
         contentRight:{
             display:'flex',
@@ -548,21 +546,6 @@ function Step4(){
             fontSize:'18px',
         },
 
-      
-        board2:{
-            display:'flex',
-            flexDirection:'column',
-            justifyContent:'center',
-            alignContent:'center',
-            alignItems:'center',
-            position:'absolute',
-            width: '148px',
-            backgroundColor:'red',
-            height: '398px',
-            left: '734px',
-            top: '230px', 
-    
-        },
     
 
         btnOption:{
@@ -591,7 +574,6 @@ function Step4(){
           contentBottom:{
             display:'flex',
             width:'79%',    
-            marginTop:'30px',
             flexDirection:'column',
             flexWrap:'no-wrap',
             alignItems:'flex-start',
@@ -628,7 +610,7 @@ function Step4(){
             justifyContent:'space-between',
             width:'100%',
             height:'auto',
-            marginTop:'55px'
+            marginTop:'136px'
     
         },
           tutorial:{
@@ -670,17 +652,11 @@ function Step4(){
         },
         btns:{
             display:'flex',
+            flexDirection:'row',
+            flexWrap:'no-wrap',
+        },
 
-        },
-        imgU:{
-            borderRadius:'15px',
-        },
-        containImgInput:{
-            width:'106px',
-            display:'flex',
-            flexDirection:'column',
-
-        },
+ 
         containImg:{
             display:'flex',
             justifyContent:'center',
@@ -692,16 +668,144 @@ function Step4(){
             border: '1px dashed #CCCCCC',
             boxSizing: 'border-box',
         },
-        imgVista:{
-            position: 'absolute',
-            width: '54px',
-            height: '83.17px',
-            left: '780px',
-            top: '150px',
-        }
 
-          
-    
+
+        senses:{
+  
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'center',
+            alignContent:'center',
+            alignItems:'center',
+            flexWrap:'no-wrap',
+            marginRight:'30px', 
+           
+        },
+        columns:{
+  
+            display:'flex',
+            flexDirection:'row',
+            marginLeft:'40px', 
+            overflow: 'scroll'
+           
+        },
+        containGeneral:{
+     
+            background: '#F4F6F8',
+            display:'flex',
+            flexWrap:'wrap',
+            marginTop:'18px',
+            justifyContent:'center',
+            alignContent:'center',
+            alignItems:'center',
+            boxSizing: 'border-box',
+            borderRadius: '15px',
+            width: '348px',
+            height: '370px',
+        },
+
+        containVista:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'flex-start',
+            alignContent:'center',
+            alignItems:'center',
+            background: '#F4F6F8',
+            height: '370px',
+            width: '120px',
+            borderRadius:'15px',
+
+        },
+        containOido:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'flex-start',
+            alignContent:'center',
+            alignItems:'center',
+            background: '#F4F6F8',
+            height: '370px',
+            width: '120px',
+            borderRadius:'15px',
+        },
+        containOlfato:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'flex-start',
+            alignContent:'center',
+            alignItems:'center',
+            background: '#F4F6F8',
+            height: '370px',
+            width: '120px',
+            borderRadius:'15px',
+        },
+        containTacto:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'flex-start',
+            alignContent:'center',
+            alignItems:'center',
+            background: '#F4F6F8',
+            height: '370px',
+            width: '120px',
+            borderRadius:'15px',
+        },
+        containGusto:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'flex-start',
+            alignContent:'center',
+            alignItems:'center',
+            background: '#F4F6F8',
+            height: '370px',
+            width: '120px',
+            borderRadius:'15px',
+        },
+
+
+        containVistaItem:{
+            display:'flex',
+            flexDirection:'column',
+            justifyContent:'center',
+            alignItems:'center',
+            padding:10,
+            alignContent:'center'
+        },
+
+        containInput:{
+
+            width: '106px',
+            height: '32px',
+            border:'none',
+            marginTop:'3px',
+            borderRadius:'5px',
+        },
+
+        divScore:{
+            marginLeft:'130px'
+        },
+
+        score:{
+            width:'129px',
+            display:'flex',
+            justifyContent:'center',
+            alignContent:'center',
+            alignItems:'center',
+            height:'32px',
+            borderRadius:'10px',
+            backgroundColor:'#CAE9FF',
+        },
+        scoreP:{
+            fontFamily:'Poppins',
+            fontSize:'16px',
+            fontWeight:400,
+        },
+        scoreBold:{
+            fontFamily:'Poppins',
+            fontSize:'16px',
+            fontWeight:600,
+        }
+ 
+
     
     }));
 
