@@ -15,6 +15,7 @@ import Step1_6_1 from '../Step1_6_1/Step1_6_1';
 import Step1_7 from '../Step1_7/Step1_7';
 import Step1_8 from '../Step1_8/Step1_8';
 import Step1_9 from '../Step1_9/Step1_9';
+import Step4Share from '../Step4Share/Step4Share';
 import Congrats1 from '../ScreenCongrat1/ScreenCongrat1';
 import Congrats2 from '../ScreenCongrat2/ScreenCongrat2';
 import Congrats3 from '../ScreenCongrat3/ScreenCongrat3';
@@ -97,6 +98,7 @@ function App() {
       <Route exact path="/dashboard/:project/:id/finished3" component ={Congrats3}/>
       <Route exact path="/dashboard/:project/:id/intro4" component ={IntroQuestionStep4}/> 
       <Route exact path="/dashboard/:project/:id/step4" component ={Step4}/>
+      <Route exact path="/dashboard/:project/:id/step4Share" component ={Step4Share}/>
       </DataContext.Provider>
   </Router>
 );
