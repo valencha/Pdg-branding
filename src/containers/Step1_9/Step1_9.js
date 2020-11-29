@@ -76,7 +76,7 @@ function Step1_9(){
     }
 
       function handleBackPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/step1_9');
+        history.push('/dashboard/'+project+'/'+id+'/step1_8');
       } 
 
     function onChangeGenre(event){

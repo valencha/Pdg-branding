@@ -96,6 +96,7 @@ function Step1_3(){
         docRef.get().then(function(doc) {
             if(doc.exists){
                 setValue(doc.data().percentStep2)
+      
             }
 
         })
