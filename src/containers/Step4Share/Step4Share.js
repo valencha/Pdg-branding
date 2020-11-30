@@ -41,7 +41,7 @@ function Step4Share(){
     const [indexOption, setIndexOption] = React.useState('none') 
     var image = localStorage.getItem('imgCanvas')
 
-    const [showContent, setShowContent] = React.useState(true) 
+    const [showContent, setShowContent] = React.useState(false) 
 
     
     const [description, setDescription] = React.useState('') 
@@ -57,6 +57,14 @@ function Step4Share(){
 
     function handleNextPage(event){
       history.push('/dashboard/'+project+'/'+id+'/finished4');
+      
+
+      db.collection("projects").doc(id).update({
+          "percent":  100,
+          "percentStep5": 100,
+     
+
+      })
 
       }
 
@@ -81,7 +89,7 @@ function Step4Share(){
 
         }).then(function(docRef){
             var docRefP = db.collection("projects").doc(id).collection('users')
-
+            db.collection("moodboards").doc(id).collection('comentarios')
             storageRef.getDownloadURL().then(function(url) {
                 console.log(url)
                 db.collection("moodboards").doc(id).update({url:url})

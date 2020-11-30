@@ -32,7 +32,7 @@ function ScreenCongrat4(){
 
 
         db.collection("projects").doc(id).update({
-            "percent":  80,
+            "percent":  100,
             "percentStep4": 100
        
 

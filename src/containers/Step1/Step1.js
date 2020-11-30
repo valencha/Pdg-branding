@@ -192,7 +192,7 @@ function Step1(){
                                 setIndexOption(item.content)
                                 let db = fb.firestore();
                                 var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1')
-                                await docRef.set({optionSelected:item.content})
+                                docRef.set({optionSelected:item.content})
 
                                 if(item.content==='Sí'){   
                                 setShowPlaceHolder(prev => !prev)

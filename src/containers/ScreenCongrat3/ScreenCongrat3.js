@@ -25,7 +25,7 @@ function ScreenCongrat3(){
     function handleNextPage(event){
 
         history.push('/dashboard/'+project+'/'+id+'/main');
-        
+    
     }
  
       

@@ -37,6 +37,14 @@ function Step1_3(){
         db.collection("projects").doc(id).update({
             "url": '/dashboard/'+project+'/'+id+'/step1_4',
         }) 
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-3').set({notas :listNotesTemp})
+        .then(function(docRef) {
+
+        
+        })
     }
       
 

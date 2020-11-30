@@ -9,8 +9,8 @@ import CardProject from '../../components/CardProject/CardProject';
 import CardMoodboards from '../../components/CardMoodboards/CardsMoodboards';
 import Dialog from '@material-ui/core/Dialog';
 import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
-import { useHistory } from "react-router-dom";
-
+import Slider from 'react-grid-carousel';
+import './style.css'
 
 //Todos los imports se coloca   n arriba de este 
 
@@ -21,7 +21,7 @@ require('firebase/auth');
 
 function Dashboard(props){
   
-  let history = useHistory();
+
   const value = React.useContext(DataContext);
   const classes = useStyles({urlLogo: 'images/logoEasyBrandingColor.svg'});
   const [contentShow, setContentShow] = React.useState(true);
@@ -51,7 +51,7 @@ function Dashboard(props){
   const [contentOption6, setContentOption6] = React.useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
+  const [isMoodOpen, setIsMoodOpen] = React.useState(false);
   const [titleProject, setTitleProject] = React.useState('Sin titulo');
   const [collaborator, setCollaborator] = React.useState('');
   const [dateProject, setDateProject] = React.useState('Sin fecha');
@@ -61,14 +61,32 @@ function Dashboard(props){
   const [project, setProject] = React.useState([]);
   const [projectShare, setProjectShare] = React.useState([]);
   const [moodboard, setMoodboard] = React.useState([]);
-
+  const [moodGeneral, setMoodGeneral] = React.useState([]);
+  const [comMood, setComMood] = React.useState('');
   const [valoraciones, setValoraciones] = React.useState(0);
+  const comentarios= [];
+  const [nameUser, setNameUser] = React.useState('');
 
-  let url = '/dashboard/'+titleProject+'/main'
+
+  const [colaborador, setColaborador] = React.useState(false);
+
+  var idUrl = titleProject;
+  var newUrl = idUrl.replace(/ /g,"")
+
   let userM = localStorage.getItem('user');
  
 
-
+  const MyDot = ({ isActive }) => (
+    <span
+      style={{
+        display: 'inline-block',
+        height: '10px',
+        width: '10px',
+        borderRadius:'10px',
+        background: isActive ? '#7A76FF' : '#C4C4C4',
+      }}
+    ></span>
+  )
   const handleClickOpen = () => {
     setOpenDialog(true);
   };
@@ -77,8 +95,20 @@ function Dashboard(props){
     setOpenDialog(false);
   };
 
- 
+  const handleOpenMood = () => {
+    setIsMoodOpen(true);
+  };
 
+  const handleCloseMood = () => {
+    setIsMoodOpen(false);
+  };
+ 
+  const handleColaborador= () => {
+    setColaborador(prev=>!prev);
+    if(colaborador === false){
+      setCollaborator('');
+    }
+  };
 
   function handleMenuOpen(event) {
     setIsMenuOpen(prev => !prev);
@@ -97,7 +127,7 @@ function handleTitle(event) {
 
 function handleCollaborator(event) {
   setCollaborator(event.target.value);
-  console.log(collaborator)
+
 }
 
  
@@ -207,7 +237,7 @@ function handleAddProject(){
     dateProject: dateProject,
     step: 'Esencia de la marca',
     id:'',
-    url:url,
+    url:'', 
     percent:0,
     percentStep1:0,
     percentStep2:0,
@@ -221,9 +251,10 @@ function handleAddProject(){
   db.collection("projects").add(data)
   .then(function(docRef) {
     console.log("Document written with ID: ", docRef.id);
-
+   
     db.collection("projects").doc(docRef.id).update({
       "id":  docRef.id,
+      "url": '/dashboard/'+newUrl+'/'+docRef.id+'/step1'
   }).then(function() {
       console.log("Document successfully updated!");
   });
@@ -289,8 +320,7 @@ React.useEffect(()=>{
       setProject([])
       setProjectShare([])
       setMoodboard([])
-     
-      console.log(doc.data())
+      setNameUser(doc.data().name)
       var docUserCurrent = db.collection("users").doc(doc.id).collection("projects");
       var docUserCurrentM = db.collection("users").doc(doc.id).collection("moodboards");
 
@@ -298,30 +328,37 @@ React.useEffect(()=>{
         setMoodboard([])
         let idsMp= []
         let moodboards= []
+        let moodboardsGeneral= []
         querySnapshot.forEach(function(doc) {
+        
+          setMoodboard([])
          idsMp.push(doc.id);
+    
         });
         docRefM.onSnapshot(function(querySnapshot) {
-
+          moodboards= []
+          moodboardsGeneral= []
           querySnapshot.forEach(function(doc) {
+            console.log(doc.data())
+            const up={...doc.data()}
+            moodboardsGeneral.push(up)
+            setMoodGeneral(moodboardsGeneral)
            
             Object.values(idsMp).forEach(element => {
               if(doc.id ===element){
                 const up={...doc.data()}
-                console.log(up)
                 moodboards.push(up);
              
               }
          
             });
-
-            
-          });
-
-          
-          setMoodboard(moodboards)
+  
+            setMoodboard(moodboards)
+          }); 
+  
+         
         });
- 
+       
     });
 
          docUserCurrent.onSnapshot(function(querySnapshot) {
@@ -347,6 +384,7 @@ React.useEffect(()=>{
               
              
                 querySnapshot.forEach(function(doc2) {
+
                  
                 Object.values(idsP).forEach(element => {
                   if(doc2.id ===element){
@@ -411,7 +449,7 @@ React.useEffect(()=>{
                 
                 <div>
                   <h1 className={classes.titleMenu}>¡Hola!</h1>
-                  <p className={classes.nameMenu}>Amig@</p>
+                  <p className={classes.nameMenu}>{nameUser}</p>
                 </div>
                 </div> 
                 <div className={classes.numbers}>
@@ -490,14 +528,15 @@ React.useEffect(()=>{
                             onChange={handleTitle}
                             width='357px'
                             height='50px'/>
-
+                            <span onClick={handleColaborador}className={classes.spanColaborator}>Añadir colaboradores</span>
+                            {colaborador ?
                             <PlaceHolder      
                             type="text"
-                            placeHolder="Añade un coloborador"
+                            placeHolder="Escribe el correo electrónico del colaborador"
                             onChange={handleCollaborator}
                             width='357px'
                             height='50px'/>
-
+                            :null}
                           </div>
                           <div className={classes.actionsDialog}>
                           <BtnOutlined
@@ -536,38 +575,42 @@ React.useEffect(()=>{
                       { contentOption1 &&
 
                       <div className={classes.projects}>
-                    
+                        <Slider showDots={true} dot={MyDot} cols={3} rows={2} gap={5} containerStyle={{ background: 'transparent',  width:'920px', 
+                        height: 'auto', margin: '0 auto'}} >
                           
                         {project.map((item, i) =>
-      
+                        <Slider.Item  key={i}>  
                           <CardProject key={i}
                           {...item}
                        
                           />
-      
+                        </Slider.Item>
                         )}
 
-                          
+                      </Slider>
                          
                       </div>
-                      }
+                    }
 
                       { contentOption2 &&
 
                         <div className={classes.projects}>
-                                            
+                        <Slider showDots={true} dot={MyDot} cols={3} rows={2} gap={5} containerStyle={{ background: 'transparent',  width:'920px', 
+                        height: 'auto', margin: '0 auto'}} >
+                          
                                                   
                         {projectShare.map((item, i) =>
-
+                          <Slider.Item  key={i}>  
                           <CardProject key={i}
                           {...item}
 
                           />
+                          </Slider.Item>
 
                         )}
 
                           
-                        
+                        </Slider>
                         </div>
                       }
                       { contentOption3 &&
@@ -584,16 +627,8 @@ React.useEffect(()=>{
                       </div>
                     }
 
-
-
-
-
-
                     </div>
                   }
-
-
-
 
 
                   {contentShow2 &&
@@ -604,32 +639,115 @@ React.useEffect(()=>{
                       </div>
 
                     {contentOption5 ?
-                      <div>
+                      <div className={classes.projects}>
                           
-                          
+                        <Slider showDots={true} dot={MyDot} cols={3} rows={2} gap={5} containerStyle={{ background: 'transparent',  width:'920px', 
+                        height: 'auto', margin: '0 auto'}} >
                        {moodboard.map((item, i) =>
-                          
-                          <CardMoodboards {...item} onClick={(event)=>{
+                          <Slider.Item  key={i}>  
+                          <CardMoodboards {...item} key={i}open ={isMoodOpen} onClickOpenDialog ={handleOpenMood}onClickCloseDialog={handleCloseMood} 
+                          onClick={(event)=>{
                             console.log(item.id)
-                            setValoraciones(valoraciones + 1)
+
+                            setValoraciones(1)
+                            if(valoraciones ===1 ||valoraciones ===0  ){
+                    
+                              db.collection("moodboards").doc(item.id).update({
+                                "valoraciones": valoraciones,
+                                }) 
+                              
+                            }
+                            if(valoraciones ===1){
+                              setValoraciones(0)
+                            }
     
+                           
+                          }} 
+                          onChange={(event)=>{
+                            setComMood(event.target.value)
+                         
+                            
+                          }
+                          }
+                          onSend={(event)=>{
+                        
+                           
+                            comentarios.push({comentario:comMood,nombre:nameUser})
                             db.collection("moodboards").doc(item.id).update({
-                              "valoraciones": valoraciones,
-                              }) 
-                          }} key={i}
-                          
-                      
+                              "comentarios": comentarios,
+                            }) 
+                            
+                          }
+                          }
                           />
+                          </Slider.Item>
 
-                        )}
-                 
-                      </div>:
-                      <div>
+                      )}
+                      
+                        </Slider>
+                      </div>:null}
+                      
+                      
+                      {contentOption6 ?
+                      <div className={classes.projects}>
+                          
+                        <Slider showDots={true} dot={MyDot} cols={3} rows={2} gap={5} containerStyle={{ background: 'transparent',  width:'920px', 
+                        height: 'auto', margin: '0 auto'}} >
+                       {moodGeneral.map((item, i) =>
+                          <Slider.Item  key={i}>  
+                          <CardMoodboards {...item} key={i}open ={isMoodOpen} onClickOpenDialog ={handleOpenMood}onClickCloseDialog={handleCloseMood} 
+                          onClick={(event)=>{
+                            console.log(item.id)
 
+                            setValoraciones(1)
+                            if(valoraciones ===1 ||valoraciones ===0  ){
+                    
+                              db.collection("moodboards").doc(item.id).update({
+                                "valoraciones": valoraciones,
+                                }) 
+                              
+                            }
+                            if(valoraciones ===1){
+                              setValoraciones(0)
+                            }
+    
+                           
+                          }} 
+                          onChange={(event)=>{
+                            setComMood(event.target.value)
+                         
+                            
+                          }
+                          }
+                          onSend={(event)=>{
+                        
+                           
+                            comentarios.push({comentario:comMood,nombre:nameUser})
+                            db.collection("moodboards").doc(item.id).update({
+                              "comentarios": comentarios,
+                            }) 
+                            
+                          }
+                          }
+                          />
+                          </Slider.Item>
+
+                      )}
+                      
+                        </Slider>
+                      </div>:null}
+                      
+                      
+                      
+                      
+                      
                       </div>
-                      }
-                    </div>
+                  
+                  
+                  
+                  
                   }
+                  
                   
                   {contentShow3 &&
                     <div>
@@ -680,9 +798,10 @@ React.useEffect(()=>{
 
 const useStyles = makeStyles(theme => ({
   rootStyle: {
+    padding:10,
     borderRadius: 15,
     width:465,
-    height:299,
+    height:'auto',
   },
   body:{
     boxSizing: 'border-box',
@@ -735,6 +854,7 @@ closeDialog:{
 
 placeHolder:{
   display:'flex',
+  flexDirection:'column',
   alignSelf:'center',
   width:'357px',
   marginTop:'38px'
@@ -968,7 +1088,12 @@ btnOption:{
   cursor:'pointer',
 },
 
+carousel:{
+  display:'flex',
+  justifyContent:'center',
+  marginTop:'20px'
 
+},
 
 btnOptionYellow:{
   marginLeft:'30px',
@@ -988,7 +1113,16 @@ btnOptionYellow:{
 
 projects:{
   display:'flex',
+  marginTop:'15px',
   flexDirection:'row',
+},
+
+spanColaborator:{
+  fontFamily:'Open Sans',
+  color:'#7A76FF',
+  fontSize:'13px',
+  alignSelf:'flex-end',
+  cursor:'pointer'
 }
 
 }));

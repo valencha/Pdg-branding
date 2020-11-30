@@ -76,7 +76,7 @@ function Step1_9(){
     }
 
       function handleBackPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/step1_8');
+        history.push('/dashboard/'+project+'/'+id+'/step1_9');
       } 
 
     function onChangeGenre(event){
@@ -160,7 +160,7 @@ function Step1_9(){
             
            
             if(doc.exists){
-              
+            setDisabled(false);
               
             setIndexOption(doc.data()?.optionSelected ?? 'none')
             setShowPlaceHolder(doc.data()?.optionSelected === 'Sí')
@@ -186,7 +186,7 @@ function Step1_9(){
             }else{
                 setValuePoints([])
             }
-            setDisabled(false);
+   
 
 
             }else{
@@ -259,9 +259,8 @@ function Step1_9(){
                                checked={ indexOption === item.content} onChange={async(event)=>{
                                 setIndexOption(item.content)
                                 let db = fb.firestore();
-                                var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-1')
-                                await docRef.set({optionSelected:item.content})
-
+                                var docRef = db.collection("projects").doc(id).collection('esencia-de-marca').doc('paso-10')
+                                docRef.set({optionSelected:item.content})
                                 if(item.content==='Sí'){   
                                 setShowPlaceHolder(prev => !prev)
                                 }

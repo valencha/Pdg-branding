@@ -677,7 +677,7 @@ function Step3(){
 
             setAnswers(doc.data().answersT)
   
-                setDisabled(false)
+            setDisabled(false)
       
         }   
         })
@@ -691,14 +691,14 @@ function Step3(){
            
             db.collection("projects").doc(id).update({
             "percent": 80,
-            "percentStep3": 100,
+            "percentStep4": 100,
             }) 
             
         }else{
      
             db.collection("projects").doc(id).update({
                 "percent": 60,
-                "percentStep3": 0,
+                "percentStep4": 0,
                 }) 
         }
    

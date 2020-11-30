@@ -99,7 +99,14 @@ function Step1_6_1(){
        
 
         })
-       
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-7').set({
+        todo:todo,
+        relevanciaAlta:relevanciaAlta,
+        relevanciaBaja:relevanciaBaja,
+        relevanciaMedia:relevanciaMedia,
+        })
     
  
 

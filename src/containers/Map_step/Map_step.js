@@ -114,6 +114,11 @@ function Map_step(){
                  
                         element.active = true;
 
+
+                    }
+                    if( element.title ==='Exploración de los recursos'){
+                        element.percent = doc.data().percentStep2
+
                     }
 
                     if(doc.data().percentStep3===100 && element.title ==='Selección de los recursos'){
@@ -122,19 +127,19 @@ function Map_step(){
 
                     }
                     if( element.title ==='Selección de los recursos'){
-                        element.percent = doc.data().percentStep3
-
-                    }
-                    if(doc.data().percentStep3===100 && element.title ==='Moodboard Sensorial'){
-                 
-                        element.active = true;
                         element.percent = doc.data().percentStep4
-                    }
 
-                    if(doc.data().percentStep4===100 && element.title ==='Creación del brief automático'){
+                    }
+                    if(doc.data().percentStep4===100 && element.title ==='Moodboard Sensorial'){
                  
                         element.active = true;
-             
+                        element.percent = doc.data().percentStep5
+                    }
+
+                    if(doc.data().percentStep5===100 && element.title ==='Creación del brief automático'){
+                 
+                        element.active = true;
+                        
                     }
 
 

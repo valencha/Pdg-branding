@@ -36,6 +36,14 @@ function Step1_6(){
     function handleNextPage(event){
         history.push('/dashboard/'+project+'/'+id+'/step1_7');
         let db = fb.firestore();
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-6').set({notas :listNotesTemp})
+        .then(function(docRef) {
+
+        
+        })
         db.collection("projects").doc(id).update({
             "url": '/dashboard/'+project+'/'+id+'/step1_7',
         }) 

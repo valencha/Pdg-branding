@@ -8,7 +8,8 @@ import BtnStep from '../../components/BtnStep/BtnStep';
 import { useHistory } from "react-router-dom";
 
 //Todos los imports se coloca   n arriba de este 
-
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
 
 
 function ScreenCongrat2(){
@@ -26,6 +27,14 @@ function ScreenCongrat2(){
     function handleNextPage(event){
 
         history.push('/dashboard/'+project+'/'+id+'/main');
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "percent":  60,
+            "percentStep2": 100
+       
+
+        })
         
     }
     

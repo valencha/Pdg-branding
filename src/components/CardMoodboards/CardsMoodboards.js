@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles} from '@material-ui/core/styles';
-import { useHistory } from "react-router-dom";
 import { Card, Dialog } from '@material-ui/core';
 
 
@@ -8,39 +7,49 @@ import { Card, Dialog } from '@material-ui/core';
 function CardMoodboards(props){
 
     const classes = useStyles({ urlBanner: `${props.url}`, urlBack: `${props.url}`});
-    let history = useHistory();
+
     
-      
-    const [open, setOpen] = React.useState(false);
 
-    const handleOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-function handleClose2 (event){
-    setOpen(false);
-}
-
-    return <div className={classes.body}  onClick={handleOpen}>
+    return <div className={classes.body}  >
         
-
-
-        <Dialog open={open} onClose={handleClose}   >
-        <img src={props.url} alt="watch" width='224px' />
+        <Dialog open={props.open}  
+        onClose={props.onClickCloseDialog}
+        BackdropProps={{
+        classes: {
+         root: classes.root2
+        }
+       }
+      }aria-labelledby="form-dialog-title" classes={{paper:classes.dialog, root: classes.dialog}}>
+        <div className={classes.containImg}>
+        <img src={props.url} alt="watch" width='524px' />
        
      
-        <img src='/images/x.svg' alt='icon' onClick={handleClose} className={classes.iconBtn} />
-        <img onClick={props.onClick}className={classes.iconDedo}src={'images/thumbs.svg'} alt="watch" width='16px' />
-        <h1>{props.valoraciones}</h1>
-            
- 
-        </Dialog>
-    
+      
+       <img onClick={props.onClick}className={classes.iconDedo}src={'images/thumbs.svg'} alt="watch" width='16px' />
+       <h1>{props.valoraciones}</h1>
+      </div>
+      <input onChange={props.onChange} type='text'/>
+      <button onClick={props.onSend}>Enviar</button>
+      {props.comentarios ?
+      <div>
+     
+          {props.comentarios.map((item,i)=>
+              <div key={i}>      <h1>{item.nombre}</h1>
+              <h1>{item.comentario}</h1></div>
+        
+          )
 
-        <Card className={classes.card}>
+          }
+        
+      </div>:null
+        }
+      <img src='/images/x.svg' alt='icon' onClick={props.onClickCloseDialog} className={classes.iconBtn} />
+        </Dialog>
+     
+
+       
+
+        <Card className={classes.card} onClick={props.onClickOpenDialog}>
         <div className={classes.contentTop}> 
 
    
@@ -66,12 +75,23 @@ function handleClose2 (event){
 
 const useStyles = makeStyles(theme => ({
     body:{
-        marginTop:'52px',
     },
-    progress:{
-        width:55,
-        height:55,
+    dialog:{
+        backgroundColor:'transparent',
+        display:'flex',
+        boxShadow: "none",
+        overflow: "hidden",
+        flexDirection:'row',
+        justifyContent:'center',
+        alignContent:'flex-start',
+        alignItems:'flex-start',
+
     },
+
+    root2: {
+        backgroundColor: 'rgba(33,36,41,0.8)',
+        opacity:75,
+      },
     card:{
         width:'224px',
         height:'233px',
@@ -102,6 +122,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent:'center',
       
     },
+    
     contentBottom:{
         
         padding:'14px',
@@ -169,6 +190,9 @@ const useStyles = makeStyles(theme => ({
     },
     iconDedo:{
         marginRight:'8px'
+    },
+    iconBtn:{
+        cursor:'pointer'
     }
 
 

@@ -38,6 +38,18 @@ function Step1_4(){
 
     function handleNextPage(event){
         history.push('/dashboard/'+project+'/'+id+'/step1_5');
+
+        db.collection("projects").doc(id).update({
+            "url": '/dashboard/'+project+'/'+id+'/step1_5',
+        }) 
+
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-4').set({notas :listNotesTemp})
+        .then(function(docRef) {
+
+        
+        })
     }
       
 

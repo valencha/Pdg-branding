@@ -95,6 +95,13 @@ function Step1_8(){
        
 
         })
+        var docRef = db.collection("projects").doc(id);
+
+        docRef.collection('esencia-de-marca').doc('paso-9').set({
+        todo:todo,
+        audienciaExterna:audienciaExterna,
+        audienciaInterna:audienciaInterna,
+        })
 
       }
 

@@ -87,7 +87,7 @@ let options1=[
         disabled:false,
      },
 
-    ]
+]
 
 function Step1_7(){
 
@@ -107,13 +107,8 @@ function Step1_7(){
     const [currentSelect,setCurrentSelect] = React.useState([]); 
     
     const[imgChange, setImgChange]= React.useState('/images/loading.svg');
-    
-
-  
-
-
- 
-  
+    let max= 3
+    let min= 1
 
 
     function handleBackPage(event){
@@ -122,12 +117,15 @@ function Step1_7(){
 
     function handleSaveF(event){
         let db = fb.firestore();
-
+    
+        var random =Math.random() * (max - min) + min;
+        var randomC= parseInt(random)
         var docRef = db.collection("projects").doc(id);
       
         docRef.collection('esencia-de-marca').doc('paso-8').set({
             respuestas:answers,
             currentSelect: currentSelect,  
+            url:'/images/ilus-'+randomC+'.svg'
         })
     }
  
@@ -191,6 +189,7 @@ React.useEffect(() => {
             setAnswers([]);
             setSliders([])
             setCurrentSelect([])
+            setImgChange(doc.data().url)
          
             var respuestas =doc.data().respuestas;
           
@@ -378,7 +377,7 @@ React.useEffect(() => {
                         <div className={classes.imageBtn}>
                         <div className={classes.img}>
                         <img className={classes.imgCircle} src='/images/help-circle2.svg'alt="watch" width='20px' />
-                        <img className={classes.imgPerson} src={imgChange} alt="watch" width='83px' />
+                        <img className={classes.imgPerson} src={imgChange} alt="watch" width='202.62px' />
 
                         </div>
                         <button onClick={handleSaveF}className={classes.btnChangeImg}>Generar Avatar</button>

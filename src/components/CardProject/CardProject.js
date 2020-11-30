@@ -39,8 +39,11 @@ function CardProject(props){
  
 
       function handleClickProject(){
-          console.log(props.id);
-          history.push('/dashboard/'+props.titleProject+'/'+props.id+'/main');
+        console.log(props.id);
+        var idUrl = props.titleProject;
+        var newUrl = idUrl.replace(/ /g,"")
+
+        history.push('/dashboard/'+newUrl+'/'+props.id+'/main');
            
       }
 
@@ -90,7 +93,6 @@ function CardProject(props){
 
 const useStyles = makeStyles(theme => ({
     body:{
-        marginTop:'52px',
     },
     progress:{
         width:55,
