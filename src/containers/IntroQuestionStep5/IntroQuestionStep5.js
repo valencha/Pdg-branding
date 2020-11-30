@@ -15,7 +15,7 @@ function IntroQuestionStep5(){
     let history = useHistory();
 
     function handleNextPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/step4');
+        history.push('/dashboard/'+project+'/'+id+'/step5');
       }
       
 
@@ -35,14 +35,15 @@ function IntroQuestionStep5(){
 
                     <div className={classes.contentText}>
                         <img className ={classes.skip} alt='skip'  src={('/images/skipStep.svg')} onClick={handleNextPage}/>
-                       <h1 className={classes.title}>Hora de crear el <span className={classes.boldB}>Moodboard sensorial</span> para tu marca.</h1>
+                       <h1 className={classes.title}>Hemos llegado al paso final y es momento de crear el <span className={classes.boldB}>Brief automático</span></h1>
 
                     </div>
                     <div className={classes.contentBottom}>
                     <div className={classes.contentVideo}>
                     <img className ={classes.video} alt='video'  src={('/images/videoIntro.png')}/>
                     <div>
-                    <p className={classes.description}>Hemos sugerido diferentes recursos según la esencia de tu marca. Por favor selecciona los que te parezcan más convenientes y si no están los recursos que deseas, ¡no te preocupes! Puedes subirlos a la plataforma.</p>
+                    <p className={classes.description}>Un Brief es un documento que tiene la función de especificar los requerimientos de diseño para pasar de la ideación a la ejecución de la marca.Un Brief es un documento que tiene la función de especificar los requerimientos de diseño para pasar de la ideación a la ejecución de la marca.</p>
+                    <p className={classes.description2}>En este paso, hemos recolectado toda la información anterior para generar un Brief automático. También puedes eligir los requerimientos que desees.</p>
                     </div>
                     </div>         
                    
@@ -121,7 +122,8 @@ function IntroQuestionStep5(){
             fontFamily:'Poppins',
             flexWrap:'no-wrap',
             fontWeight:500, 
-            fontSize:'35px',
+            fontSize:'30px',
+            width:'700px'
         },
         boldB:{
             fontFamily:'Poppins',
@@ -160,6 +162,16 @@ function IntroQuestionStep5(){
             lineHeight: '29px',  
             color:'#212429',
             marginLeft:'32px',
+            fontWeight:400,
+            fontSize:'18px',
+        },
+        description2:{
+            fontFamily:'Open Sans',
+            flexWrap:'no-wrap',
+            lineHeight: '29px',  
+            color:'#212429',
+            marginLeft:'32px',
+            marginTop:'20px',
             fontWeight:400,
             fontSize:'18px',
         },

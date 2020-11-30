@@ -2,11 +2,24 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+import { useHistory } from "react-router-dom";
+
 function LateralBar(props){
     const classes = useStyles();
+    let history = useHistory();
+
+
+    function onClick(event){
+
+        history.push('/dashboard');
+
+    }
+
+
+
     return (
         <div className={classes.body}>
-            <Button className={classes.btnToolPrincipal}> <div className={classes.contentBtn}><img src='/images/Home.svg'alt="home" width='20px' /><span className={classes.btnSpan}>Inicio</span> </div> </Button>
+            <Button className={classes.btnToolPrincipal} onClick={onClick}> <div className={classes.contentBtn}><img src='/images/Home.svg'alt="home" width='20px' /><span className={classes.btnSpan}>Inicio</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/flag.svg'alt="progress" width='20px' /><span className={classes.btnSpan}>Progreso</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/file-text.svg'alt="progress" width='20px' /><span className={classes.btnSpan}>Notas</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/help-circle.svg'alt="help" width='20px' /><span className={classes.btnSpan}>Ayuda</span> </div> </Button>

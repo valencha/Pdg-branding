@@ -137,6 +137,7 @@ function Login(){
         fb.auth().signInWithPopup(provider)
         .then((res)=>{
             history.push('/dashboard');
+            localStorage.setItem("user",res.user.email)
             return db.collection('users').doc(res.user.email).set({
                 name: res.user.displayName,
                 email: res.user.email,
@@ -151,7 +152,7 @@ function Login(){
   const signUp=(event)=>{
 
     fb.auth().createUserWithEmailAndPassword(email2, password2).then((res)=>{
- 
+        localStorage.setItem("user",email2)
         return db.collection('users').doc(`${email2}`).set({
             name: name,
             email: email2,
@@ -161,6 +162,7 @@ function Login(){
     }).then(()=>{
         history.push('/dashboard');
         console.log('creo')
+        
     }).catch(err=>{
         console.log('no funciono')
     })
@@ -171,6 +173,7 @@ function Login(){
         fb.auth().signInWithEmailAndPassword(email,password).then(
             
             history.push("/dashboard"))
+            localStorage.setItem("user",email)
         .catch(error => console.log (`Error ${error.code}: ${error.message}`)); 
 
 

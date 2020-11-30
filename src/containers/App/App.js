@@ -19,12 +19,14 @@ import Step4Share from '../Step4Share/Step4Share';
 import Congrats1 from '../ScreenCongrat1/ScreenCongrat1';
 import Congrats2 from '../ScreenCongrat2/ScreenCongrat2';
 import Congrats3 from '../ScreenCongrat3/ScreenCongrat3';
+import Congrats4 from '../ScreenCongrat4/ScreenCongrat4';
 import Step3 from '../Step3/Step3';
 import Step4 from '../Step4/Step4';
 import IntroQuestionStep1 from '../IntroQuestionStep1/IntroQuestionStep1';
 import IntroQuestionStep2 from '../IntroQuestionStep2/IntroQuestionStep2';
 import IntroQuestionStep3 from '../IntroQuestionStep3/IntroQuestionStep3';
 import IntroQuestionStep4 from '../IntroQuestionStep4/IntroQuestionStep4';
+import IntroQuestionStep5 from '../IntroQuestionStep5/IntroQuestionStep5';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { fb } from '../../utils/firebase'
@@ -99,6 +101,8 @@ function App() {
       <Route exact path="/dashboard/:project/:id/intro4" component ={IntroQuestionStep4}/> 
       <Route exact path="/dashboard/:project/:id/step4" component ={Step4}/>
       <Route exact path="/dashboard/:project/:id/step4Share" component ={Step4Share}/>
+      <Route exact path="/dashboard/:project/:id/finished4" component ={Congrats4}/>
+      <Route exact path="/dashboard/:project/:id/intro5" component ={IntroQuestionStep5}/>
       </DataContext.Provider>
   </Router>
 );

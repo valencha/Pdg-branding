@@ -6,6 +6,7 @@ import DataContext from '../../context/DataContext/DataContext';
 import BtnInitial from '../../components/BtnInitial/BtnInitial';
 import BtnOutlined from '../../components/BtnOutlined/BtnOutlined';
 import CardProject from '../../components/CardProject/CardProject';
+import CardMoodboards from '../../components/CardMoodboards/CardsMoodboards';
 import Dialog from '@material-ui/core/Dialog';
 import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
 import { useHistory } from "react-router-dom";
@@ -14,6 +15,7 @@ import { useHistory } from "react-router-dom";
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
+let db = fb.firestore();
 require('firebase/auth');
 
 
@@ -36,11 +38,17 @@ function Dashboard(props){
   const [option3, setOption3] = React.useState(classes.btnOption);
   const [option4, setOption4] = React.useState(classes.btnOption);
 
+  const [option5, setOption5] = React.useState(classes.btnOptionYellow);
+  const [option6, setOption6] = React.useState(classes.btnOption);
+
 
   const [contentOption1, setContentOption1] = React.useState(true);
   const [contentOption2, setContentOption2] = React.useState(false);
   const [contentOption3, setContentOption3] = React.useState(false);
   const [contentOption4, setContentOption4] = React.useState(false);
+
+  const [contentOption5, setContentOption5] = React.useState(true);
+  const [contentOption6, setContentOption6] = React.useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -52,9 +60,13 @@ function Dashboard(props){
   const [marginBell, setMarginBell] = React.useState('40px');
   const [project, setProject] = React.useState([]);
   const [projectShare, setProjectShare] = React.useState([]);
+  const [moodboard, setMoodboard] = React.useState([]);
+
+  const [valoraciones, setValoraciones] = React.useState(0);
 
   let url = '/dashboard/'+titleProject+'/main'
-
+  let userM = localStorage.getItem('user');
+ 
 
 
   const handleClickOpen = () => {
@@ -154,6 +166,32 @@ function handleOption4(){
   setOption2(classes.btnOption);
   setOption3(classes.btnOption);
 }
+
+
+
+function handleOption5(){
+  setContentOption5(true);
+  setContentOption6(false);
+
+  setOption5(classes.btnOptionYellow);
+  setOption6(classes.btnOption);
+
+}
+
+
+function handleOption6(){
+  setContentOption5(false);
+  setContentOption6(true);
+
+  setOption6(classes.btnOptionYellow);
+  setOption5(classes.btnOption);
+
+}
+
+
+
+
+
 function handleAddProject(){
   let users= [value.user.email,collaborator]
 
@@ -183,10 +221,10 @@ function handleAddProject(){
   db.collection("projects").add(data)
   .then(function(docRef) {
     console.log("Document written with ID: ", docRef.id);
+
     db.collection("projects").doc(docRef.id).update({
       "id":  docRef.id,
-  })
-  .then(function() {
+  }).then(function() {
       console.log("Document successfully updated!");
   });
  
@@ -229,32 +267,74 @@ function handleAddProject(){
 .catch(function(error) {
     console.error("Error adding document: ", error);
 });
-window.location.reload();
+
 
 }
 
 
-  React.useEffect(()=>{
 
-    if(value.user !==null){
 
-    let db = fb.firestore();
-   
-    var docRefU = db.collection("projects");
-    var docRef = db.collection("users");
+
+React.useEffect(()=>{
+
+  var docRefU = db.collection("projects");
+  var docRef = db.collection("users").doc(userM);
+  var docRefM = db.collection("moodboards");
+
+
+  const listener = docRef.onSnapshot(function(doc) {
+
     
-    docRef.get().then(function(querySnapshot) {
-     querySnapshot.forEach(function(doc) {
-      let idsP= []
-      let idsPS= []
-      let projects= []
-      let projectsShare= []
-          if(doc.id===value.user.email){
-            var docUserCurrent = db.collection("users").doc(doc.id).collection("projects");
-            docUserCurrent.get().then(function(querySnapshot) {
+    if(doc.exists){
+      setProject([])
+      setProjectShare([])
+      setMoodboard([])
+     
+      console.log(doc.data())
+      var docUserCurrent = db.collection("users").doc(doc.id).collection("projects");
+      var docUserCurrentM = db.collection("users").doc(doc.id).collection("moodboards");
+
+      docUserCurrentM.onSnapshot(function(querySnapshot) {
+        setMoodboard([])
+        let idsMp= []
+        let moodboards= []
+        querySnapshot.forEach(function(doc) {
+         idsMp.push(doc.id);
+        });
+        docRefM.onSnapshot(function(querySnapshot) {
+
+          querySnapshot.forEach(function(doc) {
+           
+            Object.values(idsMp).forEach(element => {
+              if(doc.id ===element){
+                const up={...doc.data()}
+                console.log(up)
+                moodboards.push(up);
+             
+              }
+         
+            });
+
+            
+          });
+
           
-      
+          setMoodboard(moodboards)
+        });
+ 
+    });
+
+         docUserCurrent.onSnapshot(function(querySnapshot) {
+          setProject([])
+          setProjectShare([])
+          let idsP= []
+          let idsPS= []
+          let projects= []
+          let projectsShare= []
+        
               querySnapshot.forEach(function(doc) {
+                
+              
                 if(doc.data().owner===true){
                   idsP.push(doc.id)
                 }
@@ -263,60 +343,51 @@ window.location.reload();
                 }
               });
 
- 
-
-            });
-
-            docRefU.get().then(function(querySnapshot) {
-              querySnapshot.forEach(function(doc2) {
-                
-              Object.values(idsP).forEach(element => {
-                if(doc2.id ===element){
-                  projects.push(doc2.data());
-                  console.log(doc2.data());
-                }
-           
-              });
-
-              Object.values(idsPS).forEach(element => {
-                if(doc2.id ===element){
-                  projectsShare.push(doc2.data());
-                  console.log(doc2.data());
-                }
-           
-              });
-          
+              docRefU.onSnapshot(function(querySnapshot) {
+              
+             
+                querySnapshot.forEach(function(doc2) {
+                 
+                Object.values(idsP).forEach(element => {
+                  if(doc2.id ===element){
+                    const up={...doc2.data()}
+                    projects.push(up);
+                 
+                  }
+             
+                });
   
-            });
-            setProject(projects)
-            setProjectShare(projectsShare)
+                Object.values(idsPS).forEach(element => {
+                  if(doc2.id ===element){
+                    const up={...doc2.data()}
+                    projectsShare.push(up);
+     
+                  }
 
-          });
+             
+                });
+                     
            
-            
-
-          }
-
-       
-          // doc.data() is never undefined for query doc snapshots
-         
-    });
-
-  });
-}else{
-  history.push('/login')
-}
-
-
- 
-
-
+      
+              });
+              setProject(projects)
+              setProjectShare(projectsShare)
     
-  },[value,history])
+            })
+ 
+   
+        });
+
+    }else{
+
+    }
 
 
-   
-   
+  })
+  return () => listener()
+
+},[userM])
+
 
     return (
         <div className={classes.body}>
@@ -502,14 +573,14 @@ window.location.reload();
                       { contentOption3 &&
 
                       <div>
-                        <h1>Recientes</h1>
+                      
                       </div>
                       }
 
                     { contentOption4 &&
 
                       <div>
-                      <h1>Papelera</h1>
+                 
                       </div>
                     }
 
@@ -527,40 +598,69 @@ window.location.reload();
 
                   {contentShow2 &&
                     <div>
-                      <h1>Hola2</h1>
+                      <div className={classes.optionsMenu}>
+                      <button className={option5} onClick={handleOption5}>Mis moodboards</button>
+                      <button className={option6}  onClick={handleOption6}>Todos</button>
+                      </div>
+
+                    {contentOption5 ?
+                      <div>
+                          
+                          
+                       {moodboard.map((item, i) =>
+                          
+                          <CardMoodboards {...item} onClick={(event)=>{
+                            console.log(item.id)
+                            setValoraciones(valoraciones + 1)
+    
+                            db.collection("moodboards").doc(item.id).update({
+                              "valoraciones": valoraciones,
+                              }) 
+                          }} key={i}
+                          
+                      
+                          />
+
+                        )}
+                 
+                      </div>:
+                      <div>
+
+                      </div>
+                      }
                     </div>
                   }
                   
                   {contentShow3 &&
                     <div>
-                      <h1>Hola3</h1>
+                      <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   }
 
                   {contentShow4 &&
                     <div>
-                      <h1>Hola4</h1>
+                      <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   }   
                   {contentShow5 &&
                     <div>
-                      <h1>Hola5</h1>
+                       <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   } 
 
                   {contentShow6 &&
                     <div>
-                      <h1>Hola6</h1>
+                      <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   } 
                   {contentShow7 &&
                     <div>
-                      <h1>Hola6</h1>
+                      <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   } 
                   {contentShow8 &&
                     <div>
-                      <h1>Hola8</h1>
+                       <h1>No tienes acceso. Adquiere uno de nuestros planes</h1>
                     </div>
                   } 
 

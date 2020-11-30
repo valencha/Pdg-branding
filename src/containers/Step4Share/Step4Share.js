@@ -40,11 +40,13 @@ function Step4Share(){
     let history = useHistory();
     const [indexOption, setIndexOption] = React.useState('none') 
     var image = localStorage.getItem('imgCanvas')
+
     const [showContent, setShowContent] = React.useState(true) 
 
     
     const [description, setDescription] = React.useState('') 
-    //console.log( JSON.parse(image))
+  
+ 
     const handleOpen = () => {
         setShowContent(true);
       };
@@ -54,51 +56,72 @@ function Step4Share(){
       };
 
     function handleNextPage(event){
-      //  history.push('/dashboard/'+project+'/'+id+'/step1');
+      history.push('/dashboard/'+project+'/'+id+'/finished4');
 
       }
 
 
     function handleShareMoodboard(event){
 
-        
-        var storageRef= fb.storage().ref(`/${id}/`)
-       storageRef.putString(image,'data_url').then(function(snapshot){
-           console.log('done')
-       })
-  
-        console.log(event)
+        let namesU= []
+    var storageRef= fb.storage().ref(`${id}`)
+       storageRef.putString(image,'data_url').then(function(snapshot) {
+        console.log('Uploaded a raw string!');
+      });
+
+
         db.collection("moodboards").doc(id).set({
             titleProject:project,
             description:description,
-            valoraciones:[],
-            comentarios:[]
+            valoraciones:0,
+            comentarios:[],
+            url:'',
+            id:id,
+            
 
         }).then(function(docRef){
             var docRefP = db.collection("projects").doc(id).collection('users')
+
+            storageRef.getDownloadURL().then(function(url) {
+                console.log(url)
+                db.collection("moodboards").doc(id).update({url:url})
+
+              }).catch(function(error) {
+                // Handle any errors
+                console.log(error)
+              })
         
             docRefP.get().then(function (querySnapshot) {
             
                 querySnapshot.forEach(function (doc) {
                     
-
+               
+                   // console.log(doc.id)
                     var docRefU = db.collection("users").doc(doc.id)
                     db.collection("users").doc(doc.id).collection('moodboards').doc(id).set({titleProject:project})
                     docRefU.get().then(function(doc) {
+                        
                         if(doc.exists){
                             var name= doc.data().name   
-                            db.collection("moodboards").doc(id).collection('users').doc(doc.id).set({name})
-                            
-                        }
-               
+                          
+                            namesU.push(`${doc.data().name} - ` )
                        
+                            db.collection("moodboards").doc(id).collection('users').doc(doc.id).set({name})
+
+                        }
+                        console.log(namesU)
+                        
+                        db.collection("moodboards").doc(id).update({users:namesU})
                     })
-                    
+                
+                    //setNames(namesU)
+          
      
                 });
   
 
         })
+       setShowContent(false)
 
     })}
 

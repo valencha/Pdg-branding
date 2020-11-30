@@ -510,23 +510,19 @@ function ToolBar(props){
        
     }
 
-    return <div className={classes.body}>
-    
-    <div className={classes.contentToolBar}>
+    return <div className={classes.contentToolBar}>
         <div> 
-            <Button className={changeClass} onClick={showContentClick}> <div className={classes.contentBtn}><img src={changeIcon} alt="watch" width='20px' />{contentShow && <span className={classes.btnSpan}>Inicio</span>} </div> </Button>
-            <Button className={changeClass2} onClick={showContentClick2}> <div className={classes.contentBtn2}><img src={changeIcon2} alt="watch" width='20px' />{contentShow2 && <span className={classes.btnSpan}>Explorar</span>} </div> </Button>
-            <Button className={changeClass3} onClick={showContentClick3}> <div className={classes.contentBtn3}><img src={changeIcon3} alt="watch" width='20px' />{contentShow3 && <span className={classes.btnSpan}>Favoritos</span>} </div> </Button>
-            <Button className={changeClass4} onClick={showContentClick4}> <div className={classes.contentBtn4}><img src={changeIcon4} alt="watch" width='20px' />{contentShow4 && <span className={classes.btnSpan}>Guardados</span>} </div> </Button>
-            <Button className={changeClass5} onClick={showContentClick5}> <div className={classes.contentBtn5}><img src={changeIcon5} alt="watch" width='20px' />{contentShow5 && <span className={classes.btnSpan}>Recursos</span>} </div> </Button>
-            <Button className={changeClass6} onClick={showContentClick6}> <div className={classes.contentBtn6}><img src={changeIcon6} alt="watch" width='20px' />{contentShow6 && <span className={classes.btnSpan}>Ayuda</span>} </div> </Button>
+            <Button className={changeClass} onClick={showContentClick}> <div className={classes.contentBtn}><img src={changeIcon} alt="watch" width='20px' />{contentShow ? <span className={classes.btnSpan}>Inicio</span>:<span className={classes.btnSpanNegro}>Inicio</span>} </div></Button>
+            <Button className={changeClass2} onClick={showContentClick2}> <div className={classes.contentBtn2}><img src={changeIcon2} alt="watch" width='20px' />{contentShow2 ? <span className={classes.btnSpan}>Explorar</span>:<span className={classes.btnSpanNegro}>Explorar</span>} </div> </Button>
+            <Button className={changeClass3} onClick={showContentClick3}> <div className={classes.contentBtn3}><img src={changeIcon3} alt="watch" width='20px' />{contentShow3 ? <span className={classes.btnSpan}>Favoritos</span>:<span className={classes.btnSpanNegro}>Favoritos</span>} </div> </Button>
+            <Button className={changeClass4} onClick={showContentClick4}> <div className={classes.contentBtn4}><img src={changeIcon4} alt="watch" width='20px' />{contentShow4 ? <span className={classes.btnSpan}>Guardados</span>:<span className={classes.btnSpanNegro}>Guardados</span>} </div> </Button>
+            <Button className={changeClass5} onClick={showContentClick5}> <div className={classes.contentBtn5}><img src={changeIcon5} alt="watch" width='20px' />{contentShow5 ? <span className={classes.btnSpan}>Recursos</span>:<span className={classes.btnSpanNegro}>Recursos</span>} </div> </Button>
+            <Button className={changeClass6} onClick={showContentClick6}> <div className={classes.contentBtn6}><img src={changeIcon6} alt="watch" width='20px' />{contentShow6 ? <span className={classes.btnSpan}>Ayuda</span>:<span className={classes.btnSpanNegro}>Ayuda</span>} </div> </Button>
         </div>
         <div className={classes.toolBottom}>
         <Button className={changeClass7} onClick={showContentClick7}> <div className={classes.contentBtn7}><img src={changeIcon7} alt="watch" width='20px' />{contentShow7 && <span className={classes.btnSpan}>Ajustes</span>} </div> </Button>
         <Button className={classes.btnTool} onClick={handleLogOut}> <div className={classes.contentBtn8}><img src='images/log-out.svg' alt="watch" width='20px' /> </div> </Button>
         </div>
-    </div>
- 
     </div>;
 }
 
@@ -593,6 +589,13 @@ const useStyles = makeStyles(theme => ({
         fontFamily: 'Poppins',
         fontWeight:400,
         color: '#7A76FF',
+    },
+    btnSpanNegro:{
+        textTransform: 'capitalize',
+        textDecoration:'none',
+        fontFamily: 'Poppins',
+        fontWeight:400,
+        color: '#686B6E',
     },
     toolBottom:{
         marginTop:'20px',

@@ -80,8 +80,8 @@ function Map_step(){
                 title:'Creación del brief automático',
                 percent:0,
                 active:false,
-                urlImage:'/images/step5.svg'
-        
+                urlImage:'/images/step5.svg',
+                urlNext:'/dashboard/'+project+'/'+id+'/intro5',
             },
         
         
@@ -129,6 +129,12 @@ function Map_step(){
                  
                         element.active = true;
                         element.percent = doc.data().percentStep4
+                    }
+
+                    if(doc.data().percentStep4===100 && element.title ==='Creación del brief automático'){
+                 
+                        element.active = true;
+             
                     }
 
 
