@@ -25,17 +25,11 @@ function IntroQuestionStep5(){
        let emailsU= []
        var storageRef= fb.storage().ref(`${id}`)
         db.collection("briefs").doc(id).set({
-            titleProject: project,
+            titleProject: ' ',
             urlMoodBoard: ' ',
-            descripcion:' ',
             emailDuenos:' ',
-            celularDueños:' ',
-            anotacion:' ',
             duenos:' ',
             id:id,
-            diseñador:' ',
-            celDisenador:' ',
-            emailDisenador:' ',
             audienciaGenero:' ',
             audienciaEdad:' ',
             audienciaPuntos:' ',
@@ -51,6 +45,13 @@ function IntroQuestionStep5(){
                 // Handle any errors
                 console.log(error)
             })
+
+            var docRefPCurrent = db.collection("projects").doc(id)
+            docRefPCurrent.get().then(function (doc) {
+
+                db.collection("briefs").doc(id).update({titleProject:doc.data().titleProject })
+            })
+
             var docRefUCurrent = db.collection("projects").doc(id).collection('users')
             docRefUCurrent.get().then(function (querySnapshot) {
             
@@ -154,7 +155,7 @@ function IntroQuestionStep5(){
                     
                 })
             })
-            history.push('/dashboard/'+project+'/'+id+'/step5');
+          history.push('/dashboard/'+project+'/'+id+'/step5');
         })
 
 
