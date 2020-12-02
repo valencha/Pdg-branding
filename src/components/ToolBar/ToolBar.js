@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-
+import { useHistory } from "react-router-dom";
 
 
 //Todos los imports se coloca   n arriba de este 
@@ -49,7 +49,7 @@ function ToolBar(props){
     const [changeIcon6, setChangeIcon6] = React.useState('images/help-circle.svg');
 
     const [changeIcon7, setChangeIcon7] = React.useState('images/settings.svg');
-
+    let history = useHistory();
 
   
 
@@ -480,34 +480,12 @@ function ToolBar(props){
         props.setContentShow7(true);  
      
     }
-/*
-    React.useEffect(() => {
-        let isCancelled = false;
-        if (!isCancelled) {
-          
-       
-          fb.auth().onAuthStateChanged(user => {
-            if (user) {
-         
-              } else {
-                props.history('/login');
-                   
-              }
-          
-            
-          })
-          
-        }
-        return () => {
-          isCancelled = true;
-        };
-      }, [props.history]);
-   */
+
 
     function handleLogOut(event){
         fb.auth().signOut();
-       
-       
+        history.push('/login');
+
     }
 
     return <div className={classes.contentToolBar}>

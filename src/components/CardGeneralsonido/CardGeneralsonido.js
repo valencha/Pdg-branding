@@ -8,6 +8,8 @@ function CardGeneralsonido(props){
     const classes = useStyles({ urlIcon: '/images/checked.svg'});
    
     const [open, setOpen] = React.useState(false);
+    const managerDrag = props.managerDrag;
+    const useRefContainer = React.useRef()
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -17,9 +19,22 @@ function CardGeneralsonido(props){
       setOpen(false);
     };
 
-    return <Card className= {classes.imgS} >
+    React.useEffect(()=>{
+      if(useRefContainer !== undefined){
 
-        <img src={`${props.url}`} alt='media'width="100px" height="auto" className={classes.img} onClick={handleClickOpen}   />
+        var parent = useRefContainer.current.parentNode;
+        parent.id =  props.id;
+
+
+        managerDrag.addDrag([parent])
+
+      }
+
+    },[managerDrag,props.id])
+
+    return <Card className= {classes.imgS} ref={useRefContainer} >
+
+        <img src={`${props.url}`} id={props.id}   alt='media'width="100px" height="auto" className={classes.img} onClick={handleClickOpen}   />
         <Dialog open={open} onClose={handleClose}    
         BackdropProps={{
         classes: {

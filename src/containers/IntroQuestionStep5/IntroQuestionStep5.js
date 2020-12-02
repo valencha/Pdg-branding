@@ -8,6 +8,11 @@ import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
 
 
+//Todos los imports se coloca   n arriba de este 
+
+import { fb } from '../../utils/firebase'
+let db = fb.firestore();
+require('firebase/auth');
 function IntroQuestionStep5(){
 
     let {project,id}= useParams();
@@ -15,7 +20,148 @@ function IntroQuestionStep5(){
     let history = useHistory();
 
     function handleNextPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/step5');
+      
+       let namesU= []
+       let emailsU= []
+       var storageRef= fb.storage().ref(`${id}`)
+        db.collection("briefs").doc(id).set({
+            titleProject: project,
+            urlMoodBoard: ' ',
+            descripcion:' ',
+            emailDuenos:' ',
+            celularDueños:' ',
+            anotacion:' ',
+            duenos:' ',
+            id:id,
+            diseñador:' ',
+            celDisenador:' ',
+            emailDisenador:' ',
+            audienciaGenero:' ',
+            audienciaEdad:' ',
+            audienciaPuntos:' ',
+            audienciaIntereses:' ',
+
+        }).then(function(docRef){
+
+            storageRef.getDownloadURL().then(function(url) {
+                console.log(url)
+                db.collection("briefs").doc(id).update({urlMoodBoard:url})
+
+            }).catch(function(error) {
+                // Handle any errors
+                console.log(error)
+            })
+            var docRefUCurrent = db.collection("projects").doc(id).collection('users')
+            docRefUCurrent.get().then(function (querySnapshot) {
+            
+                querySnapshot.forEach(function (doc) {
+                    
+               
+                   // console.log(doc.id)
+                    var docRefU = db.collection("users").doc(doc.id)
+                    db.collection("users").doc(doc.id).collection('briefs').doc(id).set({titleProject:project})
+                    docRefU.get().then(function(doc) {
+                        
+                        if(doc.exists){
+                            var name= doc.data().name   
+                          
+                            namesU.push(`${doc.data().name} - ` )
+                      
+                            emailsU.push(`${doc.id} - ` )
+                            db.collection("briefs").doc(id).collection('users').doc(doc.id).set({name})
+                        
+                        }
+                        console.log(namesU)
+                        db.collection("briefs").doc(id).update({duenos:namesU, emailDuenos:emailsU })
+                      
+                    })
+                
+
+                    //setNames(namesU)
+          
+     
+                });
+
+            })
+            var docRefP = db.collection("projects").doc(id).collection('esencia-de-marca')
+
+            docRefP.get().then(function (querySnapshot) {
+            
+                querySnapshot.forEach(function (doc) {
+                    console.log(doc.id)
+
+                    if(doc.id === 'paso-2'){
+                        db.collection("briefs").doc(id).update({categorias: doc.data().respuestas})
+                    }
+
+
+                    if(doc.id === 'paso-3'){
+                        
+                       db.collection("briefs").doc(id).update({queHace: doc.data().notas})
+                    }
+
+                    if(doc.id === 'paso-4'){
+                        
+                        db.collection("briefs").doc(id).update({comoHace: doc.data().notas})
+                     }
+
+                     if(doc.id === 'paso-5'){
+                        
+                        db.collection("briefs").doc(id).update({porqueHace: doc.data().notas})
+                     }
+
+                     if(doc.id === 'paso-6'){
+                        
+                        db.collection("briefs").doc(id).update({valores: doc.data().notas})
+                     }
+
+                     if(doc.id === 'paso-7'){
+                        
+                        db.collection("briefs").doc(id).update({valoresRelevanciaAlta: doc.data().relevanciaAlta,
+                            valoresRelevanciaBaja: doc.data().relevanciaBaja,
+                            valoresRelevanciaMedia: doc.data().relevanciaMedia
+                        
+                        })
+                     }
+                     if(doc.id === 'paso-8'){
+                        
+                        db.collection("briefs").doc(id).update({personalidad: doc.data().respuestas})
+                        db.collection("briefs").doc(id).update({urlPersonalidad: doc.data().url})
+                     }
+
+                     if(doc.id === 'paso-9'){
+                        
+                        db.collection("briefs").doc(id).update({audienciaInterna: doc.data().audienciaInterna,
+                            audienciaExterna: doc.data().audienciaExterna,
+                   
+                        })
+                     }
+
+                    
+                    if(doc.data().genero){
+                    db.collection("briefs").doc(id).update({audienciaGenero: doc.data().genero })
+                    }
+                    if(doc.data().edad){
+                        db.collection("briefs").doc(id).update({audienciaEdad: doc.data().edad })
+                    }
+                    if(doc.data().puntosContacto){
+                        db.collection("briefs").doc(id).update({audienciaPuntos: doc.data().puntosContacto })
+                    }
+                    if(doc.data().intereses){
+                        
+                        db.collection("briefs").doc(id).update({audienciaIntereses: doc.data().intereses })
+                    }
+                    
+                })
+            })
+            history.push('/dashboard/'+project+'/'+id+'/step5');
+        })
+
+
+
+
+
+
       }
       
 

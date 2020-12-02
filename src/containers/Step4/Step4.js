@@ -21,17 +21,10 @@ import Slider from 'react-grid-carousel';
 import './styles.css';
 import html2canvas from 'html2canvas';
 import { fb } from '../../utils/firebase'
+import DragAndDrop from './dnd';
 let db = fb.firestore();
 require('firebase/auth');
 
-var columns={
-    general:[],
-    vista: [],
-    oido: [],
-    olfato: [],
-    tacto: [],
-    gusto: [],
-}
 
 
 function Step4(){
@@ -57,76 +50,71 @@ function Step4(){
     const [isClick, setIsClick] = React.useState(true);
     const [isClick2, setIsClick2] = React.useState(false);
     const [isClick3, setIsClick3] = React.useState(false);
-    const [score, setScore] = React.useState(0);
-
-    const  itemsG =[];
-    const itemsV =[];
-    const itemsOi =[];
-    const itemsOl =[];
-    const itemsT =[];
-    const itemsGu =[];
-
+    const [score, setScore] = React.useState(10);
+    const [scoreVisual, setScoreVisual] = React.useState(0);
+   
+    const [managerDrag]= React.useState(new DragAndDrop())
     const [itemsImg, setItemsImg] = React.useState([]);
     const [itemsVideo, setItemsVideo] = React.useState([]);
     const [itemsSonido, setItemsSonido] = React.useState([]);
     
-    const[itemsVista, setItemsVista]= React.useState([]);
-    const[itemsOido, setItemsOido]= React.useState([]);
-    const[itemsOlfato, setItemsOlfato]= React.useState([]);
-    const[itemsTacto, setItemsTacto]= React.useState([]);
-    const[itemsGusto, setItemsGusto]= React.useState([]);
+   
 
-    const [openVista, setOpenVista] = React.useState(false);
-    const [openOlfato, setOpenOlfato] = React.useState(false);
-    const [openGusto, setOpenGusto] = React.useState(false);
-    const [openTacto, setOpenTacto] = React.useState(false);
-    const [openOido, setOpenOido] = React.useState(false);
-    const [openGuru, setOpenGuru] = React.useState(false);
-  
-    const handleOpenVista = () => {
-      setOpenVista(true);
-    };
-  
+    const[itemsEscogidos, setItemsEscogidos]= React.useState([]);
+    const [itemsEscogidosAnteriores, setItemsEscogidosAnteriores]= React.useState([]);
+
+    const [openVista, setOpenVista] = React.useState(undefined);
+    const [openOlfato, setOpenOlfato] = React.useState(undefined);
+    const [openGusto, setOpenGusto] = React.useState(undefined);
+    const [openTacto, setOpenTacto] = React.useState(undefined);
+    const [openOido, setOpenOido] = React.useState(undefined);
+    const [openGuru, setOpenGuru] = React.useState(undefined);
+
+
+   
+
+    const [listaSentidos, setListaSentidos] = React.useState([
+    {img:"/images/vista.svg",
+    title:"vista"},
+    {img:"/images/oido.svg",
+    title:"oido"},
+    {img:"/images/tacto.svg",
+    title:"tacto"},
+    {img:"/images/olfato.svg",
+    title:"olfato"},
+    {img:"/images/gusto.svg",
+    title:"gusto"}
+
+    ]);
+
     const handleCloseVista = () => {
       setOpenVista(false);
     };
 
-    const handleOpenGusto = () => {
-        setOpenGusto(true);
-    };
+
     
       const handleCloseGusto = () => {
         setOpenGusto(false);
     };
 
-    const handleOpenOlfato = () => {
-        setOpenOlfato(true);
-    };
+  
     
       const handleCloseOlfato = () => {
         setOpenOlfato(false);
     };
 
-    const handleOpenTacto = () => {
-        setOpenTacto(true);
-    };
-    
+ 
       const handleCloseTacto = () => {
         setOpenTacto(false);
     };
 
-    const handleOpenOido = () => {
-        setOpenOido(true);
-    };
+ 
     
       const handleCloseOido = () => {
         setOpenOido(false);
     };
 
-    const handleOpenGuru = () => {
-        setOpenGuru(true);
-    };
-    
+
       const handleCloseGuru = () => {
         setOpenGuru(false);
     };
@@ -147,6 +135,13 @@ const MyDot = ({ isActive }) => (
 
 
 
+  const setValueMensaje = ()=>{
+    db.collection("projects").doc(id).collection('moodboard-sensorial').doc('todos').set({
+        recursos:itemsEscogidos
+    })
+    setItemsEscogidos(Object.assign([],itemsEscogidos));
+    setListaSentidos(Object.assign([], listaSentidos));
+  }
  
 
     function handleBackPage(event){
@@ -154,108 +149,171 @@ const MyDot = ({ isActive }) => (
     } 
 
     React.useEffect(() => {
-      
-        var docRef = db.collection("projects").doc(id).collection('moodboard-sensorial').doc('score')
-
-        const listener = docRef.onSnapshot(function(doc) {
-          
-        if(doc.exists){
-            
-            setScore(doc.data().score)
-            if(doc.data().score >=150){
-                setLogroGu('/images/mguru.svg')
+        setDisabled(false)
+        var docInit = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')
+        docInit.onSnapshot((doc) =>{
+            if (doc.exists) {
+                var respuestas = doc.data().answersT    
+                setItemsImg(respuestas.filter((r)=> r.tipo === 'imagen'))                        
+                setItemsVideo(respuestas.filter((r)=> r.tipo === 'video'))                       
+                setItemsSonido(respuestas.filter((r)=> r.tipo === 'audio'))              
+                console.log(respuestas)
+                setItemsEscogidosAnteriores(Object.assign([],respuestas))
+                
+        
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
             }
-            setItemsImg([])    
-            setItemsVideo([])  
-            setItemsSonido([])      
-            console.log(doc.id)
-
-
-            var docVista= db.collection("projects").doc(id).collection('moodboard-sensorial').doc('vista')
-            docVista.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().recursos
-                    console.log(respuestas)    
-                    setItemsVista(respuestas)            
-                    
-                } else {
-                    setItemsVista([])  
-                }
-            })
-
-            var docOido= db.collection("projects").doc(id).collection('moodboard-sensorial').doc('oido')
-            docOido.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().recursos
-                    console.log(respuestas)    
-                    setItemsOido(respuestas)            
-                    
-                } else {
-                    setItemsOido([])  
-                }
-            })
-
-            var docOl= db.collection("projects").doc(id).collection('moodboard-sensorial').doc('olfato')
-            docOl.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().recursos
-                    console.log(respuestas)    
-                    setItemsOlfato(respuestas)            
-                    
-                } else {
-                    setItemsOlfato([])  
-                }
-            })
-
-            var docTacto= db.collection("projects").doc(id).collection('moodboard-sensorial').doc('tacto')
-            docTacto.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().recursos
-                    console.log(respuestas)    
-                    setItemsTacto(respuestas)            
-                    
-                } else {
-                    setItemsTacto([])  
-                }
-            })
-
-            var docGusto= db.collection("projects").doc(id).collection('moodboard-sensorial').doc('gusto')
-            docGusto.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().recursos
-                    console.log(respuestas)    
-                    setItemsGusto(respuestas)            
-                    
-                } else {
-                    setItemsGusto([])  
-                }
-            })
-
-      
-        }else{
-            var docInit = db.collection("projects").doc(id).collection('seleccion-recursos').doc('recursos-seleccionados')
-            docInit.get().then(function(doc) {
-                if (doc.exists) {
-                    var respuestas = doc.data().answersT                  
-                    setItemsImg(respuestas.filter((r)=> r.tipo === 'imagen'))                        
-                    setItemsVideo(respuestas.filter((r)=> r.tipo === 'video'))                       
-                    setItemsSonido(respuestas.filter((r)=> r.tipo === 'audio'))
-            
-                } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
-                }
-            }).catch(function(error) {
-                console.log("Error getting document:", error);
-            });
-
-        }   
         })
-        return () => listener()
-   
-    }, [id]);
-    	
 
+        var containers_sentidos = document.querySelectorAll(".container__sentidos");
+        if(containers_sentidos){
+            managerDrag.addDrop(containers_sentidos)
+        }
+
+     
+
+        var docRef = db.collection("projects").doc(id).collection('moodboard-sensorial').doc('todos')
+        var docScore = db.collection("projects").doc(id).collection('moodboard-sensorial').doc('score')
+
+        docScore.onSnapshot((doc) =>{
+            if(doc.exists){
+                setScoreVisual(doc.data().score)
+              
+                if(doc.data().score>=50){
+                    //setOpenGuru(true)
+                    setLogroGu('/images/mguru.svg');
+                }
+            } 
+            
+        })
+
+
+
+        docRef.onSnapshot((doc) =>{
+            if(doc.exists){
+             
+                setItemsEscogidos(doc.data().recursos)
+
+                
+                
+           
+            } 
+            
+        })
+      
+   
+    }, [id,managerDrag]);
+    	
+    React.useEffect(()=>{
+     
+
+        let logroVista= itemsEscogidos.filter((r)=> r.categoria=== 'vista')
+        let logroOido= itemsEscogidos.filter((r)=> r.categoria=== 'oido')
+        let logroOl= itemsEscogidos.filter((r)=> r.categoria=== 'olfato')
+        let logroTacto= itemsEscogidos.filter((r)=> r.categoria=== 'tacto')
+        let logroGusto= itemsEscogidos.filter((r)=> r.categoria=== 'gusto')
+
+        console.log(logroVista)
+        if(logroVista.length>=3){
+           
+            setLogroV('/images/mvista.svg') 
+            if(openVista ===undefined){
+                setOpenVista(true);
+           
+            }
+          
+        }
+       
+        if(logroOido.length>=3){
+            if(openOido===undefined){
+                setOpenOido(true);
+                  
+            }
+             
+            setLogroOi('/images/moido.svg')
+          
+        }
+       if(logroOl.length>=3){
+            if(openOlfato===undefined){
+            setOpenOlfato(true);
+              
+            }
+      
+            setLogroOl('/images/molfato.svg')
+          
+        }
+        if(logroTacto.length>=3){
+            if(openTacto===undefined){
+                setOpenTacto(true); 
+             
+            }
+       
+            setLogroT('/images/mtacto.svg')
+          
+        }
+        if(logroGusto.length>=3){
+           
+            if(openGusto===undefined){
+                setOpenGusto(true);
+               
+            }
+            setLogroG('/images/mgusto.svg')
+            
+        }
+        
+        managerDrag.setOnDrog((elemento)=>{
+            setScore(score + 10);  
+            var elementoSeleccionado = managerDrag.currentlyDragging;
+           // elemento.appendChild(elementoSeleccionado);
+           console.log(elementoSeleccionado)
+           console.log(elementoSeleccionado.id, elementoSeleccionado)
+            var itemsTempEscogidos = Object.assign([],itemsEscogidos);
+            
+            let index =-1;
+            for (let i = 0; i < itemsTempEscogidos.length; i++) {
+                let item = itemsTempEscogidos[i];
+               
+                if(elementoSeleccionado.id === item.id){
+                   
+                    item.categoria = elemento.id;
+                    index=i
+                    i=itemsTempEscogidos.length;
+                }
+       
+            }
+         
+
+            console.log(itemsEscogidosAnteriores.length)
+            if(index === -1){
+                for (let i = 0; i < itemsEscogidosAnteriores.length; i++) {
+                    let item = itemsEscogidosAnteriores[i];
+                  
+                    if(elementoSeleccionado.id === item.id){
+                        
+                        let  tempItem = Object.assign({},item)
+                        tempItem.categoria = elemento.id
+                        itemsTempEscogidos.push(tempItem)
+                        i=itemsEscogidosAnteriores.length;
+                    }
+                    
+
+                }
+            }
+            db.collection("projects").doc(id).collection('moodboard-sensorial').doc('todos').set({
+                recursos:itemsTempEscogidos
+            })
+         
+            db.collection("projects").doc(id).collection('moodboard-sensorial').doc('score').set({
+                score:score
+            })
+            setItemsEscogidos(Object.assign([],itemsEscogidos));
+            setListaSentidos(Object.assign([], listaSentidos));
+        })
+
+
+    },[itemsEscogidos,openGusto,openOido, openVista,openTacto,openOlfato,itemsEscogidosAnteriores,id,listaSentidos,managerDrag])
 
       function handleNextPage(event){
         history.push('/dashboard/'+project+'/'+id+'/step4Share');
@@ -300,7 +358,8 @@ const MyDot = ({ isActive }) => (
 
   
     },[isClick,isClick2,isClick3])
-
+    
+    /*
     const onDragOver=(e)=>{
         e.preventDefault();
     }
@@ -310,16 +369,32 @@ const MyDot = ({ isActive }) => (
         e.dataTransfer.setData("id",item)
     }
 
-    const onDrop=(e, tipo)=>{
-        
-
+    const onDrop= async (e, tipo)=> { 
         let i = e.dataTransfer.getData("id");
+        var item = JSON.parse(i);
+        console.log(item)
+        var docRef = db.collection("projects").doc(id).collection('moodboard-sensorial').doc('todos')  ;
+        const data =  await docRef.get()
+        const currentData = data.data()?.recursos ?? []
+        const res = currentData.find((obj) => obj.nombre === item.nombre )
+        if(res){
+          const newData =  currentData.filter((obj) => obj.nombre === item.nombre)
+          await docRef.set({recursos:newData})
+        }else{
+          const newData = [...currentData]
+          newData.push({...item,categoria:tipo, descripcion: ''})
+          await docRef.set({recursos:newData})
+        }                                
+    }
 
+
+/*
         if(score>=150){
             setOpenGuru(true)
             setLogroGu('/images/mguru.svg');
         }
 
+     
         var docRef = db.collection("projects").doc(id).collection('moodboard-sensorial');
         
         setScore(score + 10);
@@ -329,47 +404,70 @@ const MyDot = ({ isActive }) => (
         console.log(item)
     
         console.log(tipo)
-  
+        
+        
 
         if(tipo === 'vista'){
-        itemsV.push((item))
+            const itemNew={...item,
+            categoria:'vista', 
+            descripcion:' '}
+
+            itemsV.push(itemNew)
+            //setItemsVista(itemsV)
+        
             
-          docRef.doc('vista').set({recursos:itemsV})
         }
 
         if(tipo === 'oido'){    
-            itemsOi.push((item))
-            docRef.doc('oido').set({recursos:itemsOi})
+            const itemNew={...item,
+                categoria:'oido', 
+                descripcion:' '}
+    
+                itemsV.push(itemNew)
+            
         }
 
         if(tipo === 'olfato'){    
-            itemsOl.push((item))
-            docRef.doc('olfato').set({recursos:itemsOl})
+            const itemNew={...item,
+                categoria:'olfato', 
+                descripcion:' '}
+    
+                itemsV.push(itemNew)
+          
         }
 
         if(tipo === 'tacto'){    
-            itemsT.push((item))
-            docRef.doc('tacto').set({recursos:itemsT})
+            const itemNew={...item,
+                categoria:'tacto', 
+                descripcion:' '}
+    
+                itemsV.push(itemNew)
+            
         }
 
 
         if(tipo === 'gusto'){    
-            itemsGu.push((item))
-            docRef.doc('gusto').set({recursos:itemsGu})
+            const itemNew={...item,
+                categoria:'gusto', 
+                descripcion:' '}
+    
+                itemsV.push(itemNew)
+            
         }
+    
+        docRef.doc('todos').set({recursos:itemsV})
+       //docRef.doc('no-escogidos-img').set({recursos:itemsNoEscogidos})
+     
+       //setItemsNoEscogidos(itemsN)
+       
 
 
-        if(tipo === 'general'){    
-            itemsG.push((item))
-            docRef.doc('general').set({recursos:itemsG})
-        }
-        
+     
+  */
 
-  
+    
 
-    }
-
-   
+   /*
     React.useEffect(()=>{
 
         if(itemsVista.length>=3){
@@ -399,18 +497,18 @@ const MyDot = ({ isActive }) => (
 
     },[itemsVista.length,itemsOido.length,itemsOlfato.length,itemsTacto.length])
 
-  
+  */
 
 
     return (
         <div className={classes.body}>
             <div>
-                <DialogVista openVista={openVista} handleCloseVista={handleCloseVista} handleOpenVista={handleOpenVista}/>
-                <DialogOido openOido={openOido} handleCloseOido={handleCloseOido} handleOpenOido={handleOpenOido}/>
-                <DialogOlfato openOlfato={openOlfato} handleCloseOlfato={handleCloseOlfato} handleOpenOlfato={handleOpenOlfato}/>
-                <DialogTacto openTacto={openTacto} handleCloseTacto={handleCloseTacto} handleOpenTacto={handleOpenTacto}/>
-                <DialogGusto openGusto={openGusto} handleCloseGusto={handleCloseGusto} handleOpenGusto={handleOpenGusto}/>
-                <DialogGuru openGuru={openGuru} handleCloseGuru={handleCloseGuru} handleOpenGuru={handleOpenGuru}/>
+                <DialogVista openVista={openVista} handleCloseVista={handleCloseVista} />
+                <DialogOido openOido={openOido} handleCloseOido={handleCloseOido} />
+                <DialogOlfato openOlfato={openOlfato} handleCloseOlfato={handleCloseOlfato} />
+                <DialogTacto openTacto={openTacto} handleCloseTacto={handleCloseTacto} />
+                <DialogGusto openGusto={openGusto} handleCloseGusto={handleCloseGusto} />
+                <DialogGuru openGuru={openGuru} handleCloseGuru={handleCloseGuru} />
             <div>
                 <TopBar titleProject={project}/>
             </div>
@@ -425,7 +523,7 @@ const MyDot = ({ isActive }) => (
                        <h3 className={classes.title}>Moodboard Sensorial</h3>
                        </div>
                        <div className={classes.divScore}>
-                           <div className={classes.score}> <p className={classes.scoreP}>Puntaje:<span className={classes.scoreBold}> {score}</span></p></div>
+                           <div className={classes.score}> <p className={classes.scoreP}>Puntaje:<span className={classes.scoreBold}> {scoreVisual}</span></p></div>
                            <div className={classes.insignias}>
                            <img alt='vista'className ={classes.insignia}  src={logroV} />
                            <img alt='oido'className ={classes.insignia}  src={logroOi} />
@@ -487,76 +585,99 @@ const MyDot = ({ isActive }) => (
                            )}
                             </div>
                         {showImg ?
-                            <div onDragOver={(e)=>{
-                            onDragOver(e)}}   onDrop={(e)=>{onDrop(e,"general")}} 
-                            className={classes.containGeneral}>
-                    
+                       
+                            <div   className={classes.containGeneral}>
                             <Slider showDots={true} dot={MyDot} cols={3} rows={3} gap={10} containerStyle={{ background: 'transparent',  width:'348px', 
-                            height: '300px', margin: '0 auto'}} >      
+                            height: '300px', margin: '0 auto'}} >  
+                                
 
-                            {itemsImg.map((element, i) => {
+                            {(itemsImg).map((element, i) => {
+                                let index =-1;
+                                for (let i = 0; i < itemsEscogidos.length; i++) {
+                                    let item = itemsEscogidos[i]
+                                    if(item.id === element.id){
+                                        index = i
+                                        i = itemsEscogidos.length
+                                    }
 
+                                }
+                                if(index === -1){
+
+                            
                                 return(   
-                                <Slider.Item  key={i}>  
-
-                                <div onDragStart={(e)=>onDragStart(e,element)} draggable                    
-                                className={classes.containGeneralItem}> 
-                                                        
-                                    <CardGeneralimg key={element.id} {...element}/>             
-                                </div>
+                                <Slider.Item key={i}>                   
+                                    <CardGeneralimg key={element.id} {...element} managerDrag={managerDrag} />            
                                 </Slider.Item>
                                 )
+                                }else{
+
+                                }
+                            
                             })}     
                              </Slider>
                     
                         </div>:null}
                         
                         {showVideo ?
-                            <div onDragOver={(e)=>{
-                            onDragOver(e)}}   onDrop={(e)=>{onDrop(e,"general")}} 
+                            <div 
                             className={classes.containGeneral}>
                     
                             <Slider showDots={true} dot={MyDot} cols={3} rows={3} gap={10} containerStyle={{ background: 'transparent',  width:'348px', 
                             height: '300px', margin: '0 auto'}} >      
 
-                            {itemsVideo.map((element, i) => {
+                            {(itemsVideo).map((element, i) => {
+                                let index =-1;
+                                for (let i = 0; i < itemsEscogidos.length; i++) {
+                                    let item = itemsEscogidos[i]
+                                    if(item.id === element.id){
+                                        index = i
+                                        i = itemsEscogidos.length
+                                    }
 
+                                }
+                                if(index === -1){
+
+                            
                                 return(   
-                                <Slider.Item  key={i}>  
-
-                                <div onDragStart={(e)=>onDragStart(e,element)} draggable                    
-                                className={classes.containGeneralItem}> 
-                                                        
-                                    <CardGeneralvideo key={element.id} {...element}/>                     
-                                </div>
+                                <Slider.Item key={i}>                   
+                                    <CardGeneralvideo key={element.id} {...element} managerDrag={managerDrag} />            
                                 </Slider.Item>
                                 )
-                            })}     
+                                }
+                            
+                            })}      
                              </Slider>
                     
                         </div>:null}
                         
                         {showSound?
-                            <div onDragOver={(e)=>{
-                            onDragOver(e)}}   onDrop={(e)=>{onDrop(e,"general")}} 
+                            <div 
                             className={classes.containGeneral}>
                     
                             <Slider showDots={true} dot={MyDot} cols={3} rows={3} gap={10} containerStyle={{ background: 'transparent',  width:'348px', 
                             height: '300px', margin: '0 auto'}} >      
 
-                            {itemsSonido.map((element, i) => {
+                            {(itemsSonido).map((element, i) => {
+                                let index =-1;
+                                for (let i = 0; i < itemsEscogidos.length; i++) {
+                                    let item = itemsEscogidos[i]
+                                    if(item.id === element.id){
+                                        index = i
+                                        i = itemsEscogidos.length
+                                    }
 
+                                }
+                                if(index === -1){
+
+                            
                                 return(   
-                                <Slider.Item  key={i}>  
-
-                                <div onDragStart={(e)=>onDragStart(e,element,element)} draggable                    
-                                className={classes.containGeneralItem}> 
-                                                        
-                                    <CardGeneralsonido key={element.id} {...element}/>       
-                                </div>
+                                <Slider.Item key={i}>                   
+                                    <CardGeneralsonido key={element.id} {...element} managerDrag={managerDrag} />            
                                 </Slider.Item>
                                 )
-                            })}     
+                                }
+                            
+                            })}       
                              </Slider>
                     
                         </div>:null}
@@ -567,108 +688,38 @@ const MyDot = ({ isActive }) => (
 
                       
                         <div id="capture" className={classes.columns}>
-                            <div className={classes.senses}>
-                        
-                                <div className={classes.label}> <img src='/images/vista.svg' width='54px' alt='media'/> </div>
-                                <div className={classes.containVista} onDragOver={(e)=>{
-                            onDragOver(e)
-                        }}
-                        onDrop={(e)=>{
-                            onDrop(e,"vista")
-                        }}>
-                        {itemsVista.map((element,i)=>
-                            <div 
-                               key={element.id}                     
-                               onDragStart={(e)=>onDragStart(e,element.id)}                    
-                               draggable                    
-                                                
-                              >  
-                              <CardMoodboard key={element.id}{...element}/>
-                           
-                                        
-                            </div>)}
-                        </div>
-                            </div>
 
-                            <div className={classes.senses}>
-                                <div className={classes.label}> <img src='/images/oido.svg' width='54px' alt='media'/> </div>
-                                <div className={classes.containOido} onDragOver={(e)=>{
-                            onDragOver(e)
-                        }}
-                        onDrop={(e)=>{
-                            onDrop(e,"oido")
-                        }}>
-                        {itemsOido.map((element,i)=>
-                            <div 
-                               key={element.id}                     
-                               onDragStart={(e)=>onDragStart(e,element.id)}                    
-                               draggable                    
-                                  
-                              >  
-                            <CardMoodboard key={element.id}{...element}/>            
-                            </div>)}
+                            {listaSentidos.map((item, index)=>{
+
+                                return <div key={index} className={classes.senses}>
+                        
+                                    <div className={classes.label}> <img src={item.img} width='54px' alt='media'/> </div>
+                                        <div id={item.title} className={classes.containVista + " container__sentidos"} >
+                                            {itemsEscogidos.map((element, i) => {
+
+                                                if(element.categoria === item.title){
+
+                                                    
+
+                                                    return(
+                                                        <div 
+                                                            key={i}>  
+                                                            <CardMoodboard key={element.id}{...element}managerDrag={managerDrag}
+                                                            onChange={(event)=>{
+                                                               
+                                                                element.descripcion= event.target.value;
+                                                            
+                                                                setValueMensaje()
+                                                                }}/>         
+                                                        </div>)
+                                                }
+                                            })}
+                                        </div>
+                                    </div>
+                            })}
+                         
                         </div>
-                            </div>
-                            <div className={classes.senses}>
-                                <div className={classes.label}> <img src='/images/olfato.svg' width='54px' alt='media'/> </div>
-                                <div className={classes.containOlfato} onDragOver={(e)=>{
-                            onDragOver(e)
-                        }}
-                        onDrop={(e)=>{
-                            onDrop(e,"olfato")
-                        }}>
-                        {itemsOlfato.map((element,i)=>
-                            <div 
-                            key={element.id}                     
-                            onDragStart={(e)=>onDragStart(e,element.id)}                    
-                            draggable                    
-                            className={classes.containVistaItem}                    
-                            >  
-                            <CardMoodboard key={element.id}{...element}/>             
-                            </div>)}
-                        </div>
-                            </div>
-                            <div className={classes.senses}>
-                            <div className={classes.label}> <img src='/images/tacto.svg' width='54px' alt='media'/> </div>
-                            <div className={classes.containTacto} onDragOver={(e)=>{
-                            onDragOver(e)
-                        }}
-                        onDrop={(e)=>{
-                            onDrop(e,"tacto")
-                        }}>
-                        {itemsTacto.map((element,i)=>
-                            <div 
-                               key={element.id}                     
-                               onDragStart={(e)=>onDragStart(e,element.id)}                    
-                               draggable                    
-                               className={classes.containVistaItem}                    
-                              >  
-                            <CardMoodboard key={element.id}{...element}/>             
-                            </div>)}
-                        </div>
-                            </div>
-                            <div className={classes.senses}>
-                            <div className={classes.label}> <img src='/images/gusto.svg' width='54px' alt='media'/> </div>
-                            <div className={classes.containGusto} onDragOver={(e)=>{
-                            onDragOver(e)
-                        }}
-                        onDrop={(e)=>{
-                            onDrop(e,"gusto")
-                        }}>
-                        {itemsGusto.map((element,i)=>
-                            <div 
-                               key={element.id}                     
-                               onDragStart={(e)=>onDragStart(e,element.id)}                    
-                               draggable                    
-                               className={classes.containVistaItem}                    
-                              >  
-                            <CardMoodboard key={element.id}{...element}/>          
-                            </div>)}
-                        </div>
-                            </div>
- 
-                        </div>
-                     
+                      
        
              
 
@@ -966,14 +1017,19 @@ const MyDot = ({ isActive }) => (
             alignItems:'center',
             flexWrap:'no-wrap',
             marginRight:'30px', 
+  
            
         },
         columns:{
   
             display:'flex',
             flexDirection:'row',
+            justifyContent:'center',
+            alignItems:'flex-start',
             marginLeft:'40px', 
-            overflow: 'scroll'
+           
+            height:'auto'
+
            
         },
         containGeneral:{
@@ -998,7 +1054,7 @@ const MyDot = ({ isActive }) => (
             alignContent:'center',
             alignItems:'center',
             background: '#F4F6F8',
-            height: '370px',
+            height: '400px',
             width: '120px',
             borderRadius:'15px',
 

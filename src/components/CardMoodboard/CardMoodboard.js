@@ -2,14 +2,29 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-
 function CardMoodboard(props){
   
+  
     const classes = useStyles({ urlIcon: '/images/checked.svg'});
+    const managerDrag = props.managerDrag;
+    const useRefContainer = React.useRef()
+    React.useEffect(()=>{
+      if(useRefContainer !== undefined){
+
+        var parent = useRefContainer.current.parentNode;
+        parent.id =  props.id;
+        managerDrag.addDrag([parent])
+
+      }
+
+    },[managerDrag,props.id])
    
-    return <div className={classes.containVistaItem}>
-        <div className={classes.containImg}> <img src={props.url} width='92px' alt='media'className={classes.imgS}/> </div>                     
-        <input onChange={props.onChange} className={classes.containInput} value={props.content} type='text'/>  
+    return <div className={classes.containVistaItem} id={props.id} ref={useRefContainer}>
+        <div className={classes.containImg}> <img id={props.id} src={props.url} width='92px' alt='media'className={classes.imgS}/> </div>     
+
+       <input className={classes.containInput} onChange={props.onChange}  value={props.descripcion} type='text' onClick={props.onClick}/> 
+                   
+         
     </div>;
 }
 

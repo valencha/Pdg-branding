@@ -64,7 +64,7 @@ function Dashboard(props){
   const [moodGeneral, setMoodGeneral] = React.useState([]);
   const [comMood, setComMood] = React.useState('');
   const [valoraciones, setValoraciones] = React.useState(0);
-  const comentarios= [];
+  const [comentarios, setComentarios] = React.useState([]);
   const [nameUser, setNameUser] = React.useState('');
 
 
@@ -330,8 +330,6 @@ React.useEffect(()=>{
         let moodboards= []
         let moodboardsGeneral= []
         querySnapshot.forEach(function(doc) {
-        
-          setMoodboard([])
          idsMp.push(doc.id);
     
         });
@@ -353,9 +351,9 @@ React.useEffect(()=>{
          
             });
   
-            setMoodboard(moodboards)
+
           }); 
-  
+          setMoodboard(moodboards)
          
         });
        
@@ -645,7 +643,7 @@ React.useEffect(()=>{
                         height: 'auto', margin: '0 auto'}} >
                        {moodboard.map((item, i) =>
                           <Slider.Item  key={i}>  
-                          <CardMoodboards {...item} key={i}open ={isMoodOpen} onClickOpenDialog ={handleOpenMood}onClickCloseDialog={handleCloseMood} 
+                          <CardMoodboards {...item} key={i} 
                           onClick={(event)=>{
                             console.log(item.id)
 
@@ -670,9 +668,11 @@ React.useEffect(()=>{
                           }
                           }
                           onSend={(event)=>{
-                        
+                            var aTemp= comentarios;
                            
-                            comentarios.push({comentario:comMood,nombre:nameUser})
+                            aTemp.push({comentario:comMood,nombre:nameUser})
+                        
+                            setComentarios(aTemp)
                             db.collection("moodboards").doc(item.id).update({
                               "comentarios": comentarios,
                             }) 

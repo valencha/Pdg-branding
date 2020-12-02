@@ -67,6 +67,7 @@ function Step4Share(){
       })
 
       }
+    
 
 
     function handleShareMoodboard(event){
@@ -99,7 +100,7 @@ function Step4Share(){
                 console.log(error)
               })
         
-            docRefP.get().then(function (querySnapshot) {
+        docRefP.get().then(function (querySnapshot) {
             
                 querySnapshot.forEach(function (doc) {
                     

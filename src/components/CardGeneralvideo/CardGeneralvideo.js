@@ -10,6 +10,20 @@ function CardGeneralvideo(props){
     const classes = useStyles({ urlIcon: '/images/checked.svg'});
    
     const [open, setOpen] = React.useState(false);
+    const managerDrag = props.managerDrag;
+    const useRefContainer = React.useRef()
+    React.useEffect(()=>{
+      if(useRefContainer !== undefined){
+
+        var parent = useRefContainer.current.parentNode;
+        parent.id =  props.id;
+
+
+        managerDrag.addDrag([parent])
+
+      }
+
+    },[managerDrag,props.id])
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -19,9 +33,9 @@ function CardGeneralvideo(props){
       setOpen(false);
     };
 
-    return <Card className= {classes.imgS} >
+    return <Card className= {classes.imgS}  id={props.id} ref={useRefContainer}>
 
-        <img src={`${props.url}`} alt='media'width="100px" height="auto" className={classes.img} onClick={handleClickOpen}   />
+        <img src={`${props.url}`}  id={props.id} alt='media'width="100px" height="auto" className={classes.img} onClick={handleClickOpen}   />
         <Dialog open={open} onClose={handleClose}    
         BackdropProps={{
         classes: {

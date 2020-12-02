@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles} from '@material-ui/core/styles';
 import { Card, Dialog } from '@material-ui/core';
+import BtnInitial from '../BtnInitial/BtnInitial';
 
 
 
@@ -8,12 +9,23 @@ function CardMoodboards(props){
 
     const classes = useStyles({ urlBanner: `${props.url}`, urlBack: `${props.url}`});
 
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+   
+
     
 
     return <div className={classes.body}  >
         
-        <Dialog open={props.open}  
-        onClose={props.onClickCloseDialog}
+        <Dialog open={open}  fullScreen
+        onClose={handleClose}
         BackdropProps={{
         classes: {
          root: classes.root2
@@ -21,35 +33,61 @@ function CardMoodboards(props){
        }
       }aria-labelledby="form-dialog-title" classes={{paper:classes.dialog, root: classes.dialog}}>
         <div className={classes.containImg}>
-        <img src={props.url} alt="watch" width='524px' />
-       
+            <div className={classes.iconBtn}>   <img src='/images/x.svg' alt='icon' onClick={handleClose}  /></div>
+            <div className={classes.containerInfo} >
+            <div><img className={classes.imgDialog} src={props.url} alt="watch" width='900px' /></div>
+            <div className={classes.containValue}>
+            <div className={classes.info}>
+                <div>
+                    <h1 className={classes.title}>{props.titleProject}</h1>
+                    <span className={classes.owners}>{props.users}</span>
+                </div>
+                <div>
+                    <p className={classes.des}>{props.description}</p>
+                </div>
+            </div>
+            
+            <div>
+                <div className={classes.actions}>
+                <img className={classes.iconDedo}src={'images/seguir.svg'} alt="watch" width='58px' />
+                <img onClick={props.onClick}className={classes.iconDedo}src={'images/valorar.svg'} alt="watch" width='58px' />
+                    
+                </div>
+                <div className={classes.comentarios}>
      
-      
-       <img onClick={props.onClick}className={classes.iconDedo}src={'images/thumbs.svg'} alt="watch" width='16px' />
-       <h1>{props.valoraciones}</h1>
-      </div>
-      <input onChange={props.onChange} type='text'/>
-      <button onClick={props.onSend}>Enviar</button>
-      {props.comentarios ?
-      <div>
-     
-          {props.comentarios.map((item,i)=>
-              <div key={i}>      <h1>{item.nombre}</h1>
-              <h1>{item.comentario}</h1></div>
-        
-          )
+                    {props.comentarios.map((item,i)=>
+                    <div className={classes.comment} key={i}>      
+                    <h1 className={classes.name}>{item.nombre}</h1>
+                    <h1 className={classes.decComentario}>{item.comentario}</h1>
+                    </div>
+ 
+                    )
 
-          }
-        
-      </div>:null
-        }
-      <img src='/images/x.svg' alt='icon' onClick={props.onClickCloseDialog} className={classes.iconBtn} />
+                    }
+ 
+                </div>
+               <div className={classes.addComentario}>
+                <input placeholder='Retroalimenta este proyecto...' className={classes.input}onChange={props.onChange} type='text'/>
+                <div className={classes.btnSend}>
+                    <BtnInitial width='117px' height='48px' content='Enviar'onClick={props.onSend}/>
+                </div>
+                
+                </div>
+
+
+                </div>
+            
+   
+      
+            </div>
+            </div>
+      </div>
         </Dialog>
      
 
        
 
-        <Card className={classes.card} onClick={props.onClickOpenDialog}>
+        <Card className={classes.card} onClick={handleClickOpen}>
         <div className={classes.contentTop}> 
 
    
@@ -77,20 +115,25 @@ const useStyles = makeStyles(theme => ({
     body:{
     },
     dialog:{
-        backgroundColor:'transparent',
+        background:'transparent',
+        padding:'10px',
         display:'flex',
         boxShadow: "none",
         overflow: "hidden",
         flexDirection:'row',
         justifyContent:'center',
-        alignContent:'flex-start',
-        alignItems:'flex-start',
-
+        alignContent:'center',
+        alignItems:'center',
+     
     },
 
     root2: {
         backgroundColor: 'rgba(33,36,41,0.8)',
         opacity:75,
+        
+        flexDirection:'column',
+       
+
       },
     card:{
         width:'224px',
@@ -105,6 +148,12 @@ const useStyles = makeStyles(theme => ({
         alignContent:'center',
         marginRight:'30px',
         justifyContent:'center',
+
+    },
+    containValue:{
+        display:'flex',
+        flexDirection:'column',
+        marginLeft:'20px'   
 
     },
 
@@ -142,6 +191,12 @@ const useStyles = makeStyles(theme => ({
         fontSize:'16px',
 
     },
+    containerInfo:{
+        display:'flex',
+        flexDirection:'row'
+
+    },
+
 
     dateProject:{
         fontFamily:'Poppins',
@@ -150,6 +205,14 @@ const useStyles = makeStyles(theme => ({
         fontWeight:400,
         marginTop:'9px',
         
+    },
+    info:{
+        background: '#FFFFFF',
+        boxShadow: '2px 8px 16px rgba(61, 62, 66, 0.42)',
+        borderRadius: '15px',
+        width:'360px',
+        height:'90px',
+        padding:'25px'
     },
 
     root: {
@@ -192,9 +255,84 @@ const useStyles = makeStyles(theme => ({
         marginRight:'8px'
     },
     iconBtn:{
-        cursor:'pointer'
-    }
+        display:'flex',
+        cursor:'pointer',
+        alignSelf:'flex-end',    
+        
+    
+    },
+    containImg:{
+        display:'flex',
+        flexDirection:'column',
+        width:'100%',
+        justifyContent:'center',
+        alignItems:'center',
+        height:'100%'
+    },
 
+    imgDialog:{
+        borderRadius:15
+    },
+    title:{
+        fontFamily:'Poppins',
+        fontWeight:500,
+        color:'#212429'
+    },
+    owners:{
+        fontFamily:'Poppins',
+        fontWeight:400,
+        color:'#495057'
+    },
+    des:{
+        fontFamily:'Poppins',
+        fontWeight:300,
+        color:'#212429',
+        marginTop:'10px'
+    },
+    input:{
+        width:'100%',
+        height:'100px',
+        background: '#F4F6F8',
+        border: '1px solid #DDE2E5',
+        boxSizing: 'border-box',
+        borderRadius: '15px',
+    },
+    addComentario:{
+        display:'flex',
+        flexDirection:'column',
+        marginTop:'5px'
+    },
+    btnSend:{
+        alignSelf:'flex-end',
+        marginTop:'20px'
+    },
+    comentarios:{
+        display:'flex',
+        flexDirection:'column',
+        width:'360px',
+        height:'180px',
+        background:'#F3F7FB',
+        borderRadius:'15px',
+        padding:'20px',
+        overflow:'true'
+    },
+
+    name:{
+        fontFamily:'Poppins',
+        fontWeight:500,
+        color:'#212429',
+        fontSize:'14px'
+
+    },
+    decComentario:{
+        fontFamily:'Poppins',
+        fontWeight:300,
+        color:'#212429',
+        fontSize:'12px'
+    },
+    comment:{
+        marginTop:'10px'
+    }
 
 }));
 

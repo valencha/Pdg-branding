@@ -171,24 +171,20 @@ function Login(){
     function loginEmail(event){
 
         fb.auth().signInWithEmailAndPassword(email,password).then(
-            
+            localStorage.setItem("user",email), 
             history.push("/dashboard"))
-            localStorage.setItem("user",email)
+  
         .catch(error => console.log (`Error ${error.code}: ${error.message}`)); 
 
 
     }
-    function handleLogOut(event){
-        fb.auth().signOut();
-       
-       
-    }
+ 
 
 
 
     return <div className={classes.body}>
       
-        <button onClick={handleLogOut}>Cerrar</button>
+       
         
         <div className={classes.contentLeft}>
             <div className={classes.logo}></div>
