@@ -291,6 +291,7 @@ const useStyles = makeStyles(theme => ({
     },
     input:{
         width:'100%',
+        outline:'none',
         height:'100px',
         background: '#F4F6F8',
         border: '1px solid #DDE2E5',

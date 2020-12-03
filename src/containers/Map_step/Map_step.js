@@ -4,13 +4,14 @@ import TopBar from '../../components/TopBar/TopBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import LateralBar from '../../components/LateralBar/LateralBar';
+import DialogFinal from '../../components/DialogFinal/DialogFinal';
 import Step from '../../components/Step/Step';
+import ProgressIndex from '../../components/ProgressIndex/ProgressIndex';
 
 
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
-import ProgressIndex from '../../components/ProgressIndex/ProgressIndex';
 require('firebase/auth');
 
 
@@ -25,9 +26,18 @@ function Map_step(){
 
 
     const [steps, setSteps] = React.useState([]);
+    const [open, setOpen] = React.useState(undefined);
     let history = useHistory();
 
+    const handleClose = () => {
+        setOpen(false);
+      };
 
+      const handleGoHome = (event) => {
+        history.push(`/dashboard`);
+        setOpen(false);
+      };
+  
   
       function handleBackPage(event){
         history.push(`/dashboard`);
@@ -139,7 +149,11 @@ function Map_step(){
                     if(doc.data().percentStep5===100 && element.title ==='Creación del brief automático'){
                  
                         element.active = true;
-                        
+                        element.percent = doc.data().percentStep6
+                    }
+
+                    if(doc.data().percentStep1===100 && doc.data().percentStep2===100 && doc.data().percentStep3===100 && doc.data().percentStep4===100 && doc.data().percentStep5===100 && doc.data().percentStep6===100 && open ===undefined){
+                        setOpen(true);
                     }
 
 
@@ -157,7 +171,7 @@ function Map_step(){
                   
         })
 
-      },[project,id])
+      },[project,id,open])
 
 
     return (
@@ -166,6 +180,7 @@ function Map_step(){
                 <TopBar titleProject={project}/>
             </div>
             <div className={classes.content}>
+                <DialogFinal handleGoHome={handleGoHome} open={open} handleClose={handleClose}/>
                 <LateralBar/>
                 <div className={classes.contentRight}>
    

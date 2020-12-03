@@ -671,11 +671,12 @@ React.useEffect(()=>{
                             var aTemp= comentarios;
                            
                             aTemp.push({comentario:comMood,nombre:nameUser})
-                        
+                            
                             setComentarios(aTemp)
                             db.collection("moodboards").doc(item.id).update({
                               "comentarios": comentarios,
-                            }) 
+                            })
+                             
                             
                           }
                           }

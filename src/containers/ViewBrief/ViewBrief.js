@@ -2,27 +2,24 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import{useParams} from 'react-router-dom';
 import TopBar from '../../components/TopBar/TopBar';
-import LateralBar from '../../components/LateralBar/LateralBar';
-import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
-import BtnStep from '../../components/BtnStep/BtnStep';
-import BoxTextBrief from '../../components/BoxTextBrief/BoxTextBrief';
-import BoxTextBrief2 from '../../components/BoxTextBrief2/BoxTextBrief';
+import BoxTextBrief3 from '../../components/BoxTextBrief3/BoxTextBrief';
 import SwiperCategorias from '../../components/SwiperCategorias/SwiperCategorias';
 import SwiperNotes from '../../components/SwiperNotes/SwiperNotes';
 import SwiperValores from '../../components/SwiperValores/SwiperValores';
-import SwiperColor from '../../components/SwiperColor/SwiperColor';
+import SwiperColor from '../../components/ColorView/ColorView';
 import SwiperPersonalidad from '../../components/SwiperPersonalidad/SwiperPersonalidad';
-import BoxTextMultiBrief from '../../components/BoxTextMultiBrief/BoxTextMultiBrief';
+import BoxTextBriefView from '../../components/BoxTextBriefView/BoxTextBriefView';
 import BoxMultiBrief from '../../components/BoxMultiBrief/BoxMultiBrief';
+import BoxBriefView from '../../components/BoxBriefView/BoxBriefView';
 import { useHistory } from "react-router-dom";
 
 import { fb } from '../../utils/firebase'
 let db = fb.firestore();
-require('firebase/auth');
+//require('firebase/auth');
 
 
 function Step5(){
-    let {project,id}= useParams();
+    let {id}= useParams();
     const classes = useStyles();
     const [nombreMarca, setNombreMarca] = React.useState(' ');
     const [descripcionMarca, setDescripcionMarca] = React.useState(" ");
@@ -221,98 +218,21 @@ let listCategory =[
 
     },[id])
 
-    function handleBackPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/intro5');
-    } 
 
-    function handleNextPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/step5Share');
 
-    }
-
-    function handleChangeDescription(event){
-        setDescripcionMarca(event.target.value);
- 
-    }
-    function handleSaveDescription(event){
-
-        db.collection("briefs").doc(id).update({descripcion: descripcionMarca})
-    }
-
-    const handleChangeColor = (color) => {
-        setColor(color);
-        console.log(color)
-  
-     };
-
-     function saveColor(event){
-        db.collection("briefs").doc(id).update({color: color})
-     }
-     function handleChangeAnotacion(event){
-         setAnotacion(event.target.value)
-  
-     }
-
-     function handleSaveAnotacion(event){
-       
-       db.collection("briefs").doc(id).update({anotacion: anotacion})
-    }
-  
-    function handleChangeCelDueno(event){
-        setDuenoCel(event.target.value);
-      
-
-    }
-    function handleChangeDisenador(event){
-        setDisenador(event.target.value);
- 
-    }
-
-    function handleChangeEmailDisenador(event){
-        setDisenadorEmail(event.target.value);
-
-    }
-
-    function handleChangeCelDisenador(event){
-
-        setDisenadorCel(event.target.value);
-
-    }
-
-    function handleSaveContact(event){
-        if(duenoCel===undefined){
-            setDuenoCel(' ')
-        }
-        if(disenadorCel===undefined){
-            setDisenadorCel(' ')
-        }
-        if(disenadorEmail===undefined){
-            setDisenadorEmail(' ')
-        }
-        if(disenador===undefined){
-            setDisenador(' ')
-        }
-        setDisenadorCel(' ')
-
-        db.collection("briefs").doc(id).update({celularDuenos: duenoCel,
-            disenador: disenador, emailDisenador: disenadorEmail, celularDisenador: disenadorCel })
-            
-    }
 
   return (
         <div className={classes.body}>
             <div>
-                <TopBar titleProject={project}/>
+                <TopBar titleProject={nombreMarca}/>
             </div>
             <div className={classes.content}>
-                <LateralBar/>
                 <div className={classes.contentRight}>
   
                     <div className={classes.contentText}>
-                        <img className ={classes.skip} alt='skip'  src={('/images/skipStep.svg')} onClick={handleNextPage}/>
                        <h1 className={classes.question}> <span className={classes.num}>Brief</span> automático</h1>
                     </div>
-                    <p className={classes.description}>Tenemos unos requerimientos pre-establecidos. Si deseas puedes editarlos.</p>
+                    <p className={classes.description}>Mira este brief creado desde EasyBranding</p>
                     <div className={classes.contentBottom}>
                         <div className={classes.options}>
 
@@ -327,13 +247,9 @@ let listCategory =[
                                             <div className={classes.containerMarca}><h1 className={classes.nombreMarca}>{nombreMarca}</h1></div>
 
                                         </div>
-                                        <BoxTextBrief onClick={handleSaveDescription}marginTop='20px' onChange={handleChangeDescription} descripcion={descripcionMarca}title='Descripción de marca' placeholder='Escribir breve descripción de la marca...'/>
+                                        <BoxBriefView marginTop='20px'  descripcion={descripcionMarca}title='Descripción de marca' />
                                     
-                                        <BoxTextMultiBrief onClick={handleSaveContact} marginTop='20px'  title='Contacto/s' dueno={dueno} duenoEmail={duenoEmail} duenoCel={duenoCel}
-                                         onChangeCelDueno={handleChangeCelDueno}
-                                         onChangeDisenador={handleChangeDisenador}
-                                         onChangeEmailDisenador={handleChangeEmailDisenador}
-                                         onChangeCelDisenador={handleChangeCelDisenador}
+                                        <BoxTextBriefView  marginTop='20px'  title='Contacto/s' dueno={dueno} duenoEmail={duenoEmail} duenoCel={duenoCel}
                                          disenador={disenador} disenadorEmail={disenadorEmail} disenadorCel={disenadorCel}/>
 
                                     </div>
@@ -420,9 +336,9 @@ let listCategory =[
                                 <h1 className={classes.containerTitle}>Detalles Adicionales</h1>
                                 <div className={classes.containerRespuestas}>
                                    
-                                    <SwiperColor onClick={saveColor}title='Paleta de colores' height='320px' color={color}onChange={handleChangeColor}/>
+                                    <SwiperColor title='Paleta de colores' height='320px' color={color}/>
                              
-                                    <BoxTextBrief2 onClick={handleSaveAnotacion}onChange={handleChangeAnotacion} descripcion={anotacion}title='Anotaciones' placeholder='Escribe alguna anotación que quieras compartir en el Brief......'/>
+                                    <BoxTextBrief3 descripcion={anotacion}title='Anotaciones' placeholder='Escribe alguna anotación que quieras compartir en el Brief......'/>
 
 
 
@@ -439,19 +355,7 @@ let listCategory =[
 
                     
                     <div className={classes.actions}>
-                        <BtnOutlinedStep
-                        width='149px'
-                        height='48px'
-                        onClick={handleBackPage}
-                        />
-                        
-                        <BtnStep
-                        disabled={false}
-                        content='Continuar'
-                        width='149px'
-                        height='48px'
-                        onClick={handleNextPage}
-                        />
+                    
                     </div>
                 </div>
             </div>

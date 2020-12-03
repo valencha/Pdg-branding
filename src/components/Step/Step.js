@@ -18,25 +18,25 @@ function Step(props){
 
     const ColorCircularProgress = withStyles({
         root: {
-            width:400,
             color: '#5975FF',
+            strokeWidth:'2.5px',
 
           '& > bottom': {
             color:'#7A76FF',
             fontSize:25,
-            width:400,
         },
  
         },
         circleStatic: {
             color: '#5975FF',
-            width:400,
+            strokeWidth:'2.5px'
         },
 
 
           circle: {
             strokeLinecap: 'round',
-            width:400,
+            strokeWidth:'2.5px'
+
            
           },
         
@@ -64,7 +64,7 @@ function Step(props){
         <div className={classes.contentBottom}>
  
             <Box position="relative" display="inline-flex">
-            <ColorCircularProgress variant="static" value={props.percent} className={classes.bottom}/>
+            <ColorCircularProgress variant="static" value={props.percent} size={75} className={classes.bottom}/>
             <Box
             top={0}
             left={0}
@@ -164,7 +164,7 @@ const useStyles = makeStyles(theme => ({
         fontFamily:'Poppins',
         color:'#495057',
         fontWeight:700,
-        fontSize:'11px',
+        fontSize:'16px',
     },
     bottom:{
         backgroundImage: (props) => `url(${props.urlBack})`,

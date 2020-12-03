@@ -54,12 +54,13 @@ function CardProject(props){
         <Card className={classes.card}>
         <div className={classes.contentTop}> 
 
-        <img src={'images/defaultImageProject.svg'} alt="watch" width='136px' />
-        <img className={classes.divisor}src={'/images/lineCard.svg'} alt="watch" width='224px' />
+        
+      
 
         </div>
+        <img className={classes.divisor}src={'/images/lineCard.svg'} alt="watch" width='224px' />
         <div className={classes.contentBottom}>
-            
+       
             <div>    
                 <h1 className={classes.titleProject}>{props.titleProject}</h1>
                 <p className={classes.dateProject}>{props.dateProject}</p>
@@ -116,9 +117,11 @@ const useStyles = makeStyles(theme => ({
 
     contentTop:{
         display:'flex',
-        backgroundImage: (props) => `url(${props.urlBanner})`,
-        backgroundSize:'contain',
+        backgroundImage: (props) => `url(${props.urlBanner})`,  
+        backgroundSize:'cover',
+        backgroundPosition:'top',
         width:'224px',
+        height:'159px',
         flexDirection:'column',
         alignSelf:'center',
         alignItems:'center',
@@ -135,9 +138,7 @@ const useStyles = makeStyles(theme => ({
         
 
     },
-    divisor:{
-        marginTop:'10px'
-    },
+
 
     titleProject:{
         fontFamily:'Poppins',

@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
 
   
    contentPlaceHolder: {
-          width:'100%',
           display:'flex',
           flexDirection:'column'
 
