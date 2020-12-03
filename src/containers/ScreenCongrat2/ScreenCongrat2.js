@@ -58,7 +58,7 @@ function ScreenCongrat2(){
                     
                     </div>
                     <div className={classes.contentBottom}>
-         
+                        <img widht='300px' alt='video'  src={('/images/videoIntro.png')}/>
                     
                     </div>
                     <div className={classes.actions}>
@@ -155,10 +155,10 @@ function ScreenCongrat2(){
             display:'flex',
             width:'79%',  
             height:'100%',  
-            marginTop:'20px',
-            flexDirection:'column',
-            flexWrap:'no-wrap',
-            alignItems:'flex-start',
+            marginTop:'46px',
+            flexDirection:'row',
+            alignContent:'center',
+            alignItems:'center',
             justifyContent:'center'
           },
           actions:{

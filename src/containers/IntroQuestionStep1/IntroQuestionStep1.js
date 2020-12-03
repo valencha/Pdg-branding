@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import LateralBar from '../../components/LateralBar/LateralBar';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
+import ReactPlayer from 'react-player'
 //Todos los imports se coloca   n arriba de este 
 
 import { fb } from '../../utils/firebase'
@@ -68,7 +69,15 @@ function IntroQuestionStep1(){
                     </div>
                     <div className={classes.contentBottom}>
                     <div className={classes.contentVideo}>
-                    <img className ={classes.video} alt='video'  src={('/images/videoIntro.png')}/>
+                    <div className={classes.containImg}>
+                        <ReactPlayer
+                        url='/images/introPasoConociendo.mov'
+                        playing
+                        loop
+                        width='516px'
+                        height='300px'
+                        />
+                    </div>
                     <p className={classes.description}>A continuación, vamos a conocer la esencia de tu marca a través de 7 pasos que conllevan desde escribir y arrastrar hasta un cuestionario para saber lo que más se asemeja al <span className={classes.branding}>Branding</span> que siempre has buscado</p>
                     </div>         
                     

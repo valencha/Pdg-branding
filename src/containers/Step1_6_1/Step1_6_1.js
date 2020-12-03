@@ -120,7 +120,7 @@ function Step1_6_1(){
  
 
       function onAlert(event){
-        console.log('hola')
+        history.push('/dashboard/'+project+'/'+id+'/step1_6');
       }
   
   
@@ -457,7 +457,7 @@ function Step1_6_1(){
                                                     {column.name === 'Todo'?
                                                     <div className={classes.plus}>
                                                     <img alt='tutorial' className={classes.iconsAction} onClick={onAlert}  src={('/images/plus.svg')}/>
-                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/plus.svg')}/>
+                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/guardar.svg')}/>
                                                     </div>:null}
                                                    
                                                    {provided.placeholder}

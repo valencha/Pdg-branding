@@ -6,9 +6,10 @@ function BoxTextBrief(props){
     const classes = useStyles({ width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
 
     return <div className={classes.divContainer}>
-        <div className={classes.containerTitleRespuesta}><p className={classes.titleRespuesta}>{props.title}</p></div>
+        <div className={classes.containerTitleRespuesta}><p className={classes.titleRespuesta}>{props.title}</p>
+        <img onClick={props.onClick}style={{cursor:'pointer'}} src={'/images/guardar.svg'} alt="watch" width='45px' /></div>
                                            
-        <div className={classes.containerMarca}><textarea className={classes.input} value={props.descripcion} onChange={props.onChange} type='text' placeholder={props.placeholder}/></div>
+        <div className={classes.containerMarca}><textarea className={classes.input} defaultValue='Hola' value={props.descripcion} onChange={props.onChange} type='text' placeholder={props.placeholder}/></div>
     
     </div>;
 }
@@ -33,13 +34,15 @@ const useStyles = makeStyles(theme => ({
     containerTitleRespuesta:{
         display:'flex',
         flexDirection:'row',
+        justifyContent:'space-between',
         alignSelf:'flex-start',
+        width:'345px'
 
         
     },
     containerMarca:{
         display:'flex',
-        marginTop:'15px',
+        marginTop:'5px',
      
 
     },

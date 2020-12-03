@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 
 function CardProject(props){
 
-    const classes = useStyles({ urlBanner: 'images/imgDefaultProject.svg', urlBack:'images/Ellipse.svg'});
+    const classes = useStyles({ urlBanner: 'images/imgDefaultProject.svg', urlBack:'/images/Ellipse.svg'});
     let history = useHistory();
     
     const ColorCircularProgress = withStyles({
@@ -55,7 +55,7 @@ function CardProject(props){
         <div className={classes.contentTop}> 
 
         <img src={'images/defaultImageProject.svg'} alt="watch" width='136px' />
-        <img className={classes.divisor}src={'images/lineCard.svg'} alt="watch" width='224px' />
+        <img className={classes.divisor}src={'/images/lineCard.svg'} alt="watch" width='224px' />
 
         </div>
         <div className={classes.contentBottom}>

@@ -403,8 +403,8 @@ function Step1_8(){
                                                     </div>
                                                     {!column.showTitle?
                                                     <div className={classes.plus}>
-                                                    <img alt='tutorial' className={classes.iconsAction}   src={('/images/plus.svg')}/>
-                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/plus.svg')}/>
+                                                    
+                                                    <img alt='tutorial' className={classes.iconsAction} onClick={handleSaveF}  src={('/images/guardar.svg')}/>
                                                     </div>:null}
                                                    
                                                    {provided.placeholder}

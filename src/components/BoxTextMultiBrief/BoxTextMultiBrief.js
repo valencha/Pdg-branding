@@ -6,7 +6,8 @@ function BoxTextMultiBrief(props){
     const classes = useStyles({ width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
 
     return <div className={classes.divContainer}>
-        <div className={classes.containerTitleRespuesta}><p className={classes.titleRespuesta}>{props.title}</p></div>
+        <div className={classes.containerTitleRespuesta}><p className={classes.titleRespuesta}>{props.title}</p>
+        <img onClick={props.onClick} style={{cursor:'pointer'}} src={'/images/guardar.svg'} alt="watch" width='45px' /></div>
 
                                            
         <div className={classes.container}> 
@@ -44,6 +45,8 @@ const useStyles = makeStyles(theme => ({
     containerTitleRespuesta:{
         display:'flex',
         flexDirection:'row',
+        width:'100%',
+        justifyContent:'space-between',
         alignSelf:'flex-start',
 
         
@@ -51,7 +54,6 @@ const useStyles = makeStyles(theme => ({
     container:{
         display:'flex',
         flexDirection:'column',
-        marginTop:'10px',
         justifyContent:'flex-start',
         alignItems:'flex-start',
         width:310,

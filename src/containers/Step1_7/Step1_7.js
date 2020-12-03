@@ -370,7 +370,7 @@ React.useEffect(() => {
                             </div>
                         )}
                             <div className={classes.add}>
-                            <img  src='/images/add.svg' alt="watch" width='73px' />
+                            
                         
                             </div>
                         </div>     

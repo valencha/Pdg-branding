@@ -782,13 +782,7 @@ function Step3(){
       function handleNextPage(event){
         history.push('/dashboard/'+project+'/'+id+'/finished3');
 
-        let db = fb.firestore();
 
-        db.collection("projects").doc(id).update({
-            "url":  '/dashboard/'+project+'/'+id+'/finished3',
-       
-
-        })
       }
  
 

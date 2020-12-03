@@ -45,7 +45,7 @@ function ScreenCongrat3(){
                     </div>
                     <div className={classes.contentBottom}>
          
-                    
+                    <img widht='300px' alt='video'  src={('/images/videoIntro.png')}/>
                     </div>
                     <div className={classes.actions}>
                         <BtnOutlinedStep
@@ -141,10 +141,10 @@ function ScreenCongrat3(){
             display:'flex',
             width:'79%',  
             height:'100%',  
-            marginTop:'20px',
+            marginTop:'46px',
             flexDirection:'column',
             flexWrap:'no-wrap',
-            alignItems:'flex-start',
+            alignItems:'center',
             justifyContent:'center'
           },
           actions:{

@@ -6,15 +6,57 @@ import LateralBar from '../../components/LateralBar/LateralBar';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
 import BoxTextBrief from '../../components/BoxTextBrief/BoxTextBrief';
+import BoxTextBrief2 from '../../components/BoxTextBrief2/BoxTextBrief';
 import SwiperCategorias from '../../components/SwiperCategorias/SwiperCategorias';
 import SwiperNotes from '../../components/SwiperNotes/SwiperNotes';
 import SwiperValores from '../../components/SwiperValores/SwiperValores';
+import SwiperColor from '../../components/SwiperColor/SwiperColor';
+import SwiperPersonalidad from '../../components/SwiperPersonalidad/SwiperPersonalidad';
 import BoxTextMultiBrief from '../../components/BoxTextMultiBrief/BoxTextMultiBrief';
+import BoxMultiBrief from '../../components/BoxMultiBrief/BoxMultiBrief';
 import { useHistory } from "react-router-dom";
 
 import { fb } from '../../utils/firebase'
 let db = fb.firestore();
 require('firebase/auth');
+
+
+function Step5(){
+    let {project,id}= useParams();
+    const classes = useStyles();
+    const [nombreMarca, setNombreMarca] = React.useState(' ');
+    const [descripcionMarca, setDescripcionMarca] = React.useState(" ");
+    const [dueno, setDueno] = React.useState(" ");
+    const [duenoEmail, setDuenoEmail] = React.useState(" ");
+    const [duenoCel, setDuenoCel] = React.useState(" ");
+    const [disenador, setDisenador] = React.useState(" ");
+    const [disenadorEmail, setDisenadorEmail] = React.useState(" ");
+    const [disenadorCel, setDisenadorCel] = React.useState(" ");
+    const [categorias, setCategorias] = React.useState([]);
+    const [notasHace, setNotasHace] = React.useState([]);
+    const [notasComo, setNotasComo] = React.useState([]);
+    const [notasPorque, setNotasPorque] = React.useState([]);
+    const [notasValores, setNotasValores] = React.useState([]);
+    const [valoresAlta, setValoresAlta] = React.useState([]);
+    const [valoresMedia, setValoresMedia] = React.useState([]);
+    const [valoresBaja, setValoresBaja] = React.useState([]);
+    const [personalidad, setPersonalidad] = React.useState([]);
+    const [personalidadUrl, setPersonalidadUrl] = React.useState(" ");
+    const [audienciaInterna, setAudienciaInterna] = React.useState([]);
+    const [audienciaExterna, setAudienciaExterna] = React.useState([]);
+    const [audienciaGenero, setAudienciaGenero] = React.useState(" ");
+    const [audienciaEdad, setAudienciaEdad] = React.useState(" ");
+    const [audienciaPuntos, setAudienciaPuntos] = React.useState(" ");
+    const [audienciaIntereses, setAudienciaIntereses] = React.useState(" ");
+    const [urlMoodboard, setUrlMoodboard] = React.useState(" ");
+    const [anotacion, setAnotacion] = React.useState(" ");
+    const [color,setColor] = React.useState('#0000')
+
+    let history = useHistory();
+
+
+    React.useEffect(()=>{
+
 let listCategory =[
     {
         id:1,
@@ -41,48 +83,63 @@ let listCategory =[
        label:'Hogar',
        urlImage:'/images/house.png',
        select:false
-   },       
-]
-
-function Step5(){
-    let {project,id}= useParams();
-    const classes = useStyles();
-    const [nombreMarca, setNombreMarca] = React.useState('');
-    const [descripcionMarca, setDescripcionMarca] = React.useState('');
-    const [dueno, setDueno] = React.useState('');
-    const [duenoEmail, setDuenoEmail] = React.useState('');
-    const [duenoCel, setDuenoCel] = React.useState('');
-    const [disenador, setDisenador] = React.useState('');
-    const [disenadorEmail, setDisenadorEmail] = React.useState('');
-    const [disenadorCel, setDisenadorCel] = React.useState('');
-    const [categorias, setCategorias] = React.useState([]);
-    const [notasHace, setNotasHace] = React.useState([]);
-    const [notasComo, setNotasComo] = React.useState([]);
-    const [notasPorque, setNotasPorque] = React.useState([]);
-    const [notasValores, setNotasValores] = React.useState([]);
-    const [valoresAlta, setValoresAlta] = React.useState([]);
-
-    let history = useHistory();
-
-
-    React.useEffect(()=>{
-        var docRef = db.collection("briefs").doc(id)
+   },  
+]  
+        var docRef= db.collection("briefs").doc(id)
+ 
         docRef.onSnapshot((doc) =>{
             
             setNombreMarca(doc.data().titleProject)
-            setDescripcionMarca(doc.data().descripcion)
-            setDueno(doc.data().duenos)
-            setDuenoEmail(doc.data().emailDuenos)
-            setDuenoCel(doc.data().celularDuenos)
-            setDisenador(doc.data().disenador)
-            setDisenadorEmail(doc.data().emailDisenador)
-            setDisenadorCel(doc.data().celularDisenador)
+           
+            setPersonalidadUrl(doc.data().personalidadUrl)
+            setColor(doc.data().color)
+
+            if(doc.data().descripcion){
+                setDescripcionMarca(doc.data().descripcion)
+              
+            }
+            if(doc.data().duenos){
+                setDueno(doc.data().duenos)
+              
+            }
+            if(doc.data().emailDuenos){
+                setDuenoEmail(doc.data().emailDuenos)
+              
+            }
+            if(doc.data().celularDuenos){
+                setDuenoCel(doc.data().celularDuenos)
+              
+            }
+            if(doc.data().disenador){
+                setDisenador(doc.data().disenador)
+              
+            }
+            if(doc.data().emailDisenador){
+                setDisenadorEmail(doc.data().emailDisenador)
+              
+            }
+
+            if(doc.data().celularDisenador){
+               
+     
+             setDisenadorCel(doc.data().celularDisenador)
+              
+            }
             
-            var respuestas =doc.data().categorias
+            if(doc.data().anotacion){
+               
+     
+                setAnotacion(doc.data().anotacion)
+                 
+            }
+
+     
+            
+           
             let updated= []
 
             listCategory.forEach((value) => {
-
+                var respuestas =doc.data().categorias
                 const exist = respuestas.find((str) => str === value.label )
                 if(exist){
                     const itemUpdated = {
@@ -100,11 +157,25 @@ function Step5(){
             setNotasPorque(doc.data().porqueHace)
             setNotasValores(doc.data().valores)
             setValoresAlta(doc.data().valoresRelevanciaAlta)
+            setValoresMedia(doc.data().valoresRelevanciaMedia)
+            setValoresBaja(doc.data().valoresRelevanciaBaja)
+            setPersonalidad(doc.data().personalidad)
+            setPersonalidadUrl(doc.data().urlPersonalidad)
+            setAudienciaInterna(doc.data().audienciaInterna)
+            setAudienciaExterna(doc.data().audienciaExterna)
+            setAudienciaGenero(doc.data().audienciaGenero)
+            setAudienciaEdad(doc.data().audienciaEdad)
+            setAudienciaPuntos(doc.data().audienciaPuntos)
+            setAudienciaIntereses(doc.data().audienciaIntereses)
+            setUrlMoodboard(doc.data().urlMoodBoard)
+            
+            console.log(doc.data().personalidad)
         })
 
-
-
-
+ 
+    
+  
+   
 
     },[id])
 
@@ -119,27 +190,71 @@ function Step5(){
 
     function handleChangeDescription(event){
         setDescripcionMarca(event.target.value);
-        db.collection("briefs").doc(id).update({descripcion: event.target.value})
+ 
+    }
+    function handleSaveDescription(event){
+
+        db.collection("briefs").doc(id).update({descripcion: descripcionMarca})
     }
 
+    const handleChangeColor = (color) => {
+        setColor(color);
+        console.log(color)
+  
+     };
+
+     function saveColor(event){
+        db.collection("briefs").doc(id).update({color: color})
+     }
+     function handleChangeAnotacion(event){
+         setAnotacion(event.target.value)
+  
+     }
+
+     function handleSaveAnotacion(event){
+       
+       db.collection("briefs").doc(id).update({anotacion: anotacion})
+    }
   
     function handleChangeCelDueno(event){
         setDuenoCel(event.target.value);
-        db.collection("briefs").doc(id).update({celularDuenos: event.target.value})
+      
+
     }
     function handleChangeDisenador(event){
         setDisenador(event.target.value);
-        db.collection("briefs").doc(id).update({disenador: event.target.value})
+ 
     }
 
     function handleChangeEmailDisenador(event){
         setDisenadorEmail(event.target.value);
-        db.collection("briefs").doc(id).update({emailDisenador: event.target.value})
+
     }
 
     function handleChangeCelDisenador(event){
+
         setDisenadorCel(event.target.value);
-        db.collection("briefs").doc(id).update({celDisenador: event.target.value})
+
+    }
+
+    function handleSaveContact(event){
+        if(duenoCel===undefined){
+            setDuenoCel(' ')
+        }
+        if(disenadorCel===undefined){
+            setDisenadorCel(' ')
+        }
+        if(disenadorEmail===undefined){
+            setDisenadorEmail(' ')
+        }
+        if(disenador===undefined){
+            setDisenador(' ')
+        }
+        setDisenadorCel(' ')
+
+        db.collection("briefs").doc(id).update({celularDuenos: duenoCel,
+            disenador: disenador, emailDisenador: disenadorEmail, celularDisenador: disenadorCel })
+            
     }
 
   return (
@@ -170,14 +285,14 @@ function Step5(){
                                             <div className={classes.containerMarca}><h1 className={classes.nombreMarca}>{nombreMarca}</h1></div>
 
                                         </div>
-                                        <BoxTextBrief marginTop='20px' onChange={handleChangeDescription} descripcion={descripcionMarca}title='Descripción de marca' placeholder='Escribir breve descripción de la marca...'/>
+                                        <BoxTextBrief onClick={handleSaveDescription}marginTop='20px' onChange={handleChangeDescription} descripcion={descripcionMarca}title='Descripción de marca' placeholder='Escribir breve descripción de la marca...'/>
                                     
-                                        <BoxTextMultiBrief marginTop='20px'  title='Contacto/s' dueno={dueno} duenoEmail={duenoEmail} duenoCel={duenoCel}
+                                        <BoxTextMultiBrief onClick={handleSaveContact} marginTop='20px'  title='Contacto/s' dueno={dueno} duenoEmail={duenoEmail} duenoCel={duenoCel}
                                          onChangeCelDueno={handleChangeCelDueno}
                                          onChangeDisenador={handleChangeDisenador}
                                          onChangeEmailDisenador={handleChangeEmailDisenador}
                                          onChangeCelDisenador={handleChangeCelDisenador}
-                                         disenador={disenador} disenadorEmail={disenadorEmail} disenadorCel={disenadorCel} />
+                                         disenador={disenador} disenadorEmail={disenadorEmail} disenadorCel={disenadorCel}/>
 
                                     </div>
                                    
@@ -204,14 +319,75 @@ function Step5(){
 
                                     </div>
                                     <div className={classes.container}>
-                                        <SwiperValores cols={1} rows={1} height='271px' title='Relevancia de valores de marca' list={notasValores}/>
+                                        <SwiperValores cols={1} rows={1} height='271px' title='Relevancia de valores de marca' listAlta={valoresAlta}
+                                        listMedia={valoresMedia} listBaja={valoresBaja}/>
                                     </div>
                                 </div>
                             </div>
 
-    
+                            <div className={classes.containerInfo} style={{marginTop:'48px'}}>
+                                <h1 className={classes.containerTitle}>Personalidad de la marca</h1>
+                                <div className={classes.containerRespuestas}>
 
-  
+                                    <SwiperPersonalidad urlPersonalidad={personalidadUrl} list={personalidad}/>
+
+                                </div>
+                            </div>
+
+                            <div className={classes.containerInfo} style={{marginTop:'48px'}}>
+                                <h1 className={classes.containerTitle}>Audiencias y público objetivo</h1>
+                                <div className={classes.containerRespuestas}>
+
+                                    <div className={classes.container}>
+                                        <SwiperNotes cols={2} rows={2}  height='271px' heightSwiper='170px' widthSwiper= '320px'title='Audiencia interna' list={audienciaInterna}/>
+                                    </div>
+                                    <div className={classes.container}>
+                                        <SwiperNotes cols={2} rows={2}  height='271px' heightSwiper='170px' widthSwiper= '320px'title='Audiencia Externa' list={audienciaExterna}/>
+                                    </div>
+
+                                    <div className={classes.container}>
+                                        <BoxMultiBrief title='Público objetivo' generoAudiencia={audienciaGenero} edadAudiencia={audienciaEdad}
+                                          puntosContacto={audienciaPuntos} intereses={audienciaIntereses}/>
+                                    </div>      
+      
+
+                                </div>
+                            </div>
+
+
+                            <div className={classes.containerInfo} style={{marginTop:'48px'}}>
+                                <h1 className={classes.containerTitle}>Moodboard Sensorial</h1>
+                                <div className={classes.containerRespuestas}>
+
+                                    <div className={classes.divContainer} style={{width:'100%', height:'620px'}}> 
+                                        <div className={classes.containerTitleRespuesta}><p className={classes.titleRespuesta}>Moodboard sensorial</p></div>
+                                           
+                                            <div className={classes.containerMarca} >
+                                                <img src={urlMoodboard} alt="watch" width='876px' style={{marginTop:'20px'}} />
+                                             
+                                            </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            
+
+                            <div className={classes.containerInfo} style={{marginTop:'48px'}}>
+                                <h1 className={classes.containerTitle}>Detalles Adicionales</h1>
+                                <div className={classes.containerRespuestas}>
+                                   
+                                    <SwiperColor onClick={saveColor}title='Paleta de colores' height='320px' color={color}onChange={handleChangeColor}/>
+                             
+                                    <BoxTextBrief2 onClick={handleSaveAnotacion}onChange={handleChangeAnotacion} descripcion={anotacion}title='Anotaciones' placeholder='Escribe alguna anotación que quieras compartir en el Brief......'/>
+
+
+
+                                </div>
+                            </div>
+                            
+
                            
                         </div>
 
@@ -249,7 +425,7 @@ const useStyles = makeStyles(theme => ({
         boxSizing: 'border-box',
         display:'flex',
         width: 'auto',
-        height: '1000vh',
+        height: '450vh',
         flexWrap: 'no-wrap',
         backgroundColor:'#FAFAFA',
         flexDirection:'column',
@@ -267,11 +443,11 @@ const useStyles = makeStyles(theme => ({
     containerRespuestas:{
         display:'flex',
         flexDirection:'row',
-        backgroundColor:'red',
         width:1075,
         height:'auto',
         marginTop:'20px',
         flexWrap:'no-wrap',
+        justifyContent:'space-between'
         
     },
     containerTitleRespuesta:{

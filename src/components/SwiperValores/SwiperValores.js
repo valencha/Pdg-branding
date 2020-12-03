@@ -32,7 +32,7 @@ function SwiperValores(props){
      
                     <div>
                     <Slider showDots={true} dot={MyDot}  cols={3} rows={1} gap={props.gap} containerStyle={{display:'flex', justifyContent:'center', alignItems:'center', alignContent:'center', background: 'transparent',  width:'400px', height: '80px', margin: '0 auto'}} >
-                        {props.list.map((item, i) => 
+                        {props.listAlta.map((item, i) => 
                         <Slider.Item  key={i}>
                             <div className={classes.cardContent}><p className={classes.label}>{item.text}</p></div>         
                           
@@ -55,7 +55,7 @@ function SwiperValores(props){
 
                <div>
                <Slider showDots={true} dot={MyDot}  cols={3} rows={1} gap={props.gap} containerStyle={{display:'flex', justifyContent:'center', alignItems:'center', alignContent:'center', background: 'transparent',  width:'400px', height: '80px', margin: '0 auto'}} >
-                   {props.list.map((item, i) => 
+                   {props.listMedia.map((item, i) => 
                    <Slider.Item  key={i}>
                        <div className={classes.cardContent}><p className={classes.label}>{item.text}</p></div>         
                      
@@ -69,7 +69,7 @@ function SwiperValores(props){
                </div>   
            </div>
       
-       </Slider.Item>
+            </Slider.Item>
 
             <Slider.Item>
            
@@ -78,7 +78,7 @@ function SwiperValores(props){
 
                <div>
                <Slider showDots={true} dot={MyDot}  cols={3} rows={1} gap={props.gap} containerStyle={{display:'flex', justifyContent:'center', alignItems:'center', alignContent:'center', background: 'transparent',  width:'400px', height: '80px', margin: '0 auto'}} >
-                   {props.list.map((item, i) => 
+                   {props.listBaja.map((item, i) => 
                    <Slider.Item  key={i}>
                        <div className={classes.cardContent}><p className={classes.label}>{item.text}</p></div>         
                      

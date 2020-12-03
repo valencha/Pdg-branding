@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import LateralBar from '../../components/LateralBar/LateralBar';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
-
+import ReactPlayer from 'react-player'
 
 function IntroQuestionStep5(){
 
@@ -40,9 +40,17 @@ function IntroQuestionStep5(){
                     </div>
                     <div className={classes.contentBottom}>
                     <div className={classes.contentVideo}>
-                    <img className ={classes.video} alt='video'  src={('/images/videoIntro.png')}/>
+                    <div className={classes.containImg}>
+                    <ReactPlayer
+                        url='/images/moodboardIntro.mov'
+                        playing
+                        loop
+                        width='516px'
+                        height='300px'
+                    />
+                    </div>  
                     <div>
-                    <p className={classes.description}>Hemos sugerido diferentes recursos según la esencia de tu marca. Por favor selecciona los que te parezcan más convenientes y si no están los recursos que deseas, ¡no te preocupes! Puedes subirlos a la plataforma.</p>
+                    <p className={classes.description}>Hemos sugerido diferentes recursos según la esencia de tu marca. Por favor selecciona los que te parezcan más convenientes.</p>
                     </div>
                     </div>         
                    

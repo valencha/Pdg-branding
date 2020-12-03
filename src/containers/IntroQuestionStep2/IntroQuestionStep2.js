@@ -8,8 +8,6 @@ import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
 //Todos los imports se coloca   n arriba de este 
 
-import { fb } from '../../utils/firebase'
-require('firebase/auth');
 
 function IntroQuestionStep2(){
 
@@ -22,14 +20,8 @@ function IntroQuestionStep2(){
     function handleNextPage(event){
         history.push('/dashboard/'+project+'/'+id+'/finished2');
 
-        let db = fb.firestore();
 
-        db.collection("projects").doc(id).update({
-            "url":  '/dashboard/'+project+'/'+id+'/finished2',
-       
-
-        })
-      }
+    }
       
 
       function handleBackPage(event){
