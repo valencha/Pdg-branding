@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import{useParams} from 'react-router-dom';
-import TopBar from '../../components/TopBar/TopBar';
+import TopBar from '../../components/TopBarBrief/TopBarBrief';
 import BoxTextBrief3 from '../../components/BoxTextBrief3/BoxTextBrief';
 import SwiperCategorias from '../../components/SwiperCategorias/SwiperCategorias';
 import SwiperNotes from '../../components/SwiperNotes/SwiperNotes';

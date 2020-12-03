@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 function BtnInitial(props){
 
-    const classes = useStyles({ width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`});
+    const classes = useStyles({ width: `${props.width}`, height: `${props.height}`, marginTop:`${props.marginTop}`,marginRight:`${props.marginRight}`});
 
     return <div>
     
@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
           width: (props) => `${props.width}`,
           height: (props) => `${props.height}`,
           marginTop: (props) => `${props.marginTop}`,
+          marginRight: (props) => `${props.marginRight}`,
           borderRadius: 15,
           border: 0,
           cursor:'pointer',

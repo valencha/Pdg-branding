@@ -1,19 +1,33 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import BtnShare from '../../components/BtnShare/BtnShare';
+import BtnInitial from '../../components/BtnInitial/BtnInitial';
 import { useHistory } from "react-router-dom";
-function TopBar(props){
+function TopBarBrief(props){
     const classes = useStyles();
     let history = useHistory();
 
 
+    const onClick = (event) => {
+        history.push(`/`);
+      };
+
+      const handleLogin = (event) => {
+        history.push(`/login`);
+      };
+
   
     return (
         <div className={classes.body}>
-            <img className ={classes.logo} alt='logo'  src={('/images/logoEasyBrandingColor.svg')} />
+            <img className ={classes.logo} alt='logo'  src={('/images/logoEasyBrandingColor.svg')} onClick={onClick}/>
             <div className={classes.contentName}><h1 className={classes.titleProject}>{props.titleProject}</h1></div>
             
-            <BtnShare className={classes.btn}/>
+            <BtnInitial className={classes.btnStartNow}
+            content="Comenzar ahora"
+            marginRight='33px'
+            width='205px'
+            height='48px'
+            onClick={handleLogin}
+            />
       </div>
       );
     }
@@ -30,6 +44,7 @@ function TopBar(props){
         },
         logo:{
             marginLeft:'33px',
+            cursor:'pointer'
         },
         btn:{
             marginRight:'122px',
@@ -52,6 +67,6 @@ function TopBar(props){
         },
     }));
     
-    export default TopBar;
+    export default TopBarBrief;
     
     
