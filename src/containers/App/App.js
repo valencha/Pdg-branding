@@ -21,6 +21,17 @@ import Congrats2 from '../ScreenCongrat2/ScreenCongrat2';
 import Congrats3 from '../ScreenCongrat3/ScreenCongrat3';
 import Congrats4 from '../ScreenCongrat4/ScreenCongrat4';
 import Step3 from '../Step3/Step3';
+import StepVisual1 from '../StepVisual1/StepVisual1';
+import StepVisual2 from '../StepVisual2/StepVisual2';
+import StepVisual3 from '../StepVisual3/StepVisual3';
+import StepVisual4 from '../StepVisual4/StepVisual4';
+import StepAudio from '../StepAudio/StepAudio';
+import StepAudio2 from '../StepAudio2/StepAudio2';
+import StepOlfativo from '../StepOlfativo/StepOlfativo';
+import StepTacto from '../StepTacto/StepTacto';
+import StepTacto2 from '../StepTacto2/StepTacto2';
+import StepGusto from '../StepGusto/StepGusto';
+import StepGusto2 from '../StepGusto2/StepGusto2';
 import Step4 from '../Step4/Step4';
 import Step5 from '../Step5/Step5';
 import ViewBrief from '../ViewBrief/ViewBrief';
@@ -96,10 +107,21 @@ function App() {
       <Route exact path="/dashboard/:project/:id/step1_9" component ={Step1_8}/>
       <Route exact path="/dashboard/:project/:id/step1_10" component ={Step1_9}/>
       <Route exact path="/dashboard/:project/:id/finished1" component ={Congrats1}/>
-      <Route exact path="/dashboard/:project/:id/intro2" component ={IntroQuestionStep2}/> 
+      <Route exact path="/dashboard/:project/:id/intro2" component ={IntroQuestionStep2}/>
+      <Route exact path="/dashboard/:project/:id/stepvisual1" component ={StepVisual1}/>
+      <Route exact path="/dashboard/:project/:id/stepvisual2" component ={StepVisual2}/>
+      <Route exact path="/dashboard/:project/:id/stepvisual3" component ={StepVisual3}/>
+      <Route exact path="/dashboard/:project/:id/stepvisual4" component ={StepVisual4}/>
+      <Route exact path="/dashboard/:project/:id/stepaudio" component ={StepAudio}/>
+      <Route exact path="/dashboard/:project/:id/stepaudio2" component ={StepAudio2}/>
+      <Route exact path="/dashboard/:project/:id/stepolfato" component ={StepOlfativo}/>
+      <Route exact path="/dashboard/:project/:id/steptacto" component ={StepTacto}/>
+      <Route exact path="/dashboard/:project/:id/steptacto2" component ={StepTacto2}/>
+      <Route exact path="/dashboard/:project/:id/stepgusto" component ={StepGusto}/>
+      <Route exact path="/dashboard/:project/:id/stepgusto2" component ={StepGusto2}/>
       <Route exact path="/dashboard/:project/:id/finished2" component ={Congrats2}/>
       <Route exact path="/dashboard/:project/:id/intro3" component ={IntroQuestionStep3}/> 
-      <Route exact path="/dashboard/:project/:id/step3" component ={Step3}/>
+      <Route exact path="/dashboard/:project/:id/step3" component ={Step3}/>      
       <Route exact path="/dashboard/:project/:id/finished3" component ={Congrats3}/>
       <Route exact path="/dashboard/:project/:id/intro4" component ={IntroQuestionStep4}/> 
       <Route exact path="/dashboard/:project/:id/step4" component ={Step4}/>
@@ -107,7 +129,7 @@ function App() {
       <Route exact path="/dashboard/:project/:id/finished4" component ={Congrats4}/>
       <Route exact path="/dashboard/:project/:id/intro5" component ={IntroQuestionStep5}/>
       <Route exact path="/dashboard/:project/:id/step5" component ={Step5}/>
-      <Route exact path="/dashboard/:project/:id/step5Share" component ={Step5Share}/>
+      <Route exact path="/dashboard/:project/:id/step5Share" component ={Step5Share}/>  
       <Route exact path="/dashboard/:id" component ={ViewBrief}/>
       </DataContext.Provider>
   </Router>

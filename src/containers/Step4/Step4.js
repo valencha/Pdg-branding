@@ -14,6 +14,7 @@ import DialogOido from '../../components/DialogOido/DialogOido';
 import DialogTacto from '../../components/DialogTacto/DialogTacto';
 import DialogGusto from '../../components/DialogGusto/DialogGusto';
 import DialogGuru from '../../components/DialogGuru/DialogGuru';
+import DialogSentidos from '../../components/DialogSentidos/DialogSentidos';
 import BtnYellow from '../../components/BtnYellowG/BtnYellowG';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
@@ -69,9 +70,9 @@ function Step4(){
     const [openTacto, setOpenTacto] = React.useState(undefined);
     const [openOido, setOpenOido] = React.useState(undefined);
     const [openGuru, setOpenGuru] = React.useState(undefined);
+    const [urlDialog, setUrlDialog] = React.useState(' ');
 
-
-   
+    const [openSentidos, setOpenSentidos] = React.useState(false);
 
     const [listaSentidos, setListaSentidos] = React.useState([
     {img:"/images/vista.svg",
@@ -90,7 +91,9 @@ function Step4(){
     const handleCloseVista = () => {
       setOpenVista(false);
     };
-
+    const handleCloseSentidos = () => {
+        setOpenSentidos(false);
+      };
 
     
       const handleCloseGusto = () => {
@@ -371,6 +374,7 @@ const MyDot = ({ isActive }) => (
                 <DialogTacto openTacto={openTacto} handleCloseTacto={handleCloseTacto} />
                 <DialogGusto openGusto={openGusto} handleCloseGusto={handleCloseGusto} />
                 <DialogGuru openGuru={openGuru} handleCloseGuru={handleCloseGuru} />
+                <DialogSentidos url={urlDialog} open={openSentidos} handleClose={handleCloseSentidos}/>
             <div>
                 <TopBar titleProject={project}/>
             </div>
@@ -554,8 +558,30 @@ const MyDot = ({ isActive }) => (
                             {listaSentidos.map((item, index)=>{
 
                                 return <div key={index} className={classes.senses}>
-                        
-                                    <div className={classes.label}> <img src={item.img} width='54px' alt='media'/> </div>
+                                
+                                    <div className={classes.label}> <img onClick={(event)=>{
+                                        console.log(item.title)
+                                        setOpenSentidos(true) 
+                                        if(item.title==='vista'){
+                                            setUrlDialog('/images/vistaLeer.svg')
+                                        }
+                                        if(item.title==='oido'){
+                                            setUrlDialog('/images/oidoLeer.svg')
+                                        }
+                                        if(item.title==='olfato'){
+                                            setUrlDialog('/images/olfatoLeer.svg')
+                                        }
+                                        if(item.title==='gusto'){
+                                            setUrlDialog('/images/gustoLeer.svg')
+                                        }
+                                        if(item.title==='tacto'){
+                                            setUrlDialog('/images/tactoLeer.svg')
+                                        }
+                                       
+                                        console.log(openSentidos)
+                                    }} src={item.img} width='54px' alt='media'/> </div>
+                                       
+                                        
                                         <div id={item.title} className={classes.containVista + " container__sentidos"} >
                                             {itemsEscogidos.map((element, i) => {
 

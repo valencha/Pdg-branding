@@ -437,19 +437,20 @@ React.useEffect(()=>{
 
               <div className={classes.icons}>
                 <img className ={classes.bell} style ={{marginRight:`${marginBell}`}}src={'images/bell.svg'} alt="notification" width='24px' />
-                <img className ={classes.menu}  src={('./images/User.svg')} onClick={() => handleMenuOpen()} alt="menu" />
+                <img className ={classes.menu}  src={('/images/User.svg')} onClick={() => handleMenuOpen()} alt="menu" />
               </div>
               {isMenuOpen && 
                <div className={classes.menuOpen}>
-                <img className ={classes.close}  src={('./images/close.svg')} onClick={() => handleMenuOpen()} alt="menu" />
+                <img className ={classes.close}  src={('/images/close.svg')} onClick={() => handleMenuOpen()} alt="menu" />
                 <div className ={classes.infoPrincipal}>
-                  <div><img className ={classes.photoPerfil}  src={('./images/photoDefault.png')} alt="fotoperfil" /></div>
+                  <div><img className ={classes.photoPerfil}  src={('/images/photoDefault.png')} alt="fotoperfil" /></div>
                 
                 <div>
                   <h1 className={classes.titleMenu}>¡Hola!</h1>
                   <p className={classes.nameMenu}>{nameUser}</p>
                 </div>
                 </div> 
+                <div className={classes.cifras}>
                 <div className={classes.numbers}>
                   <p className={classes.descriptionMenu}>Valoraciones</p>
                   <span className={classes.numMenu}>16</span>
@@ -462,24 +463,26 @@ React.useEffect(()=>{
                   <p className={classes.descriptionMenu}>Siguiendo</p>
                   <span className={classes.numMenu}>5</span>
                 </div>
-
+                </div>
                 <div className={classes.stateProjects}>
                   <div className={classes.stateProjectsComplete}>
                     <h1 className={classes.stateTitle}> Proyectos Completados </h1>
-                    <img className ={classes.divisor}  src={('./images/lineBlue.svg')} alt="divisor" />
+                    <img className ={classes.divisor}  src={('/images/lineBlue.svg')} alt="divisor" />
                     <h1  className={classes.stateNumber}> 4 </h1>
                   </div>
 
                   <div className={classes.stateProjectsProcess}>
                     <h1 className={classes.stateTitle}> Proyectos en proceso </h1>
-                    <img className ={classes.divisor}  src={('./images/lineYellow.svg')} alt="divisor" />
+                    <img className ={classes.divisor}  src={('/images/lineYellow.svg')} alt="divisor" />
                     <h1 className={classes.stateNumber}> 2 </h1>
                   </div>
         
                 </div>
                 <div className={classes.achievement}>
                   <h1 className={classes.achievementTitle}>Logros</h1>
+                  <img width='190px' className ={classes.logros}  src={('/images/logros.svg')} alt="logros" />
                 </div>
+                 
                </div>
               }
              
@@ -517,7 +520,7 @@ React.useEffect(()=>{
 
                           <div className={classes.dialogTop}>
                             <h1 className={classes.titleDialog}>Nuevo Proyecto</h1>
-                            <img className={classes.closeDialog} width='24px' src={('./images/close.svg')} onClick={() => handleClose()}alt="divisor" />
+                            <img className={classes.closeDialog} width='24px' src={('/images/close.svg')} onClick={() => handleClose()}alt="divisor" />
                           </div>
                           <div className={classes.placeHolder}>
                             <PlaceHolder      
@@ -947,18 +950,21 @@ numbers:{
   marginTop:'8px',
   display:'flex',
   width:'261px',
+
   fontFamily:'Open Sans',
   flexDirection:'row',
-  justifyContent:'space-around',
+  justifyContent:'flex-start',
   alignItems:'flex-start',
   alignContent:'flex-start',
 },
 
 numMenu:{
   fontWeight:600,
+  marginLeft:'10px'
 },
 descriptionMenu:{
   fontWeight:500,
+  width:'700px',
   alignSelf:'flex-start',
   textAlign:'left',
 },
@@ -1052,6 +1058,13 @@ topTools:{
    width:'auto',
   
 },
+logros:{
+  marginLeft:'10px',
+  marginTop:'13px'
+
+
+},
+
 
   logo:{
     backgroundImage: (props) => `url(${props.urlLogo})`,
@@ -1124,6 +1137,14 @@ spanColaborator:{
   fontSize:'13px',
   alignSelf:'flex-end',
   cursor:'pointer'
+},
+
+cifras:{
+  display:'flex',
+  marginLeft:'30px',
+  flexDirection:'column',
+  justifyContent:'flex-start',
+  alignContent:'flex-start'
 }
 
 }));

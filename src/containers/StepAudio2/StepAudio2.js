@@ -4,28 +4,58 @@ import TopBar from '../../components/TopBar/TopBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import LateralBar from '../../components/LateralBar/LateralBar';
+import ProgressTool from '../../components/ProgressTool/ProgressTool';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
-//Todos los imports se coloca   n arriba de este 
+import CardCheckBox from '../../components/CardCheckBox/CardCheckBox';
 
 
-function IntroQuestionStep2(){
+
+let listCategory =[
+    {
+        id:1,
+       label:'Ritmos',
+       urlImage:'/images/ritmos.png',
+       select:false
+
+   },
+    {
+        id:2,
+       label:'Instrumentos',
+       urlImage:'/images/instrumentos.png',
+       select:false
+   },
+   {
+    id:3,
+    label:'Artistas',
+    urlImage:'/images/artistas.png',
+    select:false
+},
+{
+    id:4,
+    label:'Grupo musical',
+    urlImage:'/images/grupoMusical.png',
+    select:false
+},
+]
+
+function StepAudio2(){
 
     let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
- 
+    const [value, setValue] = React.useState(40);
+    const [disabled, setDisabled] = React.useState(true);
+    
 
-
-    function handleNextPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/stepvisual1');
-
-
-    }
-      
-
+      function handleNextPage(event){
+     
+        history.push('/dashboard/'+project+'/'+id+'/stepolfato');
+      }
+     
       function handleBackPage(event){
-        history.push('/dashboard/'+project+'/'+id+'/main');
+     
+        history.push('/dashboard/'+project+'/'+id+'/stepaudio');
       }
       
 
@@ -37,33 +67,70 @@ function IntroQuestionStep2(){
             <div className={classes.content}>
                 <LateralBar/>
                 <div className={classes.contentRight}>
+                    <div className={classes.progressContent}>
+                        <ProgressTool
+                            className={classes.progress}
+                            titleStep='Kit sensorial'
+                            numStep={2}
+                            numTotalStep='5'
+                            value={value}
+                            onClick={handleNextPage}
 
+                        />
+                    </div>
                     <div className={classes.contentText}>
-                        <img className ={classes.skip} alt='skip'  src={('/images/skipStep.svg')} onClick={handleNextPage}/>
-                       <h1 className={classes.title}>Explora tus sentidos con el <span className={classes.boldB}>Kit sensorial</span></h1>
+                        <h1 className={classes.titleStep}>Sentido auditivo</h1>
+                        <p className={classes.description}><span className={classes.bold}>2. </span>De acuerdo a los recursos auditivos que exploraste en las tarjetas del Kit, <span className={classes.bold}>selecciona el/los géneros </span>que más se acople a la marca de tu proyecto/emprendimiento/empresa.</p>
 
                     </div>
                     <div className={classes.contentBottom}>
-                    <div className={classes.contentVideo}>
-                    <img className ={classes.video} alt='video'  src={('/images/videoIntro.png')}/>
-                    <div>
-                    <p className={classes.description}><span className={classes.contentBold}>¡Corre por tu Kit sensorial EasyBranding!</span> Este te permitirá explorar de manera más profunda los sentidos a través de recursos sensoriales para futuras tomas de decisiones en la creación de una marca que genere experiencias mayormente positivas en los usuarios.</p>
-                    <p className={classes.withoutKit}>¿No tienes Kit sensorial?</p>
-                    <button className={classes.btnKit}>Continuar sin Kit</button>
-                    </div>
-                    </div>         
-                   
+                        
+                        
+                     
+                        <div className={classes.options}> 
+ 
+                        {listCategory.map((item, i) =>
+                        <div key={i}>
+                            <CardCheckBox {...item} onChange={(event)=>{
+                                let checked=event.target.checked;
+                                item.select=checked;
+                                setValue(20);
+                                console.log(disabled)
+                             
+                                if(item.select === true){
+                                    setDisabled(false);
+                                
+                                }else{
+                                    setDisabled(true);
+                                    setValue(0);
+
+                                }
+                            }}
+                            />
+                        
+                                
+                                
+                        </div>
+                        )}
+
+                        </div>
+               
+                       
+                       
+                  
                     <div className={classes.actions}>
                         <BtnOutlinedStep
+                        content='Saltar'
                         width='149px'
                         height='48px'
                         onClick={handleBackPage}
                         />
+                        <img className ={classes.tutorial} alt='tutorial'  src={('/images/tutorial.svg')} />
                         <BtnStep
+                        onClick={handleNextPage}
                         content='Continuar'
                         width='149px'
                         height='48px'
-                        onClick={handleNextPage}
                         
                         />
                     </div>
@@ -98,20 +165,25 @@ function IntroQuestionStep2(){
             justifyContent:'space-around',
             flexWrap:'no-wrap',
         },
+        progressContent:{
+            display:'flex',
+            marginTop:'20px',
+            flexWrap:'no-wrap',
+            
+        },
+        progress:{
+            display:'flex',
+            flexWrap:'no-wrap',            
+        },
 
         contentText:{
-            marginTop:'46px',
             display:'flex',
-            flexDirection:'row',
-            justifyContent:'flex-start',
-            alignContent:'center',
-            alignItems:'center',
+            flexDirection:'column',
             width:'100%',
             flexWrap:'no-wrap',
             
          
         },
-
 
         contentRight:{
             display:'flex',
@@ -124,52 +196,29 @@ function IntroQuestionStep2(){
             justifyContent:'flex-start',
         },
 
-        title:{
+        titleStep:{
             fontFamily:'Poppins',
             flexWrap:'no-wrap',
-            fontWeight:500, 
-            fontSize:'35px',
+            fontWeight:600,
+            fontSize:'32px',
         },
-        boldB:{
+        bold:{
             fontFamily:'Poppins',
             flexWrap:'no-wrap',
-            fontWeight:600, 
-            fontSize:'35px',
-
-        },
-        withoutKit:{
-            fontFamily:'Poppins',
-            flexWrap:'no-wrap',
+            fontWeight:700,
             fontSize:'18px',
-            marginLeft:'32px',
-            marginTop:30
-
-        },
-        btnKit:{
-            marginLeft:'32px',
-            marginTop:'24px',
-            color:'#686B6E',
-            fontWeight:600, 
-            fontFamily:'Poppins',
-            background: '#FFFFFF',
-            border:'none',
-            padding:12,
-            boxShadow:' 2px 8px 16px rgba(61, 62, 66, 0.105)',
-            borderRadius: '15px',
-        },
-        contentBold:{
-            fontWeight:600, 
-
         },
         description:{
             fontFamily:'Open Sans',
             flexWrap:'no-wrap',
-            lineHeight: '29px',  
-            color:'#212429',
-            marginLeft:'32px',
+            width:'900px',
+            marginTop:'18px',   
             fontWeight:400,
             fontSize:'18px',
         },
+
+      
+
 
         btnOption:{
             color:'#CCCCCC',
@@ -183,12 +232,21 @@ function IntroQuestionStep2(){
            
           },
 
+          options:{
+            display:'flex',
+            flexDirection:'row',
+            width:'50%',
+            flexWrap:'no-wrap', 
+            justifyContent:'flex-start',
+            alignContent:'flex-start',
+            alignItems:'flex-start',
+
+          },
 
           contentBottom:{
             display:'flex',
-            width:'79%',  
-            height:'100%',  
-            marginTop:'20px',
+            width:'79%',    
+            marginTop:'30px',
             flexDirection:'column',
             flexWrap:'no-wrap',
             alignItems:'flex-start',
@@ -218,35 +276,25 @@ function IntroQuestionStep2(){
             flexWrap:'no-wrap',
             alignSelf:'flex-end',
             justifyContent:'space-between',
-            width:'100%',
-            marginTop:'86px'
-                  
+            width:'100%', 
+            marginTop:'50px'  
           },
           tutorial:{
               cursor:'pointer',
           },
-
-          
-          
-          num:{
-            fontFamily:'Open Sans',
-            fontWeight:700,
-            fontSize:'18px'
-          },
-
-          branding:{
-              fontStyle:'italic',
-          },
-
           contentVideo:{
-              display:'flex',
-              flexDirection:'row',
-              height:'335px',
+            display:'flex',
+            flexDirection:'row',
+            flexWrap:'no-wrap',
+            width:'100%',
+            height:'342px',
           },
-          skip:{
-              cursor:'pointer',
+
+          video:{
+              borderRadius:'155px',
           }
 
+          
     
     
     }));
@@ -254,4 +302,4 @@ function IntroQuestionStep2(){
 
 
 
-export default IntroQuestionStep2; 
+export default StepAudio2; 

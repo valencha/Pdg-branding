@@ -11,7 +11,7 @@ import SwiperPersonalidad from '../../components/SwiperPersonalidad/SwiperPerson
 import BoxTextBriefView from '../../components/BoxTextBriefView/BoxTextBriefView';
 import BoxMultiBrief from '../../components/BoxMultiBrief/BoxMultiBrief';
 import BoxBriefView from '../../components/BoxBriefView/BoxBriefView';
-import { useHistory } from "react-router-dom";
+
 
 import { fb } from '../../utils/firebase'
 let db = fb.firestore();
@@ -49,7 +49,7 @@ function Step5(){
     const [anotacion, setAnotacion] = React.useState(" ");
     const [color,setColor] = React.useState('#0000')
 
-    let history = useHistory();
+    
 
 
     React.useEffect(()=>{

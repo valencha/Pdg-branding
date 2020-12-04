@@ -79,7 +79,7 @@ function Step5Share(){
                             <div className={classes.link}>
                                 <input value={'http://localhost:3000/dashboard/'+ id} type='text' className={classes.input}/>
                                 <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
-                                <button className={classes.btnLink}>{copied? 'Copiado': 'Copiar'}</button>
+                                <button style={{color:copied ? '#7A76FF' : '#212429'}}className={classes.btnLink}>{copied? '¡Copiado!': 'Copiar'}</button>
                                 </CopyToClipboard>
                             </div>
 
