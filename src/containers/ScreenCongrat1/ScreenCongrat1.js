@@ -53,7 +53,7 @@ function ScreenCongrat1(){
 
                     </div>
                     <div className={classes.contentBottom}>
-                        <img widht='200px' alt='video'  src={('/images/felicitaciones.svg')}/>
+                        <img widht='150px' alt='video'  src={('/images/felicitaciones.svg')}/>
          
                     
                     </div>
@@ -150,7 +150,6 @@ function ScreenCongrat1(){
             display:'flex',
             width:'79%',  
             height:'100%',  
-            marginTop:'46px',
             flexDirection:'column',
             flexWrap:'no-wrap',
             alignItems:'center',
