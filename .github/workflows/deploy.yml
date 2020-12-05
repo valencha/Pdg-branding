@@ -14,12 +14,12 @@ jobs:
         with:
           node-version: '12.x'
       - name: Install node dependencies
-        run: npm install
+        run: yarn install
       - name: Build (Development) artifact
         env:
           CI: false
         run: >
-          npm run build
+          yarn run build
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting:${{ secrets.FIREBASE_TARGET_DEV }}
