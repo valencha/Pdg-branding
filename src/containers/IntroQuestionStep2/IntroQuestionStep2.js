@@ -7,8 +7,10 @@ import LateralBar from '../../components/LateralBar/LateralBar';
 import BtnOutlinedStep from '../../components/BtnOutlinedStep/BtnOutlinedStep';
 import BtnStep from '../../components/BtnStep/BtnStep';
 //Todos los imports se coloca   n arriba de este 
+import ReactPlayer from 'react-player'
 
-
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
 function IntroQuestionStep2(){
 
     let {project,id}= useParams();
@@ -28,6 +30,17 @@ function IntroQuestionStep2(){
         history.push('/dashboard/'+project+'/'+id+'/main');
       }
       
+    function handleMain(event){
+        history.push('/dashboard/'+project+'/'+id+'/main');
+        let db = fb.firestore();
+
+        db.collection("projects").doc(id).update({
+            "percent":  60,
+            "percentStep3": 100
+       
+
+        })
+    }
 
     return (
         <div className={classes.body}>
@@ -45,11 +58,19 @@ function IntroQuestionStep2(){
                     </div>
                     <div className={classes.contentBottom}>
                     <div className={classes.contentVideo}>
-                    <img className ={classes.video} alt='video'  src={('/images/videoIntro.png')}/>
+                    <div className={classes.containImg}>
+                        <ReactPlayer
+                        url='/images/videoKit.mp4'
+                        playing
+                        loop
+                        width='516px'
+                        height='300px'
+                        />
+                    </div>
                     <div>
                     <p className={classes.description}><span className={classes.contentBold}>¡Corre por tu Kit sensorial EasyBranding!</span> Este te permitirá explorar de manera más profunda los sentidos a través de recursos sensoriales para futuras tomas de decisiones en la creación de una marca que genere experiencias mayormente positivas en los usuarios.</p>
                     <p className={classes.withoutKit}>¿No tienes Kit sensorial?</p>
-                    <button className={classes.btnKit}>Continuar sin Kit</button>
+                    <button onClick={handleMain} className={classes.btnKit}>Continuar sin Kit</button>
                     </div>
                     </div>         
                    
@@ -154,6 +175,7 @@ function IntroQuestionStep2(){
             background: '#FFFFFF',
             border:'none',
             padding:12,
+            outline:'none',
             boxShadow:' 2px 8px 16px rgba(61, 62, 66, 0.105)',
             borderRadius: '15px',
         },

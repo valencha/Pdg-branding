@@ -153,6 +153,7 @@ function ScreenCongrat1(){
             flexDirection:'column',
             flexWrap:'no-wrap',
             alignItems:'center',
+            marginTop:'10px',
             justifyContent:'center'
           },
           
@@ -164,7 +165,6 @@ function ScreenCongrat1(){
             alignSelf:'flex-start',
             justifyContent:'space-between',
             width:'79%',
-            marginTop:'86px'
                   
           },
 

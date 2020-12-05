@@ -56,7 +56,7 @@ function ScreenCongrat4(){
                     
                     </div>
                     <div className={classes.contentBottom}>
-                    <img widht='300px' alt='video'  src={('/images/videoIntro.png')}/>
+                    <img widht='300px' alt='video'  src={('/images/felicitaciones.svg')}/>
          
                     
                     </div>
@@ -154,7 +154,7 @@ function ScreenCongrat4(){
             display:'flex',
             width:'79%',  
             height:'100%',  
-            marginTop:'46px',
+            marginTop:'10px',
             flexDirection:'column',
             flexWrap:'no-wrap',
             alignItems:'center',
@@ -167,7 +167,7 @@ function ScreenCongrat4(){
             alignSelf:'flex-start',
             justifyContent:'space-between',
             width:'79%',
-            marginTop:'86px'
+
                   
           },
           
