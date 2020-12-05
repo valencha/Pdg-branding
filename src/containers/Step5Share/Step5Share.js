@@ -77,7 +77,7 @@ function Step5Share(){
                         <div>
                             <p className={classes.description}>Si ya crees que el Brief está listo compártelo a quien creas que sea necesario o por el contrario si aún tienes dudas puedes volver a editarlo.</p>
                             <div className={classes.link}>
-                                <input value={'http://localhost:3000/dashboard/'+ id} type='text' className={classes.input}/>
+                                <input value={'https://branding-pdg.web.app/dashboard/'+ id} type='text' className={classes.input}/>
                                 <CopyToClipboard text={value} onCopy={() => setCopied(true)}>
                                 <button style={{color:copied ? '#7A76FF' : '#212429'}}className={classes.btnLink}>{copied? '¡Copiado!': 'Copiar'}</button>
                                 </CopyToClipboard>
