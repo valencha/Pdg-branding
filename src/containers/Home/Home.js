@@ -6,7 +6,7 @@ import './Reset.css';
 
 
 function Home (props){
-    const classes = useStyles({ urlBanner: 'images/fondoInicio.jpg', urlLogo: 'images/LogoColor.svg'});
+    const classes = useStyles({ urlBanner: '/images/fondoInicio.jpg', urlLogo: '/images/LogoColor.svg'});
 
      return <div className ={classes.body}>
        
@@ -39,7 +39,7 @@ function Home (props){
             height='48px'
             />
             <div className={classes.btnWatchDemo}>
-            <img src={'images/iconPlay.png'} alt="watch" width='32px' />
+            <img src={'/images/iconPlay.png'} alt="watch" width='32px' />
             <h1 className={classes.watchDemo}>Ver demo</h1>
             </div>
         
