@@ -53,7 +53,7 @@ function ScreenCongrat1(){
 
                     </div>
                     <div className={classes.contentBottom}>
-                        <img widht='300px' alt='video'  src={('/images/videoIntro.png')}/>
+                        <img widht='300px' alt='video'  src={('/images/felicitaciones.svg')}/>
          
                     
                     </div>
