@@ -20,7 +20,7 @@ function Step5Share(){
     let {project,id}= useParams();
     const classes = useStyles();
     let history = useHistory();
-    const value = 'http://localhost:3000/dashboard/'+ id
+    const value = 'https://branding-pdg.web.app/dashboard/'+ id
     const [copied,setCopied] = React.useState(false);
 
 
