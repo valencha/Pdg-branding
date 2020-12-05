@@ -24,7 +24,7 @@
 }
 
 .kVtMtA {
-    content: url('/images/arrowLeft.svg');
+    content: url('/images/arrowRight.svg');
     position: absolute;
     padding: 5px;
     top: calc(50% - 17.5px);
