@@ -3,11 +3,26 @@ import {Link} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import BtnInitial from '../../components/BtnInitial/BtnInitial';
 import './Reset.css';
-
+import ReactPlayer from 'react-player'
+import { Dialog} from '@material-ui/core';
 
 
 function Home (props){
     const classes = useStyles({ urlBanner: '/images/fondoInicio.jpg', urlLogo: '/images/LogoColor.svg'});
+    const [open, setOpen] = React.useState(false);
+
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+
+
+
 
      return <div className ={classes.body}>
        
@@ -39,10 +54,27 @@ function Home (props){
             width='203px'
             height='48px'
             />
-            <div className={classes.btnWatchDemo}>
-            <img src={'/images/IconPlay.png'} alt="watch" width='32px' />
+            <div className={classes.btnWatchDemo} onClick={handleClickOpen}>
+            <img src={'/images/iconPlay.svg'} alt="watch" width='32px' />
             <h1 className={classes.watchDemo}>Ver demo</h1>
             </div>
+            <Dialog open={open} onClose={handleClose}    
+            BackdropProps={{
+          
+            root: classes.root
+  
+            }
+            }aria-labelledby="form-dialog-title" classes={{paper:classes.paper, root: classes.dialog}}>
+
+        <ReactPlayer
+          url='https://youtu.be/Y_WqCgMPnFg'
+          playing
+          controls
+        />
+
+        </Dialog>
+     
+
         
         </div>
 
@@ -156,6 +188,7 @@ const useStyles = makeStyles(theme => ({
         alignItems:'center',
     },
     btnWatchDemo:{
+        cursor:'pointer',
         display:'flex',
         marginLeft:'100px',
         alignContent:'center',
@@ -169,6 +202,23 @@ const useStyles = makeStyles(theme => ({
         marginLeft:'10px',
         fontWeight:700,
         
+    },
+    dialog:{
+        backgroundColor:'transparent',
+        display:'flex',
+        boxShadow: "none",
+        overflow: "hidden",
+        flexDirection:'row',
+        justifyContent:'center',
+        alignContent:'center',
+        alignItems:'center',
+
+
+    },
+    paper:{
+        backgroundColor:'black',
+        alignItems:'center',    
+        width:'100%',
     }
 }));
 export default Home;

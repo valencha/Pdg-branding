@@ -655,7 +655,7 @@ React.useEffect(()=>{
                     
                               db.collection("moodboards").doc(item.id).update({
                                 "valoraciones": valoraciones,
-                                }) 
+                              }) 
                               
                             }
                             if(valoraciones ===1){
