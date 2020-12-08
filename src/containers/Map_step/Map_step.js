@@ -102,7 +102,7 @@ function Map_step(){
         
         let db = fb.firestore();
         var docRef = db.collection("projects").doc(id);
-        docRef.get().then(function(doc) {
+        docRef.onSnapshot(function(doc) {
             if(doc.exists){
 
                 setPercentGeneral(doc.data().percent);
