@@ -1,8 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-
 import { useHistory } from "react-router-dom";
+
+import { fb } from '../../utils/firebase'
+require('firebase/auth');
+
 
 function LateralBar(props){
     const classes = useStyles();
@@ -15,6 +18,15 @@ function LateralBar(props){
 
     }
 
+    function handleLogOut(event){
+        fb.auth().signOut();
+        history.push('/');
+        
+
+
+    }
+
+
 
 
     return (
@@ -24,7 +36,7 @@ function LateralBar(props){
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/file-text.svg'alt="progress" width='20px' /><span className={classes.btnSpan}>Notas</span> </div> </Button>
             <Button className={classes.btnTool}> <div className={classes.contentBtn}><img src='/images/help-circle.svg'alt="help" width='20px' /><span className={classes.btnSpan}>Ayuda</span> </div> </Button>
 
-            <div className={classes.toolBottom}>  <Button className={classes.btnToolBottom}> <div className={classes.contentBtn}><img src='/images/log-out.svg'alt="log-out" width='20px' /></div> </Button></div>
+            <div className={classes.toolBottom}>  <Button className={classes.btnToolBottom} onClick={handleLogOut}> <div className={classes.contentBtn}><img src='/images/log-out.svg'alt="log-out" width='20px' /></div> </Button></div>
           
         </div>
       );

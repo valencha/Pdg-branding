@@ -484,7 +484,7 @@ function ToolBar(props){
 
     function handleLogOut(event){
         fb.auth().signOut();
-        history.push('/login');
+        history.push('/');
 
     }
 
