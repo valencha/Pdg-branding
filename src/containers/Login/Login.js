@@ -30,6 +30,7 @@ function Login(){
     const [focusInput, setFocusInput]= React.useState(false);
     const [focusInput2, setFocusInput2]= React.useState(false);
     const [focusInput3, setFocusInput3]= React.useState(false);
+    const [alterLabel, setAlterLabel]= React.useState('');
 
     let history = useHistory();
     React.useEffect(() => {
@@ -43,7 +44,7 @@ function Login(){
 
             } else {
              
-                   console.log("usuario nullo");
+          
 
                    
             }
@@ -119,14 +120,14 @@ function Login(){
     function handleSign(event){
         setSign(prev => !prev); 
         if(sign === true){
-            setChangeBanner('images/bannerSignUp.jpg');
+            setChangeBanner('/images/bannerSignUp.jpg');
     
             setChangeDesc('Comienza la experiencia de crear marcas que lleguen al corazón de las personas');
 
         }else {
     
             setChangeDesc('La plataforma que te facilita aprender y aplicar');
-            setChangeBanner('images/imgLogin.jpg');
+            setChangeBanner('/images/imgLogin.jpg');
            
         }
     }
@@ -169,12 +170,15 @@ function Login(){
   }
 
     function loginEmail(event){
+        if(email === ' '|| password === ' '){
+            setAlterLabel('iNNGRESA')
+        }
 
         fb.auth().signInWithEmailAndPassword(email,password).then(
             localStorage.setItem("user",email), 
             history.push("/dashboard"))
   
-        .catch(error => console.log (`Error ${error.code}: ${error.message}`)); 
+        .catch(); 
 
 
     }
@@ -208,6 +212,7 @@ function Login(){
 
             <h1 className={classes.titleLogin}>Iniciar sesión</h1>
             <p className={classes.subtitleLogin}>Ingresa tus datos a continuación</p>
+            <p>{alterLabel}</p>
             <PlaceHolder
                 type="email"
                 onChange={getEmail}
@@ -313,7 +318,7 @@ function Login(){
             />
                    
             <div className={classes.sectionGoogle}>
-                <img src={'images/divisorLogin.svg'} alt="divisor" width='406px' />
+                <img src={'/images/divisorLogin.svg'} alt="divisor" width='406px' />
          
                 <Button  variant="outlined" onClick={handleAuthGoogle} className={classes.btnGoogle}> <img className={classes.logoGoogle}src={'images/logoGoogle.svg'} alt="divisor" width='39px' /> Regístrate con Google
                 </Button>

@@ -121,15 +121,12 @@ function Map_step(){
                     }
 
                     if(doc.data().percentStep2===100 && element.title ==='Exploración de los recursos'){
-                 
+                        element.percent = doc.data().percentStep3
                         element.active = true;
 
 
                     }
-                    if( element.title ==='Exploración de los recursos'){
-                        element.percent = doc.data().percentStep2
 
-                    }
 
                     if(doc.data().percentStep3===100 && element.title ==='Selección de los recursos'){
                  

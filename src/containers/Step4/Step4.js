@@ -315,7 +315,7 @@ const MyDot = ({ isActive }) => (
             setListaSentidos(Object.assign([], listaSentidos));
         })
 
-
+     //   eslint-disable-next-line
     },[itemsEscogidos,openGusto,openOido, openVista,openTacto,openOlfato,itemsEscogidosAnteriores,id,listaSentidos,managerDrag])
 
       function handleNextPage(event){
@@ -456,7 +456,8 @@ const MyDot = ({ isActive }) => (
                             <Slider showDots={true} dot={MyDot} cols={3} rows={3} gap={10} containerStyle={{ background: 'transparent',  width:'348px', 
                             height: '300px', margin: '0 auto'}} >  
                                 
-
+                            {  /*eslint array-callback-return: */
+                            }
                             {(itemsImg).map((element, i) => {
                                 let index =-1;
                                 for (let i = 0; i < itemsEscogidos.length; i++) {
@@ -478,7 +479,7 @@ const MyDot = ({ isActive }) => (
                                 }else{
 
                                 }
-                            
+                          
                             })}     
                              </Slider>
                     

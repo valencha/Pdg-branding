@@ -63,6 +63,7 @@ function IntroQuestionStep2(){
                         url='/images/videoKit.mp4'
                         playing
                         loop
+                        muted
                         width='516px'
                         height='300px'
                         />

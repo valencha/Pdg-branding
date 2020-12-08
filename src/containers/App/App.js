@@ -48,7 +48,7 @@ require('firebase/auth');
 
 
 function App() {
-  const [user,setUser] = React.useState([]);
+  const [user,setUser] = React.useState(null);
 
   React.useEffect(() => {
     let isCancelled = false;
@@ -59,12 +59,12 @@ function App() {
         
         if (user!== null) {
             setUser(user)
-            console.log(user.uid)
-          } else {
+            
+        } else {
               setUser(null)
-               console.log("usuario nullo");
+              
                
-          }
+        }
       
         
       })

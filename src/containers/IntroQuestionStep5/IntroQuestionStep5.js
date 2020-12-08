@@ -28,7 +28,7 @@ function IntroQuestionStep5(){
         var docRef = db.collection("briefs").doc(id)
 
         const listener = docRef.onSnapshot(function(doc) {
-            if(!doc){
+            if(!doc.exists){
 
            
 
@@ -215,6 +215,7 @@ function IntroQuestionStep5(){
                         url='/images/briefAutomatico.mov'
                         playing
                         loop
+                        muted
                         width='516px'
                         height='300px'
                     />

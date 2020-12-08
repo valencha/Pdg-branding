@@ -74,6 +74,7 @@ function IntroQuestionStep1(){
                         url='/images/introPasoConociendo.mov'
                         playing
                         loop
+                        muted
                         width='516px'
                         height='300px'
                         />

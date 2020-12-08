@@ -10,6 +10,7 @@ import CardMoodboards from '../../components/CardMoodboards/CardsMoodboards';
 import Dialog from '@material-ui/core/Dialog';
 import PlaceHolder from '../../components/PlaceHolder/PlaceHolder';
 import Slider from 'react-grid-carousel';
+import { useHistory } from "react-router-dom";
 import './style.css'
 
 //Todos los imports se coloca   n arriba de este 
@@ -66,7 +67,7 @@ function Dashboard(props){
   const [valoraciones, setValoraciones] = React.useState(0);
   const [comentarios, setComentarios] = React.useState([]);
   const [nameUser, setNameUser] = React.useState('');
-
+  let history = useHistory();
 
   const [colaborador, setColaborador] = React.useState(false);
 
@@ -309,8 +310,12 @@ function handleAddProject(){
 React.useEffect(()=>{
 
   var docRefU = db.collection("projects");
+  if(value.user !== null){
+
+ 
   var docRef = db.collection("users").doc(userM);
   var docRefM = db.collection("moodboards");
+console.log(userM)
 
 
   const listener = docRef.onSnapshot(function(doc) {
@@ -421,8 +426,10 @@ React.useEffect(()=>{
 
   })
   return () => listener()
-
-},[userM])
+  }else{
+    history.push('/login');
+  }
+},[userM,history,value.user])
 
 
     return (

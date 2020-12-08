@@ -50,6 +50,7 @@ function IntroQuestionStep3(){
                         url='/images/seleccionRecursos.mov'
                         playing
                         loop
+                        muted
                         width='516px'
                         height='400px'
                         />

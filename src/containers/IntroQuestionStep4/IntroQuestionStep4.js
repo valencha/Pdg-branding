@@ -45,6 +45,7 @@ function IntroQuestionStep5(){
                         url='/images/moodboardIntro.mov'
                         playing
                         loop
+                        muted
                         width='516px'
                         height='300px'
                     />

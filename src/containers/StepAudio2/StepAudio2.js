@@ -94,7 +94,7 @@ function StepAudio2(){
                             <CardCheckBox {...item} onChange={(event)=>{
                                 let checked=event.target.checked;
                                 item.select=checked;
-                                setValue(20);
+                                setValue(40);
                                 console.log(disabled)
                              
                                 if(item.select === true){
